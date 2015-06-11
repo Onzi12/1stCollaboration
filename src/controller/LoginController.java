@@ -12,11 +12,11 @@ import boundary.MyBox_GUI;
 import boundary.PortAndIP_GUI;
 import callback.LoginCallback;
 import client.Client;
-
+import common.Controller;
 import common.Message;
 import common.MessageType;
 
-public class LoginController extends MyController {
+public class LoginController extends Controller {
 	
 	public LoginController(Login_GUI gui) {
 		super(gui);
@@ -33,7 +33,7 @@ public class LoginController extends MyController {
 			//show MyBox Window
 			getNavigationManager().getFrame().setSize(742, 579);
 			MyBox_GUI myBox = new MyBox_GUI();
-			MyBoxController controller = new MyBoxController(myBox, user);
+			Controller controller = new MyBoxController(myBox, user);
 			Client.getInstance().addObserver(controller);
 			getNavigationManager().replaceController(controller);
 			

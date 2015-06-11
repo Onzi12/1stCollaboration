@@ -3,6 +3,7 @@ package boundary;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -14,10 +15,17 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import common.Boundary;
+import common.Controller;
 import common.Displayable;
 import custom_gui.TextPrompt;
 
-public class Login_GUI extends JPanel implements Displayable {
+public class Login_GUI extends Boundary {
+
+	public Login_GUI(Controller controller) {
+		super(controller);
+		
+	}
 
 	private static final long serialVersionUID = 1868351078697687291L;
 	private JTextField fieldUsername;
@@ -30,12 +38,9 @@ public class Login_GUI extends JPanel implements Displayable {
 	public final static String ACTION_COMMAND_SHOW_CREATE_ACCOUNT = "ShowCreateAccount";
 	public final static String ACTION_COMMAND_IP_PORT = "IP&Port";
 	
-	public Login_GUI() {
-		displayWindow();
-	}
 
 	@Override
-	public void displayWindow() {
+	public void draw() {
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
@@ -87,6 +92,7 @@ public class Login_GUI extends JPanel implements Displayable {
 		btnShowCreateAnAccount.setBackground(Color.WHITE);
 		btnShowCreateAnAccount.setBounds(83, 282, 149, 23);
 		add(btnShowCreateAnAccount);
+
 		
 		btnIpPort = new JButton("IP & Port");
 		btnIpPort.setActionCommand(ACTION_COMMAND_IP_PORT);
@@ -124,5 +130,31 @@ public class Login_GUI extends JPanel implements Displayable {
 	
 	@Override
 	public void closeWindow() {}
+
+
+	@Override
+	public void display() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerListeners() {
+		btnShowCreateAnAccount.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
 
 }

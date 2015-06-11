@@ -10,7 +10,7 @@ import javax.swing.border.TitledBorder;
 
 import common.Displayable;
 
-public class FilePopUpMenu_GUI extends JPopupMenu implements Displayable {
+public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 
 	private static final long serialVersionUID = -6005336868368607973L;
 	private JMenuItem menuItemUpdate;
@@ -19,11 +19,10 @@ public class FilePopUpMenu_GUI extends JPopupMenu implements Displayable {
 	
 	public FilePopUpMenu_GUI(String title) {
 		super(title);
-		displayWindow();
+		draw();
 	}
 	
-	@Override
-	public void displayWindow() {
+	public void draw() {
 		setBackground(Color.WHITE);
 	    TitledBorder labelBorder = BorderFactory.createTitledBorder(
 	    		BorderFactory.createEmptyBorder(), getLabel(),
@@ -58,10 +57,8 @@ public class FilePopUpMenu_GUI extends JPopupMenu implements Displayable {
 		menuItemDelete.addActionListener(listener);
 	}
 
-	@Override
 	public void showMessage(String str) {}
 
-	@Override
 	public void closeWindow() {}
 
 }

@@ -1,20 +1,28 @@
-package controller;
+package common;
 
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
+import common.Displayable;
+import controller.NavigationManager;
 
 
-public abstract class MyController implements ActionListener {
+
+public abstract class Controller{
 
 	private NavigationManager nav;
-	private JPanel panel;
+	private Boundary panel;
 	
-	public MyController(JPanel panel) {
-		this.panel = panel;
+	public Controller() {
+		initBoundary();
+		
 	}
 	
+	
+	protected abstract void initBoundary();
+
+
 	public NavigationManager getNavigationManager() {
 		return nav;
 	}
@@ -23,7 +31,7 @@ public abstract class MyController implements ActionListener {
 		this.nav = nav;
 	}
 
-	public JPanel getPanel() {
+	public Boundary getPanel() {
 		return panel;
 	}
 	

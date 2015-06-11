@@ -24,9 +24,10 @@ import javax.swing.tree.TreeSelectionModel;
 
 import custom_gui.ImageRenderer;
 import model.Item;
+import common.Boundary;
 import common.Displayable;
 
-public class MyBox_GUI extends JPanel implements Displayable {
+public class MyBox_GUI extends Boundary {
 
 	private static final long serialVersionUID = -3999897324978712720L;
 	private JButton btnAddFile;
@@ -212,6 +213,30 @@ public class MyBox_GUI extends JPanel implements Displayable {
 	
 	@Override
 	public void closeWindow() {}
+
+	@Override
+	public void draw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void display() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerListeners() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
 

@@ -27,11 +27,11 @@ import boundary.FileUpdate_GUI;
 import boundary.Login_GUI;
 import boundary.MyBox_GUI;
 import client.Client;
-
+import common.Controller;
 import common.Message;
 import common.MessageType;
 
-public class MyBoxController extends MyController implements Observer {
+public class MyBoxController extends Controller implements Observer {
 
 	private User user;
 	

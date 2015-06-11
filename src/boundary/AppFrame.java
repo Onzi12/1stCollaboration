@@ -4,15 +4,30 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import common.Boundary;
 
 import client.Client;
 import controller.LoginController;
 import controller.NavigationManager;
 
-public class AppFrame extends MyFrame {
+public class AppFrame extends JFrame{
 
 	private static final long serialVersionUID = 351110661931287206L;
 	private NavigationManager nav;
+
+	
+	final public void presentView(Boundary panel) {
+		getContentPane().add(panel);
+		getContentPane().revalidate();
+		getContentPane().repaint();
+	}
+
+	final public void dismissView(Boundary panel) {
+		getContentPane().remove(panel);
+	}
+	
 	/**
 	 * Launch the application.
 	 */

@@ -11,11 +11,11 @@ import boundary.Login_GUI;
 import boundary.MyBox_GUI;
 import callback.LoginCallback;
 import client.Client;
-
+import common.Controller;
 import common.Message;
 import common.MessageType;
 
-public class CreateAccountController extends MyController {
+public class CreateAccountController extends Controller {
 	
 	public CreateAccountController(CreateAccount_GUI gui) {
 		super(gui);
@@ -121,5 +121,11 @@ public class CreateAccountController extends MyController {
 
 	@Override
 	public void viewWillAppear() {}
+
+	@Override
+	protected void initBoundary() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

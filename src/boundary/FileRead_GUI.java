@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import common.Boundary;
 import common.Displayable;
 
 import java.awt.Color;
@@ -23,7 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 
-public class FileRead_GUI extends JDialog implements Displayable {
+public class FileRead_GUI extends Boundary {
 
 	private static final long serialVersionUID = 3050895492014566356L;
 	private JPanel contents, buttonPanel;
@@ -143,5 +144,29 @@ public class FileRead_GUI extends JDialog implements Displayable {
 	public void closeWindow() {
 		setVisible(false);
 		dispose();
+	}
+
+	@Override
+	public void draw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void display() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerListeners() {
+		// TODO Auto-generated method stub
+		
 	}
 }

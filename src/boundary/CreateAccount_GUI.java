@@ -13,10 +13,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import common.Boundary;
 import common.Displayable;
 import custom_gui.TextPrompt;
 
-public class CreateAccount_GUI extends JPanel implements Displayable{
+public class CreateAccount_GUI extends Boundary{
 
 	private static final long serialVersionUID = -8879377620723123663L;
 	private JButton btnCreateAccount;
@@ -31,11 +32,11 @@ public class CreateAccount_GUI extends JPanel implements Displayable{
 	public final static String ACTION_COMMAND_CREATE_ACCOUNT = "CreateAccount";
 
 	public CreateAccount_GUI() {
-		displayWindow();
+		draw();
 	}
 	
 	@Override
-	public void displayWindow() {
+	public void draw() {
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
@@ -146,6 +147,27 @@ public class CreateAccount_GUI extends JPanel implements Displayable{
 
 	@Override
 	public void closeWindow() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void display() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerListeners() {
 		// TODO Auto-generated method stub
 		
 	}
