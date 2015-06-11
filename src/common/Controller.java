@@ -4,36 +4,36 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
-import common.Displayable;
+
 import controller.NavigationManager;
 
 
 
 public abstract class Controller{
 
-	private NavigationManager nav;
-	private Boundary panel;
+	protected NavigationManager nav;
+	protected Boundary gui;
 	
 	public Controller() {
-		initBoundary();
+		nav = NavigationManager.getInstance();
+		gui = initBoundary();
+		gui.display();
+		if(gui instanceof JPanelBoundary)
+			nav.replaceController(this);
+		//else  (maybe needed for JDialogBoundary)
+			
+	}
+	
+	/** Create a Boundary for this Controller */ 
+	protected abstract Boundary initBoundary();
+
+	public void updateBoundary() {
 		
 	}
 	
-	
-	protected abstract void initBoundary();
-
-
-	public NavigationManager getNavigationManager() {
-		return nav;
+	public JPanelBoundary getGui() {
+			return (JPanelBoundary)gui;
 	}
 	
-	public void setNavigationManager(NavigationManager nav) {
-		this.nav = nav;
-	}
-
-	public Boundary getPanel() {
-		return panel;
-	}
-	
-	public abstract void viewWillAppear();
+	//public abstract void viewWillAppear();
 }

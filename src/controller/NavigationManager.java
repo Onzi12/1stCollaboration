@@ -2,6 +2,7 @@ package controller;
 
 import java.util.Stack;
 
+import client.Client;
 import common.Controller;
 import boundary.AppFrame;
 import boundary.AppFrame;
@@ -9,24 +10,29 @@ import boundary.AppFrame;
 
 public class NavigationManager {
 
+	private static NavigationManager instance=null;
 	private AppFrame frame;
 	private Stack<Controller> stack;
 	
-	public NavigationManager(AppFrame frame) {
-		setFrame(frame);
+	
+	private NavigationManager() {
+		frame = AppFrame.getInstance();
 		stack = new Stack<Controller>();
 	}
 	
-	public void setFrame(AppFrame frame) {
-		this.frame = frame;
+	public static NavigationManager getInstance() {
+		if (instance == null) {
+			instance = new NavigationManager();
+		}
+		return instance;
 	}
+
 	
 	public AppFrame getFrame() {
 		return frame;
 	}
 	
 	public void replaceController(Controller controller) {
-		controller.setNavigationManager(this);
 		if (!stack.isEmpty()) {
 			dismissController(stack.pop());
 		}
@@ -35,7 +41,6 @@ public class NavigationManager {
 	}
 	
 	public void pushController(Controller controller) {
-		controller.setNavigationManager(this);
 		if (!stack.isEmpty()) {
 			dismissController(stack.peek());
 		}
@@ -51,12 +56,12 @@ public class NavigationManager {
 	}
 
 	private void presentController(Controller controller) {
-		controller.viewWillAppear();
-		frame.presentView(controller.getPanel());
+		//controller.viewWillAppear();
+		frame.presentView(controller.getGui());
 	}
 	
 	private void dismissController(Controller controller) {
-		frame.dismissView(controller.getPanel());
+		frame.dismissView(controller.getGui());
 	}
 	
 }

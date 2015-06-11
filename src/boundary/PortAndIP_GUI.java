@@ -2,6 +2,7 @@ package boundary;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -13,22 +14,25 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
-import common.Displayable;
+import common.Controller;
+import common.JDialogBoundary;
+import controller.PortAndIPController;
 
-public class PortAndIP_GUI extends JDialog implements Displayable{
+public class PortAndIP_GUI extends JDialogBoundary {
+
 
 	private static final long serialVersionUID = 1357093255522087260L;
 	private JPanel contents, buttonPanel;
 	private JTextField tfPort, tfIP;
 	private JButton btnSave, btnCancel;
 	
-	public PortAndIP_GUI(JFrame parent) {
-		super(parent);
-		displayWindow();
+	public PortAndIP_GUI(Controller controller) {
+		super(controller);
+		this.controller = (PortAndIPController)controller;
 	}
 	
 	@Override
-	public void displayWindow() {
+	public void draw() {
 		setBounds(100, 100, 300, 150);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
@@ -67,13 +71,6 @@ public class PortAndIP_GUI extends JDialog implements Displayable{
 		buttonPanel.add(btnCancel);
 	}
 	
-	public void registerSaveListener(ActionListener listener) {
-		btnSave.addActionListener(listener);
-	}
-	
-	public void registerCancelListener(ActionListener listener) {
-		btnCancel.addActionListener(listener);
-	}
 	
 	public int getPort() {
 		return Integer.parseInt(tfPort.getText());
@@ -91,18 +88,23 @@ public class PortAndIP_GUI extends JDialog implements Displayable{
 		tfIP.setText(ip);
 	}
 	
+
 	@Override
-	public void showMessage(String str) {}
-	
-	@Override
-	public void closeWindow() {
-		setVisible(false);
-		dispose();
-	}
-	
-	public static void main(String args[])
-	{
-		new PortAndIP_GUI(null).setVisible(true);
+	public void registerListeners() {
+		btnSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((PortAndIPController)controller).btnSaveClicked();
+			}
+		});
+		
+		btnCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((PortAndIPController)controller).btnCancelClicked();
+			}
+		});
+			
 	}
 	
 }

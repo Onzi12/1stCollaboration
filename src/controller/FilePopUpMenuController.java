@@ -51,7 +51,7 @@ public class FilePopUpMenuController {
 		FileUpdate_GUI update = new FileUpdate_GUI(myboxController.getNavigationManager().getFrame(), false);
 		new FileUpdateController(update, file);
 		update.setVisible(true);
-		((MyBox_GUI)myboxController.getPanel()).getTable().clearSelection();
+		((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
 	}
 	
 	private void btnReadClicked() {

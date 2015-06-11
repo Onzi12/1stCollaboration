@@ -15,11 +15,10 @@ import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
-import common.Displayable;
 
 import controller.ServerController;
 
-public class Server_GUI extends JFrame implements Displayable {
+public class Server_GUI extends JFrame {
 
 	private static final long serialVersionUID = 6920888393421201468L;
 	public static final int DEFAULT_PORT = 2222;
@@ -37,7 +36,7 @@ public class Server_GUI extends JFrame implements Displayable {
 
 	public Server_GUI() {
 		super("Server");
-		displayWindow();
+		draw();
 	}
 	
 	public String getPort() {
@@ -56,8 +55,8 @@ public class Server_GUI extends JFrame implements Displayable {
 		return tfPassword.getText();
 	}
 	
-	@Override
-	public void displayWindow() {
+	
+	public void draw() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600, 400);
 		setLocationRelativeTo(null);
@@ -98,12 +97,12 @@ public class Server_GUI extends JFrame implements Displayable {
 		btnStart.addActionListener(listener);
 	}
 
-	@Override
+
 	public void showMessage(String str) {
 		log.append(" " + dateFormat.format(new Date()) + ": " + str + "\n");
 	}
 	
-	@Override
+
 	public void closeWindow() {
 		setVisible(false);
 		dispose();
@@ -118,9 +117,4 @@ public class Server_GUI extends JFrame implements Displayable {
 		tfUser.setEditable(false);
 	}
 
-	public static void main(String[] args) {
-		Server_GUI server_gui = new Server_GUI();
-		new ServerController(server_gui);
-		server_gui.setVisible(true);
-	}
 }

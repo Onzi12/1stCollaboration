@@ -16,7 +16,10 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 import common.Boundary;
-import common.Displayable;
+
+
+import common.Controller;
+import common.JDialogBoundary;
 
 import java.awt.Color;
 
@@ -24,7 +27,9 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 
-public class FileRead_GUI extends Boundary {
+import controller.FileReadController;
+
+public class FileRead_GUI extends JDialogBoundary {
 
 	private static final long serialVersionUID = 3050895492014566356L;
 	private JPanel contents, buttonPanel;
@@ -34,13 +39,12 @@ public class FileRead_GUI extends Boundary {
 	private JTextField textField;
 	private JTextArea textArea;
 	
-	public FileRead_GUI(JFrame parent) {
-		super(parent);
-		displayWindow();
+	public FileRead_GUI(Controller controller) {
+		super(controller);
 	}
 
 	@Override
-	public void displayWindow() {
+	public void draw() {
 		setTitle("File");
 		setBounds(100, 100, 647, 412);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -137,36 +141,11 @@ public class FileRead_GUI extends Boundary {
 		return false;
 	}
 
-	@Override
-	public void showMessage(String str) {}
-
-	@Override
-	public void closeWindow() {
-		setVisible(false);
-		dispose();
-	}
-
-	@Override
-	public void draw() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void display() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void registerListeners() {
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

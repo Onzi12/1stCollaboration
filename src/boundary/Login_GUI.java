@@ -9,18 +9,16 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import common.Boundary;
 import common.Controller;
-import common.Displayable;
+import common.JPanelBoundary;
+import controller.LoginController;
 import custom_gui.TextPrompt;
 
-public class Login_GUI extends Boundary {
+public class Login_GUI extends JPanelBoundary {
 
 	public Login_GUI(Controller controller) {
 		super(controller);
@@ -41,6 +39,8 @@ public class Login_GUI extends Boundary {
 
 	@Override
 	public void draw() {
+		
+		AppFrame.getInstance().setSize(326, 419);
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
@@ -110,31 +110,40 @@ public class Login_GUI extends Boundary {
 	public String getPasswordText() {
 		return new String(fieldPassword.getPassword());
 	}
+
 	
-	public void registerSignInListener(ActionListener listener) {
-		btnSignIn.addActionListener(listener);
-	}
 	
-	public void registerIPAndPortListener(ActionListener listener) {
-		btnIpPort.addActionListener(listener);
-	}
-	
-	public void registerShowCreateAccountListener(ActionListener listener) {
-		btnShowCreateAnAccount.addActionListener(listener);
-	}
-	
-	@Override
-	public void showMessage(String str) {
-		JOptionPane.showMessageDialog(this, str, "Error", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	@Override
-	public void closeWindow() {}
+
+
+
+
 
 
 	@Override
-	public void display() {
-		// TODO Auto-generated method stub
+	public void registerListeners() {
+		btnShowCreateAnAccount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((LoginController)controller).btnCreateAnAccountclicked();
+			}
+		});
+		
+		
+		btnIpPort.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((LoginController)controller).btnSetPortAndIPClicked();	
+			}
+		});
+		
+		
+		btnSignIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((LoginController)controller).btnSignInClicked();
+				
+			}
+		});
 		
 	}
 
@@ -145,15 +154,8 @@ public class Login_GUI extends Boundary {
 	}
 
 	@Override
-	public void registerListeners() {
-		btnShowCreateAnAccount.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+	public void closeWindow() {
+		// TODO Auto-generated method stub
 		
 	}
 
