@@ -41,11 +41,12 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		lblJoinMybox.setHorizontalAlignment(SwingConstants.CENTER);
 		lblJoinMybox.setForeground(Color.WHITE);
 		lblJoinMybox.setBounds(61, 36, 193, 25);
-		lblJoinMybox.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblJoinMybox.setFont(new Font("Arial", Font.BOLD, 20));
 		add(lblJoinMybox);
 		
 		fieldFirstName = new JTextField();
 		TextPrompt placeHolderFirstName = new TextPrompt("First Name", fieldFirstName);
+		placeHolderFirstName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		placeHolderFirstName.setForeground(Color.GRAY);
 		placeHolderFirstName.changeAlpha(0.5f);
 		placeHolderFirstName.changeStyle(Font.BOLD + Font.ITALIC);
@@ -55,6 +56,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		
 		fieldLastName = new JTextField();
 		TextPrompt placeHolderLastName = new TextPrompt("Last Name", fieldLastName);
+		placeHolderLastName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		placeHolderLastName.setForeground(Color.GRAY);
 		placeHolderLastName.changeAlpha(0.5f);
 		placeHolderLastName.changeStyle(Font.BOLD + Font.ITALIC);
@@ -64,6 +66,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		
 		fieldNewUsername = new JTextField();
 		TextPrompt placeHolderNewUsername = new TextPrompt("Username", fieldNewUsername);
+		placeHolderNewUsername.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		placeHolderNewUsername.setForeground(Color.GRAY);
 		placeHolderNewUsername.changeAlpha(0.5f);
 		placeHolderNewUsername.changeStyle(Font.BOLD + Font.ITALIC);
@@ -73,6 +76,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		
 		fieldNewPassword = new JPasswordField();
 		TextPrompt placeHolderNewPassword = new TextPrompt("Password", fieldNewPassword);
+		placeHolderNewPassword.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		placeHolderNewPassword.setForeground(Color.GRAY);
 		placeHolderNewPassword.changeAlpha(0.5f);
 		placeHolderNewPassword.changeStyle(Font.BOLD + Font.ITALIC);
@@ -82,6 +86,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		
 		fieldEmail = new JTextField();
 		TextPrompt placeHolderEmail = new TextPrompt("Email", fieldEmail);
+		placeHolderEmail.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		placeHolderEmail.setForeground(Color.GRAY);
 		placeHolderEmail.changeAlpha(0.5f);
 		placeHolderEmail.changeStyle(Font.BOLD + Font.ITALIC);

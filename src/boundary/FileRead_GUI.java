@@ -31,6 +31,8 @@ import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 
 import controller.FileReadController;
+import javax.swing.JSeparator;
+import java.awt.Font;
 
 public class FileRead_GUI extends JDialogBoundary {
 
@@ -39,28 +41,29 @@ public class FileRead_GUI extends JDialogBoundary {
 	private JTextField tfFilename, tfLocation;
 	private JButton btnClose;
 	private JLabel lblDescription;
-	private JTextField tfDescription;
-	private JTextArea taContent;
+	private JTextArea taDescription;
 	private JLabel lblPrivilege;
 	private JComboBox<String> cbPrivilege;
 	
 	public FileRead_GUI(Controller controller) {
 		super(controller);
 	}
-
+	
 	@Override
 	public void draw() {
 		setTitle("Read File");
-		setBounds(100, 100, 647, 459);
+		setBounds(100, 100, 647, 263);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		contents = new JPanel();
+		contents.setBackground(UIManager.getColor("text"));
 		contents.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contents);
 		contents.setLayout(null);
 		
 		JPanel center = new JPanel();
-		center.setBounds(5, 5, 616, 361);
+		center.setBackground(UIManager.getColor("text"));
+		center.setBounds(10, 54, 616, 134);
 		contents.add(center);
 		center.setLayout(null);
 		
@@ -70,8 +73,9 @@ public class FileRead_GUI extends JDialogBoundary {
 		center.add(lblFilename);
 		
 		tfFilename = new JTextField(30);
+		tfFilename.setBackground(UIManager.getColor("text"));
 		tfFilename.setBounds(83, 7, 523, 20);
-		tfFilename.setEditable(isEditable());
+		tfFilename.setEditable(false);
 		center.add(tfFilename);
 		
 		JLabel lblPath = new JLabel("Path: ");
@@ -80,50 +84,54 @@ public class FileRead_GUI extends JDialogBoundary {
 		
 		tfLocation = new JTextField(30);
 		tfLocation.setBounds(83, 31, 523, 20);
-		tfLocation.setEditable(isEditable());
+		tfLocation.setEditable(false);
 		center.add(tfLocation);
 		
 		lblDescription = new JLabel("Description:");
-		lblDescription.setBounds(7, 59, 79, 14);
+		lblDescription.setBounds(7, 92, 79, 14);
 		center.add(lblDescription);
-		
-		tfDescription = new JTextField();
-		tfDescription.setBackground(isEditable() ? Color.WHITE : getBackground() );
-		tfDescription.setBounds(83, 55, 523, 23);
-		tfDescription.setEditable(isEditable());
-		tfDescription.setColumns(10);
-		center.add(tfDescription);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
-		scrollPane.setBounds(7, 117, 599, 244);
+		scrollPane.setBounds(83, 87, 523, 41);
 		center.add(scrollPane);
 		
-		taContent = new JTextArea();
-		taContent.setLineWrap(true);
-		taContent.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		taContent.setBackground(isEditable() ? Color.WHITE : getBackground() );
-		taContent.setEditable(isEditable());
-		scrollPane.setViewportView(taContent);
+		taDescription = new JTextArea();
+		taDescription.setLineWrap(true);
+		taDescription.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		taDescription.setBackground(UIManager.getColor("menu"));
+		taDescription.setEditable(false);
+		scrollPane.setViewportView(taDescription);
 		
 		lblPrivilege = new JLabel("Privilege:");
-		lblPrivilege.setBounds(7, 83, 58, 23);
+		lblPrivilege.setBounds(7, 59, 58, 23);
 		center.add(lblPrivilege);
 		
 		cbPrivilege = new JComboBox<String>();
-		cbPrivilege.setBounds(83, 84, 85, 20);
+		cbPrivilege.setBounds(83, 57, 85, 24);
 		cbPrivilege.addItem("Private");
 		cbPrivilege.addItem("Group");
 		cbPrivilege.addItem("Public");
-		cbPrivilege.setEnabled(isEditable());
-		cbPrivilege.setEditable(isEditable());
+		cbPrivilege.setEnabled(false);
+		cbPrivilege.setEditable(false);
 		center.add(cbPrivilege);
 		
 		buttonPanel = new JPanel();
-		buttonPanel.setBounds(5, 377, 616, 33);
+		buttonPanel.setBackground(UIManager.getColor("text"));
+		buttonPanel.setBounds(10, 186, 616, 33);
 		contents.add(buttonPanel);
 		
 		addButtons(buttonPanel);
+		
+		JSeparator separator = new JSeparator();
+		separator.setForeground(Color.BLUE);
+		separator.setBounds(10, 45, 522, 11);
+		contents.add(separator);
+		
+		JLabel lblReadFile = new JLabel("Read File");
+		lblReadFile.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		lblReadFile.setBounds(10, 6, 209, 42);
+		contents.add(lblReadFile);
 	}
 	
 	public void setFilename(String name) {
@@ -135,7 +143,7 @@ public class FileRead_GUI extends JDialogBoundary {
 	}
 	
 	public String getTextAreaText() {
-		return taContent.getText();
+		return taDescription.getText();
 	}
 	
 	
@@ -154,12 +162,6 @@ public class FileRead_GUI extends JDialogBoundary {
 		btnClose.setBounds(523, 5, 88, 23);
 		buttonPanel.add(btnClose);
 	}
-
-
-	public boolean isEditable() {
-		return false;
-	}
-
 
 	public int getCbPrivilegeIndex() {
 		return cbPrivilege.getSelectedIndex();
@@ -192,5 +194,4 @@ public class FileRead_GUI extends JDialogBoundary {
 		});
 		
 	}
-	
 }

@@ -13,6 +13,13 @@ import javax.swing.JTable;
 import java.awt.event.ActionEvent;
 import javax.swing.ScrollPaneConstants;
 import controller.FileAddController;
+import javax.swing.UIManager;
+import javax.swing.JLabel;
+import com.jgoodies.forms.factories.DefaultComponentFactory;
+import javax.swing.JSeparator;
+import java.awt.Font;
+
+
 public class FileAdd_GUI extends JDialogBoundary {
 
 	
@@ -27,6 +34,8 @@ public class FileAdd_GUI extends JDialogBoundary {
 	
 	public FileAdd_GUI(Controller controller) {
 		super(controller);
+		getContentPane().setBackground(UIManager.getColor("text"));
+		setVisible(true);
 	}
 	
 	
@@ -41,18 +50,26 @@ public class FileAdd_GUI extends JDialogBoundary {
 		getContentPane().setLayout(null);
 		
 		table = new JTable();
+		table.setBackground(UIManager.getColor("text"));
 		table.setRowHeight(24);
 		table.getTableHeader().setReorderingAllowed(false);
-		table.getTableHeader().setBackground(Color.WHITE);
+		table.getTableHeader().setBackground(Color.BLACK);
+		
+		JSeparator separator = new JSeparator();
+		separator.setForeground(Color.BLUE);
+		separator.setBounds(10, 50, 522, 11);
+		getContentPane().add(separator);
 		
 		contents = new JPanel();
-		contents.setBounds(10, 11, 606, 390);
+		contents.setBounds(10, 70, 606, 331);
 		getContentPane().add(contents);
+		contents.setBackground(UIManager.getColor("text"));
 		contents.setLayout(null);
 		
 		scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 606, 331);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBounds(0, 0, 606, 390);
+		scrollPane.setBackground(UIManager.getColor("text"));
 		contents.add(scrollPane);
 		
 		scrollPane.setViewportView(table);
@@ -61,6 +78,7 @@ public class FileAdd_GUI extends JDialogBoundary {
 		buttonPanel.setBounds(10, 412, 606, 30);
 		getContentPane().add(buttonPanel);
 		buttonPanel.setLayout(null);
+		buttonPanel.setBackground(UIManager.getColor("text"));
 		
 		btnClose = new JButton("Close");
 		btnClose.setBounds(517, 0, 89, 23);
@@ -69,7 +87,12 @@ public class FileAdd_GUI extends JDialogBoundary {
 		btnAddFile = new JButton("Add File");
 		btnAddFile.setBounds(419, 0, 89, 23);
 		buttonPanel.add(btnAddFile);
-			
+		
+		JLabel lblAddFile = new JLabel("ADD File");
+		lblAddFile.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		lblAddFile.setBounds(10, 11, 209, 42);
+		getContentPane().add(lblAddFile);
+		
 	}
 
 
@@ -95,5 +118,4 @@ public class FileAdd_GUI extends JDialogBoundary {
 		
 
 	}
-	
 }

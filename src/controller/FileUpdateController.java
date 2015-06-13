@@ -1,9 +1,11 @@
 package controller;
 
 import java.io.IOException;
+
 import model.ItemFile;
 import boundary.FileUpdate_GUI;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -19,9 +21,11 @@ public class FileUpdateController extends Controller{
 		this.file = file;
 		
 		if (file == null) {
+			gui.setSelected(false);
 			gui.setFilename("");
 			gui.setLocation("");
 		} else {
+			gui.setSelected(true);
 			gui.setFilename(file.getName());
 			gui.setLocation(file.getFullPath());
 		}
@@ -70,6 +74,12 @@ public class FileUpdateController extends Controller{
 	@Override
 	protected Boundary initBoundary() {
 		return new FileUpdate_GUI(this);
+	}
+
+
+	public void btnPathClicked() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -6,8 +6,7 @@ import common.Controller;
 
 public class FileAddController extends Controller {
 
-
-
+	
 	@Override
 	protected Boundary initBoundary() {
 		return new FileAdd_GUI(this);
