@@ -15,8 +15,7 @@ public class FileUpdateController extends Controller{
 	private ItemFile file;
 	
 	public FileUpdateController(ItemFile file) {
-		
-		this.gui = (FileUpdate_GUI)gui;
+		this.gui = (FileUpdate_GUI)super.gui;
 		this.file = file;
 		
 		if (file == null) {

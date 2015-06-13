@@ -300,9 +300,9 @@ public class MyBoxController extends Controller implements Observer {
 
 	@Override
 	protected void registerMoreListeners() {
-		gui.registerTableMouseListener(new TableMouseListener());
-		gui.registerMouseListener(new MyBoxMouseListener());
-		gui.registerTreeModeListener(new FileTreeModelListenter());	
+		//gui.registerTableMouseListener(new TableMouseListener());   //
+		//gui.registerMouseListener(new MyBoxMouseListener());        /*Gil, THIS 3 CRUSH THE CLIENT!! CHECK IT*/
+		//gui.registerTreeModeListener(new FileTreeModelListenter()); //Maybe it's because my DB tables aren't right
 	}
 	
 	

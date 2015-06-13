@@ -7,7 +7,7 @@ public class ClientMain {
 
 	public static void main(String[] args) {
 		AppFrame frame = AppFrame.getInstance();
-		NavigationManager.getInstance().pushController(new LoginController());
+		new LoginController();
 		frame.setVisible(true);
 	}
 

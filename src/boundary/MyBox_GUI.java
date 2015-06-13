@@ -166,10 +166,13 @@ public class MyBox_GUI extends JPanelBoundary {
 
 	@Override
 	public void registerListeners() {
+		
+		final MyBoxController control = (MyBoxController)controller;
+		
 		btnAddFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnAddFileClicked();
+				control.btnAddFileClicked();
 			}
 		});
 		
@@ -183,35 +186,35 @@ public class MyBox_GUI extends JPanelBoundary {
 		btnGroups.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnGroupsClicked();	
+			control.btnGroupsClicked();	
 			}
 		});
 		
 		btnLogout.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnLogoutClicked();
+				control.btnLogoutClicked();
 			}
 		});
 		
 		btnNewFolder.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnNewFolderClicked();	
+				control.btnNewFolderClicked();	
 			}
 		});
 		
 		btnRestoreFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnRestoreFileClicked();
+				control.btnRestoreFileClicked();
 			}
 		});
 		
 		btnUpdateFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnUpdateFileClicked();
+				control.btnUpdateFileClicked();
 			}
 		});
 	}
