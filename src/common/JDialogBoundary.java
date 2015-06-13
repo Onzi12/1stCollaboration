@@ -15,6 +15,7 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 		super(AppFrame.getInstance());
 		this.controller = controller;
 		draw();	
+		registerListeners();
 	}
 	
 	
@@ -45,4 +46,6 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 		setVisible(false);
 		dispose();
 	}
+	
+	public abstract void registerListeners();
 }

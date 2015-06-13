@@ -16,6 +16,7 @@ public abstract class JPanelBoundary extends JPanel implements Boundary{
 	{
 		this.controller = controller;
 		draw();
+		registerListeners();
 	}
 	
 	
@@ -47,4 +48,6 @@ public abstract class JPanelBoundary extends JPanel implements Boundary{
 	 * Method that when overridden is used to close the displayed window
 	 */
 	public void close(){}
+	
+	public abstract void registerListeners();
 }
