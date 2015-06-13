@@ -1,44 +1,35 @@
 package controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+import common.Boundary;
+import common.Controller;
 import boundary.PortAndIP_GUI;
 import client.Client;
 
-public class PortAndIPController {
-	private PortAndIP_GUI gui;
+public class PortAndIPController extends Controller{
+
 	
-	public PortAndIPController(PortAndIP_GUI gui) {
-		this.gui = gui;		
-		gui.registerSaveListener(new BtnSaveActionListener());
-		gui.registerCancelListener(new BtnCancelActionListener());
+	public PortAndIPController() {
+
 		Client client = Client.getInstance();
-		gui.setPort(client.getPort());
-		gui.setIP(client.getHost());
+		((PortAndIP_GUI)gui).setPort(client.getPort());
+		((PortAndIP_GUI)gui).setIP(client.getHost());
 	}
 	
-	private class BtnSaveActionListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			btnSaveClicked();
-		}
-	}
 	
-	private class BtnCancelActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			btnCancelClicked();
-		}
-	}
-	
-	private void btnSaveClicked() {
+	public void btnSaveClicked() {
 		Client client = Client.getInstance();
-		client.setPort(gui.getPort());
-		client.setHost(gui.getHost());
-		gui.closeWindow();
+		client.setPort(((PortAndIP_GUI)gui).getPort());
+		client.setHost(((PortAndIP_GUI)gui).getHost());
+		gui.close();
 	}
 	
-	private void btnCancelClicked() {
-		gui.closeWindow();
+	public void btnCancelClicked() {
+		gui.close();
+	}
+
+	@Override
+	protected Boundary initBoundary() {
+		return new PortAndIP_GUI(this);
 	}
 }

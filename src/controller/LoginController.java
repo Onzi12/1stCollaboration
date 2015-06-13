@@ -1,53 +1,35 @@
 package controller;
 
-import java.awt.event.ActionEvent;
+
 import java.io.IOException;
-
-import javax.swing.JButton;
-
 import model.User;
-import boundary.CreateAccount_GUI;
 import boundary.Login_GUI;
-import boundary.MyBox_GUI;
-import boundary.PortAndIP_GUI;
 import callback.LoginCallback;
 import client.Client;
-
+import common.Boundary;
+import common.Controller;
 import common.Message;
 import common.MessageType;
 
-public class LoginController extends MyController {
-	
-	public LoginController(Login_GUI gui) {
-		super(gui);
-		
-		gui.registerSignInListener(this);
-		gui.registerIPAndPortListener(this);
-		gui.registerShowCreateAccountListener(this);
-	}
+public class LoginController extends Controller {
+
 		
 	private void handleUserSignIn(User user) {
 		if (user != null) {
-
 			//here user has logged in successfully					
 			//show MyBox Window
-			getNavigationManager().getFrame().setSize(742, 579);
-			MyBox_GUI myBox = new MyBox_GUI();
-			MyBoxController controller = new MyBoxController(myBox, user);
-			Client.getInstance().addObserver(controller);
-			getNavigationManager().replaceController(controller);
-			
+			new MyBoxController(user);
 		} 
+		//else ?? 
 	}
 	
-	private void btnSetPortAndIPClicked() {
-		PortAndIP_GUI portAndIP_GUI = new PortAndIP_GUI(getNavigationManager().getFrame());
-		new PortAndIPController(portAndIP_GUI);
-		portAndIP_GUI.setVisible(true);
+	public void btnSetPortAndIPClicked() {
+		new PortAndIPController();
+		
 	}
 	
-	private void btnSignInClicked() {
-		Login_GUI gui = (Login_GUI)getPanel();
+	public void btnSignInClicked() {
+		Login_GUI gui = (Login_GUI)getGui();
 		if( gui.getUsernameText().equals("") || gui.getPasswordText().length()==0 ) { 
 			gui.showMessage("Please fill all fields!");
 			return; 
@@ -66,7 +48,7 @@ public class LoginController extends MyController {
 
 					@Override
 					public void error(String message) {
-						((Login_GUI)getPanel()).showMessage(message);
+						((Login_GUI)getGui()).showMessage(message);
 						Client.getInstance().deleteObservers();
 					}
 					
@@ -83,43 +65,23 @@ public class LoginController extends MyController {
 		try {
 			client.connect();
 		} catch (IOException e) {
-			((Login_GUI)getPanel()).showMessage("Failed to connect!");
+			((Login_GUI)getGui()).showMessage("Failed to connect!");
 			client.disconnect();
 			return false;
 		}
 		return true;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		JButton btn = (JButton)e.getSource();
-		String actionCommand = btn.getActionCommand();
-		
-		switch (actionCommand) {
-		case Login_GUI.ACTION_COMMAND_SIGN_IN:
-			btnSignInClicked();
-			break;
-			
-		case Login_GUI.ACTION_COMMAND_IP_PORT:
-			btnSetPortAndIPClicked();
-			break;
-			
-		case Login_GUI.ACTION_COMMAND_SHOW_CREATE_ACCOUNT:
-			
-			CreateAccount_GUI createAccount = new CreateAccount_GUI();
-			CreateAccountController controller = new CreateAccountController(createAccount);
-			getNavigationManager().replaceController(controller);
-			
-			break;
-			
-		default:
-			break;
-		}
-		
+
+
+	public void btnCreateAnAccountclicked() {
+		new CreateAccountController();
 	}
 
+
 	@Override
-	public void viewWillAppear() {}
+	protected Boundary initBoundary() {
+		return new Login_GUI(this);
+	}
 	
 }

@@ -3,20 +3,21 @@ package boundary;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
-import common.Displayable;
+import common.Controller;
+import common.JPanelBoundary;
+import controller.CreateAccountController;
 import custom_gui.TextPrompt;
 
-public class CreateAccount_GUI extends JPanel implements Displayable{
+public class CreateAccount_GUI extends JPanelBoundary{
+
+
 
 	private static final long serialVersionUID = -8879377620723123663L;
 	private JButton btnCreateAccount;
@@ -26,16 +27,13 @@ public class CreateAccount_GUI extends JPanel implements Displayable{
 	private JTextField fieldNewUsername;
 	private JPasswordField fieldNewPassword;
 	private JTextField fieldEmail;
-	
-	public final static String ACTION_COMMAND_SHOW_SIGN_IN = "ShowSignIn";
-	public final static String ACTION_COMMAND_CREATE_ACCOUNT = "CreateAccount";
 
-	public CreateAccount_GUI() {
-		displayWindow();
-	}
+	public CreateAccount_GUI(Controller controller) {
+		super(controller);
+	}	
 	
 	@Override
-	public void displayWindow() {
+	public void draw() {
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
@@ -92,7 +90,6 @@ public class CreateAccount_GUI extends JPanel implements Displayable{
 		add(fieldEmail);
 		
 		btnCreateAccount = new JButton("Create Account");
-		btnCreateAccount.setActionCommand(ACTION_COMMAND_CREATE_ACCOUNT);
 		btnCreateAccount.setBounds(82, 262, 152, 23);
 		btnCreateAccount.setBackground(Color.WHITE);
 		btnCreateAccount.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -105,7 +102,6 @@ public class CreateAccount_GUI extends JPanel implements Displayable{
 		add(lblAlreadyInMybox);
 		
 		btnShowSignIn = new JButton("Sign In");
-		btnShowSignIn.setActionCommand(ACTION_COMMAND_SHOW_SIGN_IN);
 		btnShowSignIn.setBackground(Color.WHITE);
 		btnShowSignIn.setBounds(105, 322, 100, 23);
 		add(btnShowSignIn);
@@ -130,23 +126,28 @@ public class CreateAccount_GUI extends JPanel implements Displayable{
 	public String getEmailText() {
 		return fieldEmail.getText();
 	}
-	
-	public void registerCreateAccountListener(ActionListener listener) {
-		btnCreateAccount.addActionListener(listener);
-	}
-	
-	public void registerShowSingInListener(ActionListener listener) {
-		btnShowSignIn.addActionListener(listener);
-	}
+
+
+
 
 	@Override
-	public void showMessage(String str) {
-		JOptionPane.showMessageDialog(this, str, "Error", JOptionPane.ERROR_MESSAGE);		
-	}
-
-	@Override
-	public void closeWindow() {
-		// TODO Auto-generated method stub
+	public void registerListeners() {
+		final CreateAccountController control = (CreateAccountController)controller;
+		
+		btnCreateAccount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCreateAccountClicked();	
+			}
+		});
+		
+		
+		btnShowSignIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnShowSignInClicked();	
+			}
+		});
 		
 	}
 

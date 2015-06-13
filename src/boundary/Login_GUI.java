@@ -3,21 +3,27 @@ package boundary;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import common.Displayable;
+import common.Controller;
+import common.JPanelBoundary;
+import controller.LoginController;
 import custom_gui.TextPrompt;
 
-public class Login_GUI extends JPanel implements Displayable {
+public class Login_GUI extends JPanelBoundary {
+
+	public Login_GUI(Controller controller) {
+		super(controller);
+		
+	}
 
 	private static final long serialVersionUID = 1868351078697687291L;
 	private JTextField fieldUsername;
@@ -26,16 +32,11 @@ public class Login_GUI extends JPanel implements Displayable {
 	private JButton btnShowCreateAnAccount;
 	private JButton btnIpPort;
 
-	public final static String ACTION_COMMAND_SIGN_IN = "SignIn";
-	public final static String ACTION_COMMAND_SHOW_CREATE_ACCOUNT = "ShowCreateAccount";
-	public final static String ACTION_COMMAND_IP_PORT = "IP&Port";
 	
-	public Login_GUI() {
-		displayWindow();
-	}
-
 	@Override
-	public void displayWindow() {
+	public void draw() {
+		
+		AppFrame.getInstance().setSize(326, 419);
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
@@ -70,7 +71,6 @@ public class Login_GUI extends JPanel implements Displayable {
 		fieldPassword.setColumns(10);
 		
 		btnSignIn = new JButton("Sign In");
-		btnSignIn.setActionCommand(ACTION_COMMAND_SIGN_IN);
 		btnSignIn.setBounds(105, 224, 105, 23);
 		btnSignIn.setBackground(Color.WHITE);
 		btnSignIn.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -83,13 +83,12 @@ public class Login_GUI extends JPanel implements Displayable {
 		add(lblNewToMybox);
 		
 		btnShowCreateAnAccount = new JButton("Create an account");
-		btnShowCreateAnAccount.setActionCommand(ACTION_COMMAND_SHOW_CREATE_ACCOUNT);
 		btnShowCreateAnAccount.setBackground(Color.WHITE);
 		btnShowCreateAnAccount.setBounds(83, 282, 149, 23);
 		add(btnShowCreateAnAccount);
+
 		
 		btnIpPort = new JButton("IP & Port");
-		btnIpPort.setActionCommand(ACTION_COMMAND_IP_PORT);
 		btnIpPort.setHorizontalAlignment(SwingConstants.LEFT);
 		btnIpPort.setBorder(BorderFactory.createEmptyBorder());
 		btnIpPort.setBackground(SystemColor.textHighlight);
@@ -104,25 +103,38 @@ public class Login_GUI extends JPanel implements Displayable {
 	public String getPasswordText() {
 		return new String(fieldPassword.getPassword());
 	}
-	
-	public void registerSignInListener(ActionListener listener) {
-		btnSignIn.addActionListener(listener);
-	}
-	
-	public void registerIPAndPortListener(ActionListener listener) {
-		btnIpPort.addActionListener(listener);
-	}
-	
-	public void registerShowCreateAccountListener(ActionListener listener) {
-		btnShowCreateAnAccount.addActionListener(listener);
-	}
-	
+
+
+
 	@Override
-	public void showMessage(String str) {
-		JOptionPane.showMessageDialog(this, str, "Error", JOptionPane.ERROR_MESSAGE);
+	public void registerListeners() {
+		final LoginController control = (LoginController)controller;
+		btnShowCreateAnAccount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCreateAnAccountclicked();
+			}
+		});
+		
+		
+		btnIpPort.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnSetPortAndIPClicked();	
+			}
+		});
+		
+		
+		btnSignIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnSignInClicked();
+				
+			}
+		});
+		
 	}
-	
-	@Override
-	public void closeWindow() {}
+
+
 
 }

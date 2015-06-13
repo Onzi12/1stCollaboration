@@ -1,49 +1,38 @@
 package controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import model.ItemFile;
 import boundary.FileUpdate_GUI;
 import client.Client;
+import common.Boundary;
+import common.Controller;
 import common.Message;
 import common.MessageType;
 
-public class FileUpdateController {
+public class FileUpdateController extends Controller{
 
-	private FileUpdate_GUI gui;
+	FileUpdate_GUI gui;
 	private ItemFile file;
 	
-	public FileUpdateController(FileUpdate_GUI gui, ItemFile file) {
-		this.gui = gui;		
+	public FileUpdateController(ItemFile file) {
+		this.gui = (FileUpdate_GUI)super.gui;
 		this.file = file;
-		if (gui.isCreateFile()) {
+		
+		if (file == null) {
 			gui.setFilename("");
 			gui.setLocation("");
 		} else {
 			gui.setFilename(file.getName());
 			gui.setLocation(file.getFullPath());
 		}
-		gui.registerSaveListener(new BtnSaveActionListener());
-		gui.registerCancelListener(new BtnCancelActionListener());
+
 	}
 	
-	private class BtnSaveActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			btnSaveClicked();
-		}
-	}
 	
-	private class BtnCancelActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			btnCancelClicked();
-		}
-	}
 	
-	private void btnSaveClicked() {
+	public void btnSaveClicked() {
 		
-		if (gui.isCreateFile()) {
+		if (file == null) {
 			
 			ItemFile newFile = new ItemFile();
 			newFile.setName(gui.getFilenameText());
@@ -71,11 +60,16 @@ public class FileUpdateController {
 			
 		}
 		
-		gui.closeWindow();
+		gui.close();
 	}
 	
-	private void btnCancelClicked() {
-		gui.closeWindow();
+	public void btnCancelClicked() {
+		gui.close();
+	}
+
+	@Override
+	protected Boundary initBoundary() {
+		return new FileUpdate_GUI(this);
 	}
 	
 }

@@ -1,29 +1,26 @@
 package controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+import common.Boundary;
+import common.Controller;
 import model.ItemFile;
 import boundary.FileRead_GUI;
 
-public class FileReadController {
+public class FileReadController extends Controller {
 
-	private FileRead_GUI gui;
+	public FileReadController(ItemFile file) {
 	
-	public FileReadController(FileRead_GUI gui, ItemFile file) {
-		this.gui = gui;		
-		gui.setFilename(file.getName());
-		gui.setLocation(file.getFullPath());
-		gui.registerCloseListener(new BtnCloseActionListener());
+		FileRead_GUI g = (FileRead_GUI)gui;
+		g.setFilename(file.getName());
+		g.setLocation(file.getFullPath());
 	}
 	
-	private class BtnCloseActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			btnCancelClicked();
-		}
+	public void btnCancelClicked() {
+		gui.close();
 	}
-	
-	private void btnCancelClicked() {
-		gui.closeWindow();
+
+	@Override
+	protected Boundary initBoundary() {
+		return new FileRead_GUI(this);
 	}
 }

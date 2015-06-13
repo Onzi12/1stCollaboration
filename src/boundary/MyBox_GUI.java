@@ -2,15 +2,13 @@ package boundary;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -19,14 +17,15 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
-
 import custom_gui.ImageRenderer;
 import model.Item;
-import common.Displayable;
+import common.Controller;
+import common.JPanelBoundary;
+import controller.MyBoxController;
 
-public class MyBox_GUI extends JPanel implements Displayable {
+
+public class MyBox_GUI extends JPanelBoundary {
 
 	private static final long serialVersionUID = -3999897324978712720L;
 	private JButton btnAddFile;
@@ -38,25 +37,19 @@ public class MyBox_GUI extends JPanel implements Displayable {
 	private JButton btnGroups;
 	private JTree tree;
 	private JTable table;
-	
-	public final static String ACTION_COMMAND_UPDATE_FILE = "UpdateFile";
-	public final static String ACTION_COMMAND_ADD_FILE = "AddFile";
-	public final static String ACTION_COMMAND_DELETE_FILE = "DeleteFile";
-	public final static String ACTION_COMMAND_RESTORE_FILE = "RestoreFile";
-	public final static String ACTION_COMMAND_LOGOUT = "Logout";
-	public final static String ACTION_COMMAND_NEW_FOLDER = "NewFolder";
-	public final static String ACTION_COMMAND_GROUPS = "Groups";
+
 
 	/**
 	 * Create the frame.
 	 */
-	public MyBox_GUI() {
-		displayWindow();
+	public MyBox_GUI(Controller controller) {
+		super(controller);
 	}
 	
 	@Override
-	public void displayWindow() {
+	public void draw() {
 		
+		AppFrame.getInstance().setSize(742, 579);
 		setBackground(Color.WHITE);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
@@ -72,49 +65,42 @@ public class MyBox_GUI extends JPanel implements Displayable {
 		add(myBoxLbl);
 		
 		btnAddFile = new JButton("Add File");
-		btnAddFile.setActionCommand(ACTION_COMMAND_ADD_FILE);
 		btnAddFile.setToolTipText("Add a file from WorldBox ");
 		btnAddFile.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnAddFile.setBounds(12, 78, 107, 31);
 		add(btnAddFile);
 		
 		btnUpdateFile = new JButton("Update File");
-		btnUpdateFile.setActionCommand(ACTION_COMMAND_UPDATE_FILE);
 		btnUpdateFile.setToolTipText("<html>To update file info or contact<br>\r\nmark a file and  press here</html>");
 		btnUpdateFile.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnUpdateFile.setBounds(139, 78, 120, 31);
 		add(btnUpdateFile);
 		
 		btnDeleteFile = new JButton("Delete File");
-		btnDeleteFile.setActionCommand(ACTION_COMMAND_DELETE_FILE);
 		btnDeleteFile.setToolTipText("Press a file and press here to Delete a file from MyBox");
 		btnDeleteFile.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnDeleteFile.setBounds(279, 78, 120, 31);
 		add(btnDeleteFile);
 		
 		btnRestoreFile = new JButton("Restore File");
-		btnRestoreFile.setActionCommand(ACTION_COMMAND_RESTORE_FILE);
 		btnRestoreFile.setToolTipText("Add a file from WorldBox ");
 		btnRestoreFile.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnRestoreFile.setBounds(419, 78, 128, 31);
 		add(btnRestoreFile);
 		
 		btnLogout = new JButton("LogOut");
-		btnLogout.setActionCommand(ACTION_COMMAND_LOGOUT);
 		btnLogout.setToolTipText("Add a file from WorldBox ");
 		btnLogout.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnLogout.setBounds(567, 78, 120, 31);
 		add(btnLogout);
 		
 		btnNewFolder = new JButton("New Folder");
-		btnNewFolder.setActionCommand(ACTION_COMMAND_NEW_FOLDER);
 		btnNewFolder.setToolTipText("Add a file from WorldBox ");
 		btnNewFolder.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnNewFolder.setBounds(12, 122, 123, 31);
 		add(btnNewFolder);
 		
 		btnGroups = new JButton("Groups");
-		btnGroups.setActionCommand(ACTION_COMMAND_GROUPS);
 		btnGroups.setToolTipText("Add a file from WorldBox ");
 		btnGroups.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnGroups.setBounds(149, 122, 107, 31);
@@ -146,33 +132,6 @@ public class MyBox_GUI extends JPanel implements Displayable {
 		add(scrollPane);
 	}
 	
-	public void registerAddFileListener(ActionListener listener) {
-		btnAddFile.addActionListener(listener);
-	}
-	
-	public void registerUpdateFileListener(ActionListener listener) {
-		btnUpdateFile.addActionListener(listener);
-	}
-	
-	public void registerDeleteFileListener(ActionListener listener) {
-		btnDeleteFile.addActionListener(listener);
-	}
-	
-	public void registerRestoreFileListener(ActionListener listener) {
-		btnRestoreFile.addActionListener(listener);
-	}
-	
-	public void registerLogoutListener(ActionListener listener) {
-		btnLogout.addActionListener(listener);
-	}
-	
-	public void registerNewFolderListener(ActionListener listener) {
-		btnNewFolder.addActionListener(listener);
-	}
-
-	public void registerGroupsListener(ActionListener listener) {
-		btnGroups.addActionListener(listener);
-	}
 	
 	public void registerTableMouseListener(MouseListener listener) {
 		table.addMouseListener(listener);
@@ -204,14 +163,61 @@ public class MyBox_GUI extends JPanel implements Displayable {
 	    table.getColumnModel().getColumn(0).setCellRenderer(new ImageRenderer());
 	}
 	
-	@Override
-	public void showMessage(String str) {
-		JOptionPane.showMessageDialog(this, str, "ERROR", JOptionPane.ERROR_MESSAGE);
-	}
 
-	
 	@Override
-	public void closeWindow() {}
+	public void registerListeners() {
+		
+		final MyBoxController control = (MyBoxController)controller;
+		
+		btnAddFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnAddFileClicked();
+			}
+		});
+		
+		btnDeleteFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((MyBoxController)controller).btnDeleteFileClicked();
+			}
+		});
+		
+		btnGroups.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			control.btnGroupsClicked();	
+			}
+		});
+		
+		btnLogout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnLogoutClicked();
+			}
+		});
+		
+		btnNewFolder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnNewFolderClicked();	
+			}
+		});
+		
+		btnRestoreFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnRestoreFileClicked();
+			}
+		});
+		
+		btnUpdateFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnUpdateFileClicked();
+			}
+		});
+	}
 	
 }
 
