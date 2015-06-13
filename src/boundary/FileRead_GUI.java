@@ -2,16 +2,19 @@ package boundary;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
@@ -35,9 +38,11 @@ public class FileRead_GUI extends JDialogBoundary {
 	private JPanel contents, buttonPanel;
 	private JTextField tfFilename, tfLocation;
 	private JButton btnClose;
-	private JLabel tfDescription;
-	private JTextField textField;
-	private JTextArea textArea;
+	private JLabel lblDescription;
+	private JTextField tfDescription;
+	private JTextArea taContent;
+	private JLabel lblPrivilege;
+	private JComboBox<String> cbPrivilege;
 	
 	public FileRead_GUI(Controller controller) {
 		super(controller);
@@ -45,8 +50,8 @@ public class FileRead_GUI extends JDialogBoundary {
 
 	@Override
 	public void draw() {
-		setTitle("File");
-		setBounds(100, 100, 647, 412);
+		setTitle("Read File");
+		setBounds(100, 100, 647, 459);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		contents = new JPanel();
@@ -55,13 +60,13 @@ public class FileRead_GUI extends JDialogBoundary {
 		contents.setLayout(null);
 		
 		JPanel center = new JPanel();
-		center.setBounds(5, 5, 616, 333);
+		center.setBounds(5, 5, 616, 361);
 		contents.add(center);
 		center.setLayout(null);
 		
 		JLabel lblFilename = new JLabel("Filename: ");
 		lblFilename.setForeground(Color.BLACK);
-		lblFilename.setBounds(7, 10, 49, 14);
+		lblFilename.setBounds(7, 10, 66, 14);
 		center.add(lblFilename);
 		
 		tfFilename = new JTextField(30);
@@ -69,38 +74,53 @@ public class FileRead_GUI extends JDialogBoundary {
 		tfFilename.setEditable(isEditable());
 		center.add(tfFilename);
 		
-		JLabel lblLocation = new JLabel("Location: ");
-		lblLocation.setBounds(7, 34, 47, 14);
-		center.add(lblLocation);
+		JLabel lblPath = new JLabel("Path: ");
+		lblPath.setBounds(7, 34, 47, 14);
+		center.add(lblPath);
 		
 		tfLocation = new JTextField(30);
 		tfLocation.setBounds(83, 31, 523, 20);
 		tfLocation.setEditable(isEditable());
 		center.add(tfLocation);
 		
-		tfDescription = new JLabel("Description:");
-		tfDescription.setBounds(7, 59, 64, 14);
+		lblDescription = new JLabel("Description:");
+		lblDescription.setBounds(7, 59, 79, 14);
+		center.add(lblDescription);
+		
+		tfDescription = new JTextField();
+		tfDescription.setBackground(isEditable() ? Color.WHITE : getBackground() );
+		tfDescription.setBounds(83, 55, 523, 23);
+		tfDescription.setEditable(isEditable());
+		tfDescription.setColumns(10);
 		center.add(tfDescription);
 		
-		textField = new JTextField();
-		textField.setBackground(UIManager.getColor("Button.background"));
-		textField.setBounds(83, 55, 523, 23);
-		center.add(textField);
-		textField.setEditable(isEditable());
-		textField.setColumns(10);
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(7, 84, 599, 249);
-		//scrollPane.getViewport().setBackground(Color.WHITE);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
+		scrollPane.setBounds(7, 117, 599, 244);
 		center.add(scrollPane);
 		
-		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
-		textArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		textArea.setBackground(getBackground());
+		taContent = new JTextArea();
+		taContent.setLineWrap(true);
+		taContent.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		taContent.setBackground(isEditable() ? Color.WHITE : getBackground() );
+		taContent.setEditable(isEditable());
+		scrollPane.setViewportView(taContent);
+		
+		lblPrivilege = new JLabel("Privilege:");
+		lblPrivilege.setBounds(7, 83, 58, 23);
+		center.add(lblPrivilege);
+		
+		cbPrivilege = new JComboBox<String>();
+		cbPrivilege.setBounds(83, 84, 85, 20);
+		cbPrivilege.addItem("Private");
+		cbPrivilege.addItem("Group");
+		cbPrivilege.addItem("Public");
+		cbPrivilege.setEnabled(isEditable());
+		cbPrivilege.setEditable(isEditable());
+		center.add(cbPrivilege);
 		
 		buttonPanel = new JPanel();
-		buttonPanel.setBounds(5, 341, 616, 33);
-		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.setBounds(5, 377, 616, 33);
 		contents.add(buttonPanel);
 		
 		addButtons(buttonPanel);
@@ -115,7 +135,7 @@ public class FileRead_GUI extends JDialogBoundary {
 	}
 	
 	public String getTextAreaText() {
-		return textArea.getText();
+		return taContent.getText();
 	}
 	
 	
@@ -129,22 +149,47 @@ public class FileRead_GUI extends JDialogBoundary {
 	}
 	
 	public void addButtons(JPanel buttonPanel) {
+		buttonPanel.setLayout(null);
 		btnClose = new JButton("Close");
+		btnClose.setBounds(523, 5, 88, 23);
 		buttonPanel.add(btnClose);
 	}
-	
-	public void registerCloseListener(ActionListener listener) {
-		btnClose.addActionListener(listener);
-	}
+
 
 	public boolean isEditable() {
 		return false;
 	}
 
 
+	public int getCbPrivilegeIndex() {
+		return cbPrivilege.getSelectedIndex();
+	}
+
+	public void setCbPrivilegeIndex(int index) {
+		this.cbPrivilege.setSelectedIndex(index);
+	}
+	
+	public String getCbPrivilege() {
+		return cbPrivilege.getSelectedItem().toString();
+	}
+	
+	public void setCbPrivilege(String privilege) {
+		this.cbPrivilege.setSelectedItem(privilege);
+	}
+	
+	
+
 	@Override
 	public void registerListeners() {
-		// TODO Auto-generated method stub
+		
+		final FileReadController control = (FileReadController)controller;
+		
+		btnClose.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCancelClicked();
+			}
+		});
 		
 	}
 	

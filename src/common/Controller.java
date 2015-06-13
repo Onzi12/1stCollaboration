@@ -1,9 +1,5 @@
 package common;
 
-import java.awt.event.ActionListener;
-
-import javax.swing.JPanel;
-
 
 import controller.NavigationManager;
 
@@ -17,23 +13,28 @@ public abstract class Controller{
 	public Controller() {
 		nav = NavigationManager.getInstance();
 		gui = initBoundary();
+		registerMoreListeners();
 		gui.display();
-		if(gui instanceof JPanelBoundary)
-			nav.replaceController(this);
-		//else  (maybe needed for JDialogBoundary)
-			
 	}
 	
+	/** <<hook>>
+	 *  Here Add Listeners for Objects other then buttons
+	 */
+	protected void registerMoreListeners() {
+	}
+
 	/** Create a Boundary for this Controller */ 
 	protected abstract Boundary initBoundary();
 
+	/** <<hook>>
+	 *  Called when this Controller get the control again 
+	 *  This happens after a pushController & popController subsequent calls
+	 */
 	public void updateBoundary() {
-		
 	}
 	
-	public JPanelBoundary getGui() {
-			return (JPanelBoundary)gui;
+	public Boundary getGui() {
+			return gui;
 	}
 	
-	//public abstract void viewWillAppear();
 }

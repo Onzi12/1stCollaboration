@@ -22,5 +22,5 @@ public interface Boundary {
 	/**
 	 * Method that when overridden is used to close the displayed window
 	 */
-	public abstract void closeWindow();
+	public abstract void close();
 }

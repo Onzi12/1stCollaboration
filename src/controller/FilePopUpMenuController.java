@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 
 import model.ItemFile;
 import boundary.FilePopUpMenu_GUI;
-import boundary.FileRead_GUI;
-import boundary.FileUpdate_GUI;
 import boundary.MyBox_GUI;
 
 public class FilePopUpMenuController {
@@ -47,17 +45,14 @@ public class FilePopUpMenuController {
 		}	
 	}
 	
-	private void btnUpdateClicked() {
-		FileUpdate_GUI update = new FileUpdate_GUI(myboxController.getNavigationManager().getFrame(), false);
-		new FileUpdateController(update, file);
-		update.setVisible(true);
+	public void btnUpdateClicked() {
+
+		new FileUpdateController(file);
 		((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
 	}
 	
-	private void btnReadClicked() {
-		FileRead_GUI read = new FileRead_GUI(myboxController.getNavigationManager().getFrame());
-		new FileReadController(read, file);
-		read.setVisible(true);
+	public void btnReadClicked() {
+		new FileReadController(file);
 	}
 	
 }

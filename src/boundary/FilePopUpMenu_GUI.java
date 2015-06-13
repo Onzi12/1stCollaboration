@@ -8,14 +8,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.border.TitledBorder;
 
-import common.Displayable;
-
 public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 
 	private static final long serialVersionUID = -6005336868368607973L;
 	private JMenuItem menuItemUpdate;
 	private JMenuItem menuItemDelete;
 	private JMenuItem menuItemRead;
+	private JMenuItem menuItemRename;
 	
 	public FilePopUpMenu_GUI(String title) {
 		super(title);
@@ -42,6 +41,10 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 	    menuItemDelete = new JMenuItem("Delete");
 	    menuItemDelete.setBackground(Color.WHITE);
 	    add(menuItemDelete);
+	    
+	    menuItemRename = new JMenuItem("Rename");
+	    menuItemRename.setBackground(Color.WHITE);
+	    add(menuItemRename);
 	}
 	
 	
@@ -57,8 +60,8 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 		menuItemDelete.addActionListener(listener);
 	}
 
-	public void showMessage(String str) {}
-
-	public void closeWindow() {}
-
+	public void registerMenuItemRenameListener(ActionListener listener) {
+		menuItemRename.addActionListener(listener);
+	}
+	
 }

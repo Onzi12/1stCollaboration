@@ -103,7 +103,7 @@ public class Server_GUI extends JFrame {
 	}
 	
 
-	public void closeWindow() {
+	public void close() {
 		setVisible(false);
 		dispose();
 	}

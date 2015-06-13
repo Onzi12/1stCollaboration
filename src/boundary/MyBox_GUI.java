@@ -6,12 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -20,17 +17,13 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
-
 import custom_gui.ImageRenderer;
 import model.Item;
-import common.Boundary;
 import common.Controller;
-import common.Displayable;
 import common.JPanelBoundary;
 import controller.MyBoxController;
-import controller.NavigationManager;
+
 
 public class MyBox_GUI extends JPanelBoundary {
 

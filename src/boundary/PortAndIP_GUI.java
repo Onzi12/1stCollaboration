@@ -28,7 +28,6 @@ public class PortAndIP_GUI extends JDialogBoundary {
 	
 	public PortAndIP_GUI(Controller controller) {
 		super(controller);
-		this.controller = (PortAndIPController)controller;
 	}
 	
 	@Override
@@ -89,19 +88,21 @@ public class PortAndIP_GUI extends JDialogBoundary {
 	}
 	
 
+	
 	@Override
 	public void registerListeners() {
+		final PortAndIPController control = (PortAndIPController)controller;
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((PortAndIPController)controller).btnSaveClicked();
+				control.btnSaveClicked();
 			}
 		});
 		
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((PortAndIPController)controller).btnCancelClicked();
+				control.btnCancelClicked();
 			}
 		});
 			

@@ -23,11 +23,11 @@ public class PortAndIPController extends Controller{
 		Client client = Client.getInstance();
 		client.setPort(((PortAndIP_GUI)gui).getPort());
 		client.setHost(((PortAndIP_GUI)gui).getHost());
-		gui.closeWindow();
+		gui.close();
 	}
 	
 	public void btnCancelClicked() {
-		gui.closeWindow();
+		gui.close();
 	}
 
 	@Override

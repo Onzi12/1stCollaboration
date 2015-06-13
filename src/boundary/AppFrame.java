@@ -19,23 +19,17 @@ public class AppFrame extends JFrame{
 	
 
 	
-	final public void presentView(JPanelBoundary panel) {
-		getContentPane().add(panel);
+	final public void presentView(Boundary panel) {
+		
+		getContentPane().add((JPanelBoundary)panel);
 		getContentPane().revalidate();
 		getContentPane().repaint();
 	}
 
-	final public void dismissView(JPanelBoundary panel) {
-		getContentPane().remove(panel);
+	final public void dismissView(Boundary panel) {
+		getContentPane().remove((JPanelBoundary)panel);
 	}
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		AppFrame frame = new AppFrame();
-		frame.setVisible(true);
-	}
+
 
 	/**
 	 * Create the frame.
@@ -46,20 +40,12 @@ public class AppFrame extends JFrame{
 		setLocationRelativeTo(null);
 		setResizable(false);
 		
-		//nav = NavigationManager.getInstance();
-		
-		//Login_GUI loginPanel = new Login_GUI();
-		//LoginController loginController = new LoginController(loginPanel);
-		//nav.pushController(loginController);
-		
-		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				Client.getInstance().disconnect();
 			}
 		});
-		//NavigationManager.getInstance().pushController(new LoginController());
 	}
 
 	

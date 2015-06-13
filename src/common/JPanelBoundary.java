@@ -1,9 +1,13 @@
 package common;
 
-import javax.swing.JDialog;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import controller.CreateAccountController;
+import controller.NavigationManager;
+
+@SuppressWarnings("serial")
 public abstract class JPanelBoundary extends JPanel implements Boundary{
 	
 	protected Controller controller;
@@ -12,17 +16,20 @@ public abstract class JPanelBoundary extends JPanel implements Boundary{
 	{
 		this.controller = controller;
 		draw();
-		registerListeners();
-		display();
-		
 	}
+	
+	
 	/**
 	 * Method that when overridden is used to draw the UI
 	 */
 	public abstract void draw();
 	
+	
 	public void display() {
-		this.setVisible(true);
+		if(controller instanceof CreateAccountController )  //add more instanceof checks
+			NavigationManager.getInstance().pushController(controller);
+		else
+			NavigationManager.getInstance().replaceController(controller);
 	}
 	
 	
@@ -39,5 +46,5 @@ public abstract class JPanelBoundary extends JPanel implements Boundary{
 	/**
 	 * Method that when overridden is used to close the displayed window
 	 */
-	public void closeWindow(){}
+	public void close(){}
 }

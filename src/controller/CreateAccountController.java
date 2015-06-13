@@ -98,7 +98,7 @@ public class CreateAccountController extends Controller {
 	}
 
 	public void btnShowSignInClicked() {
-		new LoginController();
+		NavigationManager.getInstance().popController();
 	}
 
 

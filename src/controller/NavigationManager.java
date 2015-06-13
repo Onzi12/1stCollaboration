@@ -56,12 +56,15 @@ public class NavigationManager {
 	}
 
 	private void presentController(Controller controller) {
-		//controller.viewWillAppear();
+		controller.updateBoundary();
 		frame.presentView(controller.getGui());
+		
 	}
 	
 	private void dismissController(Controller controller) {
 		frame.dismissView(controller.getGui());
 	}
+
+
 	
 }

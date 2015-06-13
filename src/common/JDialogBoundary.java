@@ -2,8 +2,6 @@ package common;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import boundary.AppFrame;
 
 @SuppressWarnings("serial")
@@ -16,9 +14,7 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 	{
 		super(AppFrame.getInstance());
 		this.controller = controller;
-		draw();
-		registerListeners();
-		display();	
+		draw();	
 	}
 	
 	
@@ -45,7 +41,7 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 	/**
 	 * Method that when overridden is used to close the displayed window
 	 */
-	public void closeWindow() {
+	public void close() {
 		setVisible(false);
 		dispose();
 	}

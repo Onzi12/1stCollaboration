@@ -32,11 +32,7 @@ public class Login_GUI extends JPanelBoundary {
 	private JButton btnShowCreateAnAccount;
 	private JButton btnIpPort;
 
-	public final static String ACTION_COMMAND_SIGN_IN = "SignIn";
-	public final static String ACTION_COMMAND_SHOW_CREATE_ACCOUNT = "ShowCreateAccount";
-	public final static String ACTION_COMMAND_IP_PORT = "IP&Port";
 	
-
 	@Override
 	public void draw() {
 		
@@ -75,7 +71,6 @@ public class Login_GUI extends JPanelBoundary {
 		fieldPassword.setColumns(10);
 		
 		btnSignIn = new JButton("Sign In");
-		btnSignIn.setActionCommand(ACTION_COMMAND_SIGN_IN);
 		btnSignIn.setBounds(105, 224, 105, 23);
 		btnSignIn.setBackground(Color.WHITE);
 		btnSignIn.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -88,14 +83,12 @@ public class Login_GUI extends JPanelBoundary {
 		add(lblNewToMybox);
 		
 		btnShowCreateAnAccount = new JButton("Create an account");
-		btnShowCreateAnAccount.setActionCommand(ACTION_COMMAND_SHOW_CREATE_ACCOUNT);
 		btnShowCreateAnAccount.setBackground(Color.WHITE);
 		btnShowCreateAnAccount.setBounds(83, 282, 149, 23);
 		add(btnShowCreateAnAccount);
 
 		
 		btnIpPort = new JButton("IP & Port");
-		btnIpPort.setActionCommand(ACTION_COMMAND_IP_PORT);
 		btnIpPort.setHorizontalAlignment(SwingConstants.LEFT);
 		btnIpPort.setBorder(BorderFactory.createEmptyBorder());
 		btnIpPort.setBackground(SystemColor.textHighlight);
@@ -111,20 +104,15 @@ public class Login_GUI extends JPanelBoundary {
 		return new String(fieldPassword.getPassword());
 	}
 
-	
-	
-
-
-
-
 
 
 	@Override
 	public void registerListeners() {
+		final LoginController control = (LoginController)controller;
 		btnShowCreateAnAccount.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((LoginController)controller).btnCreateAnAccountclicked();
+				control.btnCreateAnAccountclicked();
 			}
 		});
 		
@@ -132,7 +120,7 @@ public class Login_GUI extends JPanelBoundary {
 		btnIpPort.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((LoginController)controller).btnSetPortAndIPClicked();	
+				control.btnSetPortAndIPClicked();	
 			}
 		});
 		
@@ -140,23 +128,13 @@ public class Login_GUI extends JPanelBoundary {
 		btnSignIn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((LoginController)controller).btnSignInClicked();
+				control.btnSignInClicked();
 				
 			}
 		});
 		
 	}
 
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void closeWindow() {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

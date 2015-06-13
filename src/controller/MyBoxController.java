@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -8,23 +7,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
 import model.User;
 import boundary.FilePopUpMenu_GUI;
-import boundary.FileRead_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
-import boundary.FileUpdate_GUI;
-import boundary.Login_GUI;
 import boundary.MyBox_GUI;
 import client.Client;
 import common.Boundary;
@@ -35,15 +28,16 @@ import common.MessageType;
 public class MyBoxController extends Controller implements Observer {
 
 	private User user;
+	MyBox_GUI gui;
 	
 	public MyBoxController(User user) {
-		super();
 		this.user = user;
+		this.gui = (MyBox_GUI)super.gui;
 
-		gui.registerTableMouseListener(new TableMouseListener());
-		gui.registerMouseListener(new MyBoxMouseListener());
-		gui.registerTreeModeListener(new FileTreeModelListenter());
 	}
+
+	
+
 	
 	public MyBoxController() {
 		// TODO Auto-generated constructor stub
@@ -53,7 +47,6 @@ public class MyBoxController extends Controller implements Observer {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			MyBox_GUI gui = (MyBox_GUI)getGui();
 			gui.getTable().clearSelection();
 			gui.getTree().clearSelection();
 		}
@@ -63,15 +56,14 @@ public class MyBoxController extends Controller implements Observer {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			MyBox_GUI gui = (MyBox_GUI)getGui();
-			if (!e.isPopupTrigger() && e.getClickCount() == 2 && !e.isConsumed()) {
+			if (!e.isPopupTrigger() && e.getClickCount() == 2 && !e.isConsumed()) { /*Gil, what are all this checks?*/
 				int row = gui.getTable().rowAtPoint(e.getPoint());
 		        if (row < 0)
 		            return;
+		        
 				ItemFile file = (ItemFile)gui.tableGetFile(row);
-				FileRead_GUI read = new FileRead_GUI(getNavigationManager().getFrame());
-				new FileReadController(read, file);
-				read.setVisible(true);
+				new FileReadController(file);
+				
 	        	gui.getTable().clearSelection();
                 e.consume();
 			}
@@ -88,7 +80,6 @@ public class MyBoxController extends Controller implements Observer {
 		}
 		
 		private void openMenu(MouseEvent e) {
-			MyBox_GUI gui = (MyBox_GUI)getGui();
 	        int row = gui.getTable().rowAtPoint(e.getPoint());
 	        if (row >= 0 && row < gui.getTable().getRowCount()) {
 	        	gui.getTable().setRowSelectionInterval(row, row);
@@ -113,7 +104,6 @@ public class MyBoxController extends Controller implements Observer {
 	public void update(Observable o, Object arg) {
 	
 		if (arg instanceof Message) {
-			MyBox_GUI gui = (MyBox_GUI)getGui();
 
 			Message msg = (Message) arg;
 			MessageType type = msg.getType();
@@ -178,7 +168,6 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	public void processTreeHierarchy(HashMap<String, Item> items) {
-		MyBox_GUI gui = (MyBox_GUI)getGui();
 
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)gui.getTree().getModel().getRoot();
 		
@@ -200,7 +189,6 @@ public class MyBoxController extends Controller implements Observer {
 	
 	// Add a child by a selection path
 	public DefaultMutableTreeNode addObject(Object child) {
-		MyBox_GUI gui = (MyBox_GUI)getGui();
 
 	    DefaultMutableTreeNode parentNode = null;
 	    TreePath parentPath = gui.getTree().getSelectionPath();
@@ -218,7 +206,6 @@ public class MyBoxController extends Controller implements Observer {
 	
 	// Add a child to a specific parent
 	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
-		MyBox_GUI gui = (MyBox_GUI)getGui();
 
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
 		FileTreeModel model = (FileTreeModel)gui.getTree().getModel();
@@ -234,8 +221,6 @@ public class MyBoxController extends Controller implements Observer {
 	
 	// Remove a child by a selection path
 	public void removeObject() {
-		MyBox_GUI gui = (MyBox_GUI)getGui();
-
 	    TreePath path = gui.getTree().getSelectionPath();
 	    if (path != null) {
 			DefaultMutableTreeNode nodeToRemove = (DefaultMutableTreeNode)path.getLastPathComponent();	    
@@ -245,7 +230,7 @@ public class MyBoxController extends Controller implements Observer {
 	}
 	
 	public void btnLogoutClicked() {
-		int answer = JOptionPane.showConfirmDialog((MyBox_GUI)getGui(), "Are you sure you want to logout?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		int answer = JOptionPane.showConfirmDialog(gui, "Are you sure you want to logout?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (answer == JOptionPane.YES_OPTION) {
 			logout();
 		}
@@ -267,21 +252,15 @@ public class MyBoxController extends Controller implements Observer {
 	}
 	
 	public void btnUpdateFileClicked() {
-		MyBox_GUI gui = (MyBox_GUI)getGui();
+
 		int row = gui.getTable().getSelectedRow();
 		
-		if (row < 0) {
-			
-			FileUpdate_GUI create = new FileUpdate_GUI(nav.getFrame(), true);
-			new FileUpdateController(create, null);
-			create.setVisible(true);
-			
-		} else {
-			
+		if (row < 0) 
+			new FileUpdateController(null);  //no File is pressed == createNewFile
+												   
+		 else {
 			ItemFile file = (ItemFile)gui.tableGetFile(row);				
-			FileUpdate_GUI update = new FileUpdate_GUI(nav.getFrame(), false);
-			new FileUpdateController(update, file);
-			update.setVisible(true);
+			new FileUpdateController(file);  
 			gui.getTable().clearSelection();
 			
 		}
@@ -289,8 +268,8 @@ public class MyBoxController extends Controller implements Observer {
 
 
 
-	
-	public void viewWillAppear() {
+	@Override
+	public void updateBoundary() {
 
 		try {
 			Message getFiles = new Message(null, MessageType.GET_FILES);
@@ -324,6 +303,14 @@ public class MyBoxController extends Controller implements Observer {
 		
 	}
 
+	@Override
+	protected void registerMoreListeners() {
+		gui.registerTableMouseListener(new TableMouseListener());
+		gui.registerMouseListener(new MyBoxMouseListener());
+		gui.registerTreeModeListener(new FileTreeModelListenter());	
+	}
+	
+	
 	@Override
 	protected Boundary initBoundary() {
 		return new MyBox_GUI(this);

@@ -1,16 +1,9 @@
 package controller;
 
-import java.awt.event.ActionEvent;
+
 import java.io.IOException;
-
-import javax.swing.JButton;
-
 import model.User;
-import boundary.AppFrame;
-import boundary.CreateAccount_GUI;
 import boundary.Login_GUI;
-import boundary.MyBox_GUI;
-import boundary.PortAndIP_GUI;
 import callback.LoginCallback;
 import client.Client;
 import common.Boundary;
@@ -23,17 +16,11 @@ public class LoginController extends Controller {
 		
 	private void handleUserSignIn(User user) {
 		if (user != null) {
-
 			//here user has logged in successfully					
 			//show MyBox Window
-//			getNavigationManager().getFrame().setSize(742, 579);
-//			MyBox_GUI myBox = new MyBox_GUI();
-//			Controller controller = new MyBoxController(myBox, user);
-//			//Client.getInstance().addObserver(controller);
-//			getNavigationManager().replaceController(controller);
 			new MyBoxController();
-			
 		} 
+		//else ?? 
 	}
 	
 	public void btnSetPortAndIPClicked() {
@@ -86,37 +73,10 @@ public class LoginController extends Controller {
 	}
 
 
-/*	public void actionPerformed(ActionEvent e) {
-		
-		JButton btn = (JButton)e.getSource();
-		String actionCommand = btn.getActionCommand();
-		
-		switch (actionCommand) {
-		case Login_GUI.ACTION_COMMAND_SIGN_IN:
-			btnSignInClicked();
-			break;
-			
-		case Login_GUI.ACTION_COMMAND_IP_PORT:
-			btnSetPortAndIPClicked();
-			break;
-			
-		case Login_GUI.ACTION_COMMAND_SHOW_CREATE_ACCOUNT:
-			new CreateAccountController();
-			
-			break;
-			
-		default:
-			break;
-		}
-		
-	}*/
-
 
 	public void btnCreateAnAccountclicked() {
 		new CreateAccountController();
 	}
-
-
 
 
 	@Override
