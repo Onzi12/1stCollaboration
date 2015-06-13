@@ -38,8 +38,6 @@ public class FileUpdate_GUI extends FileRead_GUI {
 	@Override
 	public void registerListeners() {
 		
-		super.registerListeners();
-		
 		final FileUpdateController control = (FileUpdateController)controller;
 		
 		btnCancel.addActionListener(new ActionListener() {

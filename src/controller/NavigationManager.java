@@ -1,11 +1,9 @@
 package controller;
 
 import java.util.Stack;
-
-import client.Client;
 import common.Controller;
 import boundary.AppFrame;
-import boundary.AppFrame;
+
 
 
 public class NavigationManager {

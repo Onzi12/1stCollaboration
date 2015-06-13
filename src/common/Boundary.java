@@ -1,7 +1,5 @@
 package common;
 
-import javax.swing.JOptionPane;
-
 public interface Boundary {
 
 	/**
@@ -9,11 +7,13 @@ public interface Boundary {
 	 */
 	public void draw();
 	
+	
 	public void display();
 	
 	
 	public abstract void update();
 	public abstract void registerListeners();
+	
 	/**
 	 * Display messages onto the GUI
 	 */

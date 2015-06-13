@@ -1,14 +1,9 @@
 package controller;
 
-import java.awt.event.ActionEvent;
+
 import java.io.IOException;
-
-import javax.swing.JButton;
-
 import model.User;
 import boundary.CreateAccount_GUI;
-import boundary.Login_GUI;
-import boundary.MyBox_GUI;
 import callback.LoginCallback;
 import client.Client;
 import common.Boundary;
@@ -85,11 +80,12 @@ public class CreateAccountController extends Controller {
 //			nav.getFrame().setSize(742, 579);
 //			MyBox_GUI myBox = new MyBox_GUI();
 //			MyBoxController controller = new MyBoxController(myBox, user);
-			new MyBoxController();
+			new MyBoxController(user);
 //			Client.getInstance().addObserver(controller);
 //			nav.replaceController(controller);
 			
-		} 
+			
+		} /* else?? */
 	}
 
 	@Override

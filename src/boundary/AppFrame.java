@@ -4,13 +4,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import common.Boundary;
 import common.JPanelBoundary;
 import client.Client;
-import controller.LoginController;
-import controller.NavigationManager;
 
 public class AppFrame extends JFrame{
 

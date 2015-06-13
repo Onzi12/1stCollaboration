@@ -1,5 +1,6 @@
-package boundary;
+package controller;
 
+import boundary.FileAdd_GUI;
 import common.Boundary;
 import common.Controller;
 
@@ -12,14 +13,14 @@ public class FileAddController extends Controller {
 		return new FileAdd_GUI(this);
 	}
 
+	
 	public void btnAddFileClicked() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void btnCloseClicked() {
-		// TODO Auto-generated method stub
-		
+		gui.close();
 	}
 
 }

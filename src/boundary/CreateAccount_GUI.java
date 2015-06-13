@@ -5,16 +5,11 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
-import common.Boundary;
 import common.Controller;
 import common.JPanelBoundary;
 import controller.CreateAccountController;
@@ -22,9 +17,7 @@ import custom_gui.TextPrompt;
 
 public class CreateAccount_GUI extends JPanelBoundary{
 
-	public CreateAccount_GUI(Controller controller) {
-		super(controller);
-	}
+
 
 	private static final long serialVersionUID = -8879377620723123663L;
 	private JButton btnCreateAccount;
@@ -35,6 +28,9 @@ public class CreateAccount_GUI extends JPanelBoundary{
 	private JPasswordField fieldNewPassword;
 	private JTextField fieldEmail;
 
+	public CreateAccount_GUI(Controller controller) {
+		super(controller);
+	}	
 	
 	@Override
 	public void draw() {

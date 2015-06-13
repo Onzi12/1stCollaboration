@@ -2,26 +2,17 @@ package boundary;
 
 import common.Controller;
 import common.JDialogBoundary;
-
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
-
 import java.awt.Color;
 import java.awt.event.ActionListener;
-
-import javax.swing.JScrollBar;
 import javax.swing.JTable;
-
 import java.awt.event.ActionEvent;
-
 import javax.swing.ScrollPaneConstants;
-
-import java.awt.Dialog.ModalityType;
-
+import controller.FileAddController;
 public class FileAdd_GUI extends JDialogBoundary {
 
 	
@@ -72,10 +63,6 @@ public class FileAdd_GUI extends JDialogBoundary {
 		buttonPanel.setLayout(null);
 		
 		btnClose = new JButton("Close");
-		btnClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		btnClose.setBounds(517, 0, 89, 23);
 		buttonPanel.add(btnClose);
 		

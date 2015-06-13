@@ -36,12 +36,7 @@ public class MyBoxController extends Controller implements Observer {
 
 	}
 
-	
 
-	
-	public MyBoxController() {
-		// TODO Auto-generated constructor stub
-	}
 
 	private class MyBoxMouseListener extends MouseAdapter {
 

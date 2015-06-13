@@ -18,7 +18,7 @@ public class LoginController extends Controller {
 		if (user != null) {
 			//here user has logged in successfully					
 			//show MyBox Window
-			new MyBoxController();
+			new MyBoxController(user);
 		} 
 		//else ?? 
 	}
