@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 
+import client.Client;
+
 public class Item implements Serializable {
 
 	private static final long serialVersionUID = -3661349268417620657L;
@@ -12,7 +14,7 @@ public class Item implements Serializable {
 	/** The uniqe id of the item */
 	private int id;
 	
-	private ItemFolder folder;
+	private int folderID;
 	
 	/**
 	 * Constructs an instance of an Item.
@@ -67,12 +69,14 @@ public class Item implements Serializable {
 		return Integer.toString(getID());
 	}
 	
-	private ItemFolder getFolder() {
-		return folder;
+	public ItemFolder getFolder() {
+		User user = Client.getInstance().getUser();
+		ItemFolder fo = (ItemFolder)(user.getFiles().get("folder" + Integer.toString(folderID)));
+		return fo;
 	}
 	
-	public void setFolder(ItemFolder folder) {
-		this.folder = folder;
+	public void setFolder(int folderID) {
+		this.folderID = folderID;
 	}
 	
 	/**

@@ -18,8 +18,12 @@ public class LoginController extends Controller {
 		if (user != null) {
 			//here user has logged in successfully					
 			//show MyBox Window
+			Client.getInstance().setUser(user);
+			
 			new MyBoxController(user);
-		} 
+		} else {
+			System.out.println("WHY??????");
+		}
 		//else ?? 
 	}
 	

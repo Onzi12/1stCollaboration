@@ -6,7 +6,7 @@ public class User extends HashMap<String, Object> {
 
 	private static final long serialVersionUID = 5100974740161696228L;
 
-	private HashMap<String, ItemFile> files = new HashMap<String, ItemFile>();
+	private HashMap<String, Item> files = new HashMap<String, Item>();
 	
 	/**
 	 * Constructs an instance of a User.
@@ -119,11 +119,11 @@ public class User extends HashMap<String, Object> {
 		return (String)get("email");
 	}
 	
-	public HashMap<String, ItemFile> getFiles() {
+	public HashMap<String, Item> getFiles() {
 		return files;
 	}
 	
-	public void setFiles(HashMap<String, ItemFile> files) {
+	public void setFiles(HashMap<String, Item> files) {
 		this.files = files;
 	}
 }

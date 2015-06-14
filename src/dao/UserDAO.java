@@ -29,14 +29,17 @@ public class UserDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
-			stmt = connection.prepareStatement("select password from users where username = ?");
+			stmt = connection.prepareStatement("select * from user where username = ?");
 			stmt.setString(1, user.getUsername());
 			rs = stmt.executeQuery();
 			if (rs.next()) {
 				passwordFromDB = rs.getString("password");
+				user.setId(rs.getInt("iduser"));
 			} else {
 				throw new SQLException("The username " + user.getUsername() + " does not exists.");
 			}
+			
+			
 			return enteredPassword.equals(passwordFromDB);		
 		}
 		finally {
@@ -57,7 +60,7 @@ public class UserDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;		
 		try {
-			stmt = connection.prepareStatement("insert into users" + " (username, password, firstname, lastname, email)" + " values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt = connection.prepareStatement("insert into user" + " (username, password, firstname, lastname, email)" + " values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, user.getUsername());
 			stmt.setString(2, user.getPassword());	
 			stmt.setString(3, user.getFirstName());

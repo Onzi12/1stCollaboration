@@ -10,6 +10,7 @@ import client.Client;
 import common.Boundary;
 import common.JPanelBoundary;
 
+
 public class AppFrame extends JFrame {
 
 

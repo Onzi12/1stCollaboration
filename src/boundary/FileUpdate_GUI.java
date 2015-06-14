@@ -37,7 +37,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private JTextArea taDescription;
 	
 	public FileUpdate_GUI(Controller controller) {
-		super(controller);	
+		super(controller);
 	}
 	
 	@Override
@@ -48,7 +48,6 @@ public class FileUpdate_GUI extends JDialogBoundary{
 			drawSelectedRow();
 		else 
 			drawNotSelectedRow();
-				
 	}
 	
 	private void drawSelectedRow(){
@@ -79,7 +78,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		tfFilename = new JTextField(30);
 		tfFilename.setBounds(64, 11, 491, 20);
 		tfFilename.setEditable(false);
-		tfFilename.setBackground(Color.WHITE);
+		tfFilename.setBackground(SystemColor.controlHighlight);
 		contentsPanel.add(tfFilename);
 		
 		JLabel lblFilePath = new JLabel("File Path: ");
