@@ -10,6 +10,7 @@ import java.util.HashMap;
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
+import model.User;
 
 public class FileDAO {
 
@@ -19,40 +20,50 @@ public class FileDAO {
 		this.connection = connection;
 	}
 	
-	public HashMap<String, Item> getAllFiles() throws SQLException {
+	public HashMap<String, Item> getAllFiles(User user) throws SQLException {
 		HashMap<String, Item> items = new HashMap<String, Item>();
-		Statement stmt = null;
-		ResultSet rs = null;
-		
+		ResultSet rs1 = null,rs2 = null;
+		PreparedStatement stmt1 = null,stmt2 = null;
 		try {
-			stmt = connection.createStatement();
-			rs = stmt.executeQuery("select * from file");
+			stmt1 = connection.prepareStatement("select * from folder where userId = ?");
+			stmt1.setInt(1, user.getID());
+			rs1 = stmt1.executeQuery();
 			
-			while (rs.next()) {
-				
-				if (rs.getBoolean("isfolder")) {
+			while (rs1.next()) {
+
+					ItemFolder folder = new ItemFolder(rs1.getInt("id"));
+					folder.setName(rs1.getString("name"));
+					folder.setFolder(rs1.getInt("folderId"));
+					items.put("folder" + Integer.toString(folder.getID()), folder);
+			}
+			
+			stmt2 = connection.prepareStatement("SELECT * FROM test.userfile,file where userId = ? and file.id = userfile.fileId");//where userId = ?
+			stmt2.setInt(1, user.getID());
+			rs2 = stmt2.executeQuery();
+			
+			while (rs2.next()) {
+
 					
-					ItemFolder folder = new ItemFolder(rs.getInt("id"));
-					folder.setName(rs.getString("name"));
-					items.put(Integer.toString(folder.getID()), folder);
+					ItemFile file = new ItemFile(rs2.getInt("id"));
+					file.setName(rs2.getString("name"));
+					file.setFolder(rs2.getInt("folderId"));
+					items.put("file" + Integer.toString(file.getID()), file);
 					
-				} else {
-					
-					ItemFile file = new ItemFile(rs.getInt("id"));
-					file.setName(rs.getString("name"));
-					items.put(Integer.toString(file.getID()), file);
-					
-				}
+
 				
 			}
 
 			return items;		
 		}
 		finally {
-			if (rs != null)
-				rs.close();
-			if (stmt != null) 
-				stmt.close();
+			if (rs1 != null)
+				rs1.close();
+			if (stmt1 != null) 
+				stmt1.close();
+			if (rs2 != null)
+				rs2.close();
+			if (stmt2 != null) 
+				stmt2.close();
 		}
 	}
 	
@@ -60,7 +71,7 @@ public class FileDAO {
 		PreparedStatement stmt = null;
 
 		try {
-			stmt = connection.prepareStatement("update file " + "set name = ?, location = ?" + " where id = ?");
+			stmt = connection.prepareStatement("update file " + "set name = ?,location = ?" + " where id = ?");
 			stmt.setString(1, file.getName());
 			stmt.setString(2, file.getFullPath());
 			stmt.setInt(3, file.getID());
@@ -99,7 +110,7 @@ public class FileDAO {
 		PreparedStatement stmt = null;
 		
 		try {
-			stmt = connection.prepareStatement("delete from file where id = ?");
+			stmt = connection.prepareStatement("delete from userfile where fileId = ?");
 			stmt.setInt(1, file.getID());
 			stmt.executeUpdate();
 		}

@@ -31,6 +31,7 @@ public class MyBoxController extends Controller implements Observer {
 	MyBox_GUI gui;
 	
 	public MyBoxController(User user) {
+
 		this.user = user;
 		this.gui = (MyBox_GUI)super.gui;
 
@@ -105,19 +106,40 @@ public class MyBoxController extends Controller implements Observer {
 			
 			switch (type) {
 			case GET_FILES:
-			{
+			{				
 				@SuppressWarnings("unchecked")
 				HashMap<String, Item> items = (HashMap<String, Item>)msg.getData();
+				Client.getInstance().getUser().setFiles(items);
+
+				
 				HashMap<String, ItemFile> filesDB = new HashMap<String, ItemFile>();
 				for (Item item : items.values()) {
 					if (item instanceof ItemFile) {
+						
+						ItemFile file = (ItemFile)item;
+						ItemFolder folder = file.getFolder();
+						if (folder != null) {
+							
+							folder.addFile(file);
+							
+						}
+						
 						filesDB.put(item.getStringID(), (ItemFile) item);
+					} else if (item instanceof ItemFolder) {
+						
+						ItemFolder folder = (ItemFolder)item;
+						ItemFolder folderTarget = folder.getFolder();
+						if (folderTarget != null) {
+							
+							folderTarget.addFile(folder);
+							
+						}
+						
 					}
 				}
-				user.setFiles(filesDB);
-				processTreeHierarchy(items);
+				processTreeHierarchy(Client.getInstance().getUser().getFiles());
 				ArrayList<Item> files = new ArrayList<Item>();
-				files.addAll(user.getFiles().values());
+				files.addAll(filesDB.values());
 				gui.refreshTable(files);
 			}
 				break;
@@ -265,9 +287,10 @@ public class MyBoxController extends Controller implements Observer {
 
 	@Override
 	public void updateBoundary() {
+		Client.getInstance().addObserver(this);
 
 		try {
-			Message getFiles = new Message(null, MessageType.GET_FILES);
+			Message getFiles = new Message(Client.getInstance().getUser(), MessageType.GET_FILES);
 			Client.getInstance().sendMessage(getFiles);
 		} catch (IOException e) {}
 		

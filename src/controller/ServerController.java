@@ -94,7 +94,6 @@ public class ServerController implements Observer {
 			
 			OriginatorMessage originatorMessage = (OriginatorMessage)arg;
 			ConnectionToClient client = originatorMessage.getOriginator();
-
 			if (originatorMessage.getMessage() instanceof String) {
 				
 				String str = (String)originatorMessage.getMessage();
@@ -114,13 +113,15 @@ public class ServerController implements Observer {
 				Message msg = (Message)originatorMessage.getMessage();
 				MessageType type = (MessageType)msg.getType();
 				
+				System.out.println(type);
+				
 				switch (type) {
 				case CREATE_ACCOUNT: 
 				{
 					User user = (User)msg.getData();
 					try {
 						UserDAO userDAO = new UserDAO(server.getConnection());
-						userDAO.signUp(user);
+						user.setId(userDAO.signUp(user));
 						Message response = new Message(user, MessageType.LOGIN); 
 						client.sendToClient(response);
 						gui.showMessage(user.getUsername() + " signed up to MyBox.");
@@ -156,6 +157,7 @@ public class ServerController implements Observer {
 							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
 						} else {
 							Message response = new Message("Password is incorrect.", MessageType.ERROR_MESSAGE); 
+							
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " authentication failed.");
 						}
@@ -189,11 +191,14 @@ public class ServerController implements Observer {
 
 				case GET_FILES:
 					try {
+						User user = (User)msg.getData();
+						System.out.println(user.getID());
 						FileDAO fileDAO = new FileDAO(server.getConnection());
-						HashMap<String, Item> res = fileDAO.getAllFiles();
+						HashMap<String, Item> res = fileDAO.getAllFiles(user);
 						Message response = new Message(res, MessageType.GET_FILES);
 						client.sendToClient(response);
 					} catch (SQLException e) {
+						System.out.println(e.getMessage());
 						gui.showMessage("Failed to retrieve data from DB.");
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
@@ -266,7 +271,6 @@ public class ServerController implements Observer {
 			server = null;
 			gui.showMessage("ERROR - Could not listen for clients!");
 		}
-		
 		server.addObserver(ServerController.this);
 	}
 	
