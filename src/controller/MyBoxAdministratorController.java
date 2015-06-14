@@ -1,9 +1,8 @@
-package administrator;
+package controller;
 
-import common.Boundary;
-
+import boundary.MyBoxAdministrator_GUI;
 import model.User;
-import controller.MyBoxController;
+import common.Boundary;
 
 public class MyBoxAdministratorController extends MyBoxController {
 

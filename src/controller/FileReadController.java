@@ -1,10 +1,11 @@
 package controller;
 
 
-import common.Boundary;
-import common.Controller;
 import model.ItemFile;
 import boundary.FileRead_GUI;
+
+import common.Boundary;
+import common.Controller;
 
 public class FileReadController extends Controller {
 

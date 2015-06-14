@@ -1,22 +1,25 @@
 package boundary;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
+
 import common.Controller;
 import common.JDialogBoundary;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import javax.swing.JTable;
-import java.awt.event.ActionEvent;
-import javax.swing.ScrollPaneConstants;
+
 import controller.FileAddController;
-import javax.swing.UIManager;
-import javax.swing.JLabel;
-import javax.swing.JSeparator;
-import java.awt.Font;
 
 
 public class FileAdd_GUI extends JDialogBoundary {

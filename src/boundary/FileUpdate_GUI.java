@@ -2,6 +2,7 @@ package boundary;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,11 +18,11 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
 import model.ItemFile;
+
 import common.Controller;
 import common.JDialogBoundary;
-import controller.FileUpdateController;
 
-import java.awt.SystemColor;
+import controller.FileUpdateController;
 
 
 public class FileUpdate_GUI extends JDialogBoundary{
@@ -29,7 +30,6 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private static final long serialVersionUID = -2841064597688335514L;
 	private JButton btnSave;
 	private JButton btnCancel;
-	private boolean isSelected;
 	private JTextField tfFilename;
 	private JTextField tfPath;
 	private JButton btnPath;
@@ -250,10 +250,6 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		return tfFilename.getText();
 	}
 	
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
-	}
-
 	@Override
 	public void draw() {
 		// TODO Auto-generated method stub

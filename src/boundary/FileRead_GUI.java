@@ -1,40 +1,29 @@
 package boundary;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-
-import net.miginfocom.swing.MigLayout;
-import common.Boundary;
-
+import javax.swing.border.LineBorder;
 
 import common.Controller;
 import common.JDialogBoundary;
 
-import java.awt.Color;
-
-import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
-import javax.swing.UIManager;
-
 import controller.FileReadController;
-import javax.swing.JSeparator;
-import java.awt.Font;
-import javax.swing.border.LineBorder;
-import java.awt.SystemColor;
 
 public class FileRead_GUI extends JDialogBoundary {
 
@@ -113,9 +102,9 @@ public class FileRead_GUI extends JDialogBoundary {
 		cbPrivilege = new JComboBox<String>();
 		cbPrivilege.setBackground(SystemColor.controlHighlight);
 		cbPrivilege.setBounds(83, 57, 85, 24);
-		cbPrivilege.addItem("Private");
-		cbPrivilege.addItem("Group");
 		cbPrivilege.addItem("Public");
+		cbPrivilege.addItem("Group");
+		cbPrivilege.addItem("Private");
 		cbPrivilege.setEnabled(false);
 		cbPrivilege.setEditable(false);
 		center.add(cbPrivilege);

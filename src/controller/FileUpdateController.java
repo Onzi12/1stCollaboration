@@ -1,11 +1,13 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+
+import javax.swing.JFileChooser;
 
 import model.ItemFile;
 import boundary.FileUpdate_GUI;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -52,10 +54,12 @@ public class FileUpdateController extends Controller{
 			
 			ItemFile newFile = new ItemFile(file.getID());
 			newFile.setName(gui.getFilenameText());
+			newFile.setFile(file.getFile());
+			
 //			newFile.setLocation(gui.getLocationText());
 			
 			try {
-				Message msg = new Message(newFile, MessageType.UPDATE_FILE);
+				Message msg = new Message(newFile, MessageType.UPLOAD_FILE);
 				Client.getInstance().sendMessage(msg);
 			} catch (IOException e1) {
 				gui.showMessage("Exception: " + e1.getMessage());
@@ -77,8 +81,22 @@ public class FileUpdateController extends Controller{
 
 
 	public void btnPathClicked() {
-		// TODO Auto-generated method stub
-		
+
+		JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int returnVal = fc.showOpenDialog(gui);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+
+            gui.setLocation(f.getAbsolutePath());
+            
+            file.setFile(f);
+            
+        } else {
+        	
+        	
+        }
+
 	}
 
 	public void btnSaveLocationClicked() {

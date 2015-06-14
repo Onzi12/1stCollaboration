@@ -1,6 +1,5 @@
 package common;
 
-import model.ItemFile;
 
 public interface Boundary {
 

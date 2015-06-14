@@ -1,4 +1,4 @@
-package administrator;
+package boundary;
 import common.Controller;
 import common.JDialogBoundary;
 

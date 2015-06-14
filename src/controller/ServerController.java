@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -20,8 +21,10 @@ import ocsf.server.ConnectionToClient;
 import ocsf.server.OriginatorMessage;
 import server.Server;
 import boundary.Server_GUI;
+
 import common.Message;
 import common.MessageType;
+
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -244,7 +247,12 @@ public class ServerController implements Observer {
 					ItemFile itemFile = (ItemFile)msg.getData();
 					File file = itemFile.getFile();
 					
-
+					try {
+						addFile(file);
+					} catch (IOException e) {
+						System.out.println(e.getMessage());
+						e.printStackTrace();
+					}
 					
 					break;
 
@@ -284,16 +292,12 @@ public class ServerController implements Observer {
 			gui.showMessage("ERROR - Could not listen for clients!");
 		}
 		server.addObserver(ServerController.this);
-		
-		
-		addFile(new File("t.txt"));
-		
-		
+				
 	}
 	
 	
 	/**
-	 * Get the file from the MyBox directory
+	 * Get the file from the Server directory
 	 * @param name - name = file name.file type
 	 * @return File
 	 */
@@ -303,9 +307,14 @@ public class ServerController implements Observer {
 		return file;
 	}
 	
-	public void addFile(File file) {
-//		String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
-//		Files.move(file.getPath(), myBoxPath, StandardCopyOption.REPLACE_EXISTING);
+	/**
+	 * Add file to Server directory
+	 * @param file
+	 * @throws IOException
+	 */
+	public void addFile(File file) throws IOException {
+		String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+		Files.move(Paths.get(file.getPath()), Paths.get(myBoxPath + file.getName()), StandardCopyOption.REPLACE_EXISTING);
 	}
 	
 }

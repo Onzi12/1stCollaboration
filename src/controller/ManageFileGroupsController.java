@@ -1,5 +1,6 @@
-package administrator;
+package controller;
 
+import boundary.ManageFileGroups_GUI;
 import common.Boundary;
 import common.Controller;
 

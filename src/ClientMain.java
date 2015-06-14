@@ -1,6 +1,5 @@
-import controller.LoginController;
-import controller.NavigationManager;
 import boundary.AppFrame;
+import controller.LoginController;
 
 
 public class ClientMain {

@@ -2,10 +2,10 @@ package client;
 
 import java.io.IOException;
 
-import model.ItemFolder;
 import model.User;
 import ocsf.client.ObservableClient;
 import callback.Callback;
+
 import common.Message;
 import common.MessageType;
 

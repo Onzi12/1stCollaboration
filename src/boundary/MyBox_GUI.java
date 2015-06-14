@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -18,11 +19,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import custom_gui.ImageRenderer;
+
 import model.Item;
+
 import common.Controller;
 import common.JPanelBoundary;
+
 import controller.MyBoxController;
+import custom_gui.ImageRenderer;
 
 
 public class MyBox_GUI extends JPanelBoundary {
