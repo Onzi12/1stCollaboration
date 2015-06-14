@@ -37,18 +37,17 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private JTextArea taDescription;
 	
 	public FileUpdate_GUI(Controller controller) {
-		super(controller);
-		
-		
+		super(controller);	
 	}
 	
 	@Override
 	public void draw() {
 		setTitle("Update File");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		//if (isSelected)
+		if (isSelected)
 			drawSelectedRow();
-		//else drawNotSelectedRow();
+		else 
+			drawNotSelectedRow();
 				
 	}
 	
@@ -134,7 +133,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.setLayout(null);
 		
 		JLabel lblFilename = new JLabel("Filename: ");
-		lblFilename.setBounds(10, 14, 49, 14);
+		lblFilename.setBounds(0, 14, 75, 14);
 		lblFilename.setForeground(Color.BLACK);
 		contentsPanel.add(lblFilename);
 		
@@ -144,7 +143,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(tfFilename);
 		
 		JLabel lblFilePath = new JLabel("File Path:");
-		lblFilePath.setBounds(10, 42, 47, 14);
+		lblFilePath.setBounds(0, 42, 75, 14);
 		contentsPanel.add(lblFilePath);
 		
 		tfPath = new JTextField(30);
@@ -158,7 +157,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(btnPath);
 		
 		JLabel lblSaveLocation = new JLabel("Save Location:");
-		lblSaveLocation.setBounds(10, 67, 71, 14);
+		lblSaveLocation.setBounds(0, 67, 85, 14);
 		contentsPanel.add(lblSaveLocation);
 		
 		tfSaveLocation = new JTextField();
@@ -173,7 +172,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(btnSaveLocation);
 		
 		JLabel lblDescription = new JLabel("Description:");
-		lblDescription.setBounds(10, 92, 71, 14);
+		lblDescription.setBounds(0, 92, 71, 14);
 		lblDescription.setForeground(Color.BLACK);
 		contentsPanel.add(lblDescription);
 		
@@ -224,17 +223,18 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		
 		btnPath.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				control.btnPathClicked();
 			}
 		});
-		
+		if (btnSaveLocation != null){
 		btnSaveLocation.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				control.btnSaveLocationClicked();
 			}
 		});
+		}
 	}
 
 	public void setFilename(String string) {
