@@ -260,7 +260,7 @@ public class MyBoxController extends Controller implements Observer {
 		Client client = Client.getInstance();
 		
 		try {
-			Message logout = new Message(null, MessageType.LOGOUT);
+			Message logout = new Message(client, MessageType.LOGOUT);
 			client.sendMessage(logout);
 		} catch (IOException e) {}
 		

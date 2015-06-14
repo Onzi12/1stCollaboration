@@ -25,11 +25,8 @@ public class CreateAccount_GUI extends JPanelBoundary{
 	private static final long serialVersionUID = -8879377620723123663L;
 	private JButton btnCreateAccount;
 	private JButton btnShowSignIn;
-	private JTextField fieldFirstName;
-	private JTextField fieldLastName;
 	private JTextField fieldNewUsername;
 	private JPasswordField fieldNewPassword;
-	private JTextField fieldEmail;
 
 	public CreateAccount_GUI(Controller controller) {
 		super(controller);
@@ -47,7 +44,11 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		lblJoinMybox.setForeground(Color.WHITE);
 		lblJoinMybox.setFont(new Font("Tahoma", Font.BOLD, 20));
 		add(lblJoinMybox);
+<<<<<<< HEAD
+		
+=======
 				
+>>>>>>> master
 		fieldNewUsername = new JTextField();
 		fieldNewUsername.setBounds(43, 72, 193, 20);
 		TextPrompt placeHolderNewUsername = new TextPrompt("Username", fieldNewUsername);
@@ -65,7 +66,11 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		placeHolderNewPassword.changeStyle(Font.BOLD + Font.ITALIC);
 		fieldNewPassword.setColumns(10);
 		add(fieldNewPassword);
+<<<<<<< HEAD
+		
+=======
 				
+>>>>>>> master
 		btnCreateAccount = new JButton("Create Account");
 		btnCreateAccount.setBounds(62, 134, 152, 23);
 		btnCreateAccount.setBackground(Color.WHITE);
@@ -92,17 +97,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		return new String(fieldNewPassword.getPassword());
 	}
 	
-	public String getFirstNameText() {
-		return fieldFirstName.getText();
-	}
-	
-	public String getLastNameText() {
-		return fieldLastName.getText();
-	}
-	
-	public String getEmailText() {
-		return fieldEmail.getText();
-	}
+
 
 
 

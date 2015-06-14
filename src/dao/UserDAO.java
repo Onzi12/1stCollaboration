@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import model.User;
+import model.User.Status;
 
 
 public class UserDAO {
@@ -35,6 +36,12 @@ public class UserDAO {
 			if (rs.next()) {
 				passwordFromDB = rs.getString("password");
 				user.setId(rs.getInt("iduser"));
+				user.setStatus(rs.getInt("status"));
+				System.out.println("Jak");
+				user.setCounter(rs.getInt("counter"));
+				System.out.println("Jak");
+				if(user.getStatus() == 2)
+					throw new SQLException("The username " + user.getUsername() + " is blocked.");
 			} else {
 				throw new SQLException("The username " + user.getUsername() + " does not exists.");
 			}
@@ -49,7 +56,21 @@ public class UserDAO {
 				stmt.close();
 		}	
 	}
-
+	
+	
+	public void setStatusDB(User user,int status) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = connection.prepareStatement("UPDATE user SET status=? where username = ?");
+		System.out.println("Jak");
+		stmt.setInt(1, status);
+		System.out.println("Jak");
+		stmt.setString(2, user.getUsername());
+		System.out.println("Jak");
+		stmt.executeQuery();
+	}
+	
+	
+	
 	/**
 	 * Adds the user to the users table in the data base
 	 * @param user - The user to sign up
@@ -60,14 +81,12 @@ public class UserDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;		
 		try {
-			stmt = connection.prepareStatement("insert into user" + " (username, password, firstname, lastname, email)" + " values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt = connection.prepareStatement("insert into user" + " (username, password)" + " values (?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, user.getUsername());
 			stmt.setString(2, user.getPassword());	
-			stmt.setString(3, user.getFirstName());
-			stmt.setString(4, user.getLastName());
-			stmt.setString(5, user.getEmail());
-			stmt.executeUpdate();
 			
+			stmt.executeUpdate();
+
 			rs = stmt.getGeneratedKeys();
 		    if (rs.next()) {
 		    	return rs.getInt(1);

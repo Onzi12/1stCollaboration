@@ -1,11 +1,37 @@
 package model;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.Statement;
+
+import model.User;
+import model.User.Status;
 
 public class User extends HashMap<String, Object> {
 
-	private static final long serialVersionUID = 5100974740161696228L;
+	
+	public enum Status {
+		NOTCONNECTED(0) ,CONNECTED(1) , BLOCKED(2);
 
+	    private final int value;
+	    
+	    private Status(int value) {
+	        this.value = value;
+	    }
+
+	    public int getValue() {
+	        return value;
+	    }
+	}
+	
+
+	
+	private static final long serialVersionUID = 5100974740161696228L;
+	
+	
 	private HashMap<String, Item> files = new HashMap<String, Item>();
 	
 	/**
@@ -16,7 +42,8 @@ public class User extends HashMap<String, Object> {
 	public User(String username, String password) {
 		setUsername(username);
 		setPassword(password);
-	}
+
+		}
 	
 	/**
 	 * Constructs an instance of a User.
@@ -47,28 +74,18 @@ public class User extends HashMap<String, Object> {
 		put("uid", uid);
 	}
 	
-	/**
-	 * Set the first name of the user.
-	 * @param fName
-	 */
-	public void setFirstName(String fName) {
-		put("firstName", fName);
-	}
 	
 	/**
-	 * Set the last name of the user.
-	 * @param lName
+	 * Set the counter of the user.
+	 * @param counter
 	 */
-	public void setLastName(String lName) {
-		put("lastName", lName);
-	}
-	
-	/**
-	 * Set the email of the user.
-	 * @param email
-	 */
-	public void setEmail(String email) {
-		put("email", email);
+	public void setCounter(int counter)throws SQLException {
+		put("counter",counter);
+		PreparedStatement stmt = null;
+		stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
+		stmt.setInt(1, this.getCounter());
+		stmt.setString(2, this.getUsername());
+		stmt.executeQuery();
 	}
 	
 	/**
@@ -78,6 +95,10 @@ public class User extends HashMap<String, Object> {
 	public String getUsername() {
 		return (String)get("username");
 	}
+	
+	/**
+	 * change 
+	 */
 
 	/**
 	 * Get the password of the user.
@@ -95,28 +116,11 @@ public class User extends HashMap<String, Object> {
 		return (int)get("uid");
 	}
 	
-	/**
-	 * Get the first name of the user.
-	 * @return
-	 */
-	public String getFirstName() {
-		return (String)get("firstName");
-	}
+
 	
-	/**
-	 * Get the last name of the user.
-	 * @return
-	 */
-	public String getLastName() {
-		return (String)get("lastName");
-	}
 	
-	/**
-	 * Get the email of the user.
-	 * @return
-	 */
-	public String getEmail() {
-		return (String)get("email");
+	public int getCounter() {
+		return (int)get("counter");
 	}
 	
 	public HashMap<String, Item> getFiles() {
@@ -126,4 +130,42 @@ public class User extends HashMap<String, Object> {
 	public void setFiles(HashMap<String, Item> files) {
 		this.files = files;
 	}
+	
+	/**
+	 * Get the status of the user.
+	 * @return
+	 */
+	public int getStatus() {
+		Status status = (Status)get("status");
+	    return status.getValue();
+	}
+	
+	
+	/**
+	 * Set the status of the user.
+	 * @param status
+	 */
+//	public void setStatus(Status status)throws SQLException {
+//		put("status", status);
+//	}
+	
+	public void setStatus(int status) {
+		
+		switch (status) {
+		case 0:
+			put("status", Status.NOTCONNECTED);
+			break;
+
+		case 1:
+			put("status", Status.CONNECTED);
+			break;
+			
+		case 2:
+			put("status", Status.BLOCKED);
+			break;
+		}
+
+	}
+	
+	
 }
