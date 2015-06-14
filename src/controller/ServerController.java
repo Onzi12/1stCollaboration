@@ -4,7 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Observable;
@@ -235,6 +238,15 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
+					
+				case UPLOAD_FILE:
+					
+					ItemFile itemFile = (ItemFile)msg.getData();
+					File file = itemFile.getFile();
+					
+
+					
+					break;
 
 				default:
 					break;
@@ -272,6 +284,28 @@ public class ServerController implements Observer {
 			gui.showMessage("ERROR - Could not listen for clients!");
 		}
 		server.addObserver(ServerController.this);
+		
+		
+		addFile(new File("t.txt"));
+		
+		
+	}
+	
+	
+	/**
+	 * Get the file from the MyBox directory
+	 * @param name - name = file name.file type
+	 * @return File
+	 */
+	public File getlocalFile(String name) {
+		String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+		File file = new File(myBoxPath + name);
+		return file;
+	}
+	
+	public void addFile(File file) {
+//		String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+//		Files.move(file.getPath(), myBoxPath, StandardCopyOption.REPLACE_EXISTING);
 	}
 	
 }

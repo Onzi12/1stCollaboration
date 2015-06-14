@@ -2,6 +2,8 @@ package common;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
+import model.ItemFile;
 import boundary.AppFrame;
 
 @SuppressWarnings("serial")
@@ -18,6 +20,13 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 		registerListeners();
 	}
 	
+	public JDialogBoundary(Controller controller,ItemFile file)
+	{
+		super(AppFrame.getInstance());
+		this.controller = controller;
+		draw(file);	
+		registerListeners();
+	}
 	
 	/**
 	 * Method that when overridden is used to draw the UI
@@ -28,6 +37,7 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 		this.setVisible(true);
 	}
 	
+	public void draw(ItemFile file){}
 	
 	public void update(){}
 

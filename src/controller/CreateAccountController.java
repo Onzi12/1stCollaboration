@@ -2,6 +2,8 @@ package controller;
 
 
 import java.io.IOException;
+
+import model.ItemFile;
 import model.User;
 import boundary.CreateAccount_GUI;
 import callback.LoginCallback;
@@ -97,8 +99,4 @@ public class CreateAccountController extends Controller {
 	public void btnShowSignInClicked() {
 		NavigationManager.getInstance().popController();
 	}
-
-
-
-
 }
