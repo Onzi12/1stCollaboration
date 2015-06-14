@@ -21,7 +21,7 @@ public class Server_GUI extends JFrame {
 	public static final int DEFAULT_PORT = 2222;
 	public static final String DEFAULT_URL = "jdbc:mysql://localhost/test";
 	public static final String DEFAULT_USER = "root";
-	public static final String DEFAULT_PASSWORD = "Braude";
+	public static final String DEFAULT_PASSWORD = "root";
 	private JButton btnStart;
 	private JTextArea log;
 	private JTextField tPortNumber;

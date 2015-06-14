@@ -2,6 +2,8 @@ package client;
 
 import java.io.IOException;
 
+import model.ItemFolder;
+import model.User;
 import ocsf.client.ObservableClient;
 import callback.Callback;
 import common.Message;
@@ -15,7 +17,9 @@ import common.MessageType;
 public class Client extends ObservableClient {
 
 	private static Client instance = null;
-
+	private User user;
+	
+	
 	private Client() {
 		super("localhost", 2222);
 	}
@@ -53,4 +57,13 @@ public class Client extends ObservableClient {
 	    setChanged();
 	    notifyObservers(new Message(CONNECTION_EXCEPTION, MessageType.ERROR_MESSAGE));
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 }

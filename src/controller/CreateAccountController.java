@@ -80,6 +80,7 @@ public class CreateAccountController extends Controller {
 //			nav.getFrame().setSize(742, 579);
 //			MyBox_GUI myBox = new MyBox_GUI();
 //			MyBoxController controller = new MyBoxController(myBox, user);
+			Client.getInstance().setUser(user);
 			new MyBoxController(user);
 //			Client.getInstance().addObserver(controller);
 //			nav.replaceController(controller);

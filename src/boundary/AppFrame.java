@@ -7,16 +7,12 @@ import javax.swing.JFrame;
 import common.Boundary;
 import common.JPanelBoundary;
 import client.Client;
-<<<<<<< HEAD
 
-public class AppFrame extends JFrame{
-=======
 import controller.LoginController;
 import controller.NavigationManager;
-//git check 1 2 3
-//hey 1 hey 2
-public class AppFrame extends MyFrame {
->>>>>>> master
+
+public class AppFrame extends JFrame {
+
 
 	private static final long serialVersionUID = 351110661931287206L;
 	private static AppFrame instance = null;
