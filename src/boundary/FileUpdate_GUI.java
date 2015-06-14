@@ -2,6 +2,7 @@ package boundary;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,11 +17,12 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
+import model.ItemFile;
+
 import common.Controller;
 import common.JDialogBoundary;
 
 import controller.FileUpdateController;
-import java.awt.SystemColor;
 
 
 public class FileUpdate_GUI extends JDialogBoundary{
@@ -28,7 +30,6 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private static final long serialVersionUID = -2841064597688335514L;
 	private JButton btnSave;
 	private JButton btnCancel;
-	private boolean isSelected = true ;
 	private JTextField tfFilename;
 	private JTextField tfPath;
 	private JButton btnPath;
@@ -36,20 +37,19 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private JButton btnSaveLocation;
 	private JTextArea taDescription;
 	
-	public FileUpdate_GUI(Controller controller) {
-		super(controller);
-		
-		
+	
+	public FileUpdate_GUI(Controller controller,ItemFile file) {
+		super(controller,file);
 	}
 	
 	@Override
-	public void draw() {
+	public void draw(ItemFile file) {
 		setTitle("Update File");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		if (isSelected)
+		if (file != null)
 			drawSelectedRow();
-		else drawNotSelectedRow();
-				
+		else 
+			drawNotSelectedRow();	
 	}
 	
 	private void drawSelectedRow(){
@@ -74,7 +74,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.setLayout(null);
 		
 		JLabel label = new JLabel("Filename: ");
-		label.setBounds(10, 14, 49, 14);
+		label.setBounds(0, 14, 59, 14);
 		contentsPanel.add(label);
 		
 		tfFilename = new JTextField(30);
@@ -84,7 +84,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(tfFilename);
 		
 		JLabel lblFilePath = new JLabel("File Path: ");
-		lblFilePath.setBounds(10, 42, 49, 14);
+		lblFilePath.setBounds(0, 42, 59, 14);
 		contentsPanel.add(lblFilePath);
 		
 		tfPath = new JTextField(30);
@@ -134,7 +134,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.setLayout(null);
 		
 		JLabel lblFilename = new JLabel("Filename: ");
-		lblFilename.setBounds(10, 14, 49, 14);
+		lblFilename.setBounds(0, 14, 59, 14);
 		lblFilename.setForeground(Color.BLACK);
 		contentsPanel.add(lblFilename);
 		
@@ -144,7 +144,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(tfFilename);
 		
 		JLabel lblFilePath = new JLabel("File Path:");
-		lblFilePath.setBounds(10, 42, 47, 14);
+		lblFilePath.setBounds(0, 42, 57, 14);
 		contentsPanel.add(lblFilePath);
 		
 		tfPath = new JTextField(30);
@@ -158,7 +158,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(btnPath);
 		
 		JLabel lblSaveLocation = new JLabel("Save Location:");
-		lblSaveLocation.setBounds(10, 67, 71, 14);
+		lblSaveLocation.setBounds(0, 67, 98, 14);
 		contentsPanel.add(lblSaveLocation);
 		
 		tfSaveLocation = new JTextField();
@@ -173,7 +173,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(btnSaveLocation);
 		
 		JLabel lblDescription = new JLabel("Description:");
-		lblDescription.setBounds(10, 92, 71, 14);
+		lblDescription.setBounds(0, 92, 81, 14);
 		lblDescription.setForeground(Color.BLACK);
 		contentsPanel.add(lblDescription);
 		
@@ -228,7 +228,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 				control.btnPathClicked();
 			}
 		});
-		
+		if (btnSaveLocation != null)
 		btnSaveLocation.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -250,7 +250,10 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		return tfFilename.getText();
 	}
 	
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
+	@Override
+	public void draw() {
+		// TODO Auto-generated method stub
+		
 	}
+
 }

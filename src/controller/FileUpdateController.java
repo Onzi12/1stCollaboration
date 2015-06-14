@@ -1,11 +1,13 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+
+import javax.swing.JFileChooser;
 
 import model.ItemFile;
 import boundary.FileUpdate_GUI;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -17,15 +19,14 @@ public class FileUpdateController extends Controller{
 	private ItemFile file;
 	
 	public FileUpdateController(ItemFile file) {
+		super(file);
 		this.gui = (FileUpdate_GUI)super.gui;
 		this.file = file;
 		
 		if (file == null) {
-			gui.setSelected(false);
 			gui.setFilename("");
 			gui.setLocation("");
 		} else {
-			gui.setSelected(true);
 			gui.setFilename(file.getName());
 			gui.setLocation(file.getFullPath());
 		}
@@ -53,10 +54,12 @@ public class FileUpdateController extends Controller{
 			
 			ItemFile newFile = new ItemFile(file.getID());
 			newFile.setName(gui.getFilenameText());
+			newFile.setFile(file.getFile());
+			
 //			newFile.setLocation(gui.getLocationText());
 			
 			try {
-				Message msg = new Message(newFile, MessageType.UPDATE_FILE);
+				Message msg = new Message(newFile, MessageType.UPLOAD_FILE);
 				Client.getInstance().sendMessage(msg);
 			} catch (IOException e1) {
 				gui.showMessage("Exception: " + e1.getMessage());
@@ -72,19 +75,39 @@ public class FileUpdateController extends Controller{
 	}
 
 	@Override
-	protected Boundary initBoundary() {
-		return new FileUpdate_GUI(this);
+	protected Boundary initBoundary(ItemFile file) {
+		return new FileUpdate_GUI(this,file);
 	}
 
 
 	public void btnPathClicked() {
-		// TODO Auto-generated method stub
-		
+
+		JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int returnVal = fc.showOpenDialog(gui);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+
+            gui.setLocation(f.getAbsolutePath());
+            
+            file.setFile(f);
+            
+        } else {
+        	
+        	
+        }
+
 	}
 
 	public void btnSaveLocationClicked() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected Boundary initBoundary() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

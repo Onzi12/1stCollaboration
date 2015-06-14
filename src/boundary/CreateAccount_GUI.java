@@ -5,13 +5,16 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import common.Controller;
 import common.JPanelBoundary;
+
 import controller.CreateAccountController;
 import custom_gui.TextPrompt;
 
@@ -31,49 +34,58 @@ public class CreateAccount_GUI extends JPanelBoundary{
 	
 	@Override
 	public void draw() {
+		AppFrame.getInstance().setSize(275, 300);
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
 		JLabel lblJoinMybox = new JLabel("Join MyBox");
+		lblJoinMybox.setBounds(43, 36, 193, 25);
 		lblJoinMybox.setHorizontalAlignment(SwingConstants.CENTER);
 		lblJoinMybox.setForeground(Color.WHITE);
-		lblJoinMybox.setBounds(61, 36, 193, 25);
 		lblJoinMybox.setFont(new Font("Tahoma", Font.BOLD, 20));
 		add(lblJoinMybox);
+<<<<<<< HEAD
 		
+=======
+				
+>>>>>>> master
 		fieldNewUsername = new JTextField();
+		fieldNewUsername.setBounds(43, 72, 193, 20);
 		TextPrompt placeHolderNewUsername = new TextPrompt("Username", fieldNewUsername);
 		placeHolderNewUsername.setForeground(Color.GRAY);
 		placeHolderNewUsername.changeAlpha(0.5f);
 		placeHolderNewUsername.changeStyle(Font.BOLD + Font.ITALIC);
 		fieldNewUsername.setColumns(10);
-		fieldNewUsername.setBounds(61, 159, 193, 20);
 		add(fieldNewUsername);
 		
 		fieldNewPassword = new JPasswordField();
+		fieldNewPassword.setBounds(43, 103, 193, 20);
 		TextPrompt placeHolderNewPassword = new TextPrompt("Password", fieldNewPassword);
 		placeHolderNewPassword.setForeground(Color.GRAY);
 		placeHolderNewPassword.changeAlpha(0.5f);
 		placeHolderNewPassword.changeStyle(Font.BOLD + Font.ITALIC);
 		fieldNewPassword.setColumns(10);
-		fieldNewPassword.setBounds(61, 190, 193, 20);
 		add(fieldNewPassword);
+<<<<<<< HEAD
 		
+=======
+				
+>>>>>>> master
 		btnCreateAccount = new JButton("Create Account");
-		btnCreateAccount.setBounds(82, 262, 152, 23);
+		btnCreateAccount.setBounds(62, 134, 152, 23);
 		btnCreateAccount.setBackground(Color.WHITE);
 		btnCreateAccount.setFont(new Font("Tahoma", Font.BOLD, 14));
 		add(btnCreateAccount);
 		
 		JLabel lblAlreadyInMybox = new JLabel("Already in MyBox?");
+		lblAlreadyInMybox.setBounds(85, 168, 105, 14);
 		lblAlreadyInMybox.setForeground(Color.WHITE);
 		lblAlreadyInMybox.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAlreadyInMybox.setBounds(105, 305, 105, 14);
 		add(lblAlreadyInMybox);
 		
 		btnShowSignIn = new JButton("Sign In");
+		btnShowSignIn.setBounds(85, 188, 100, 23);
 		btnShowSignIn.setBackground(Color.WHITE);
-		btnShowSignIn.setBounds(105, 322, 100, 23);
 		add(btnShowSignIn);
 	}
 	

@@ -4,7 +4,6 @@ package common;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import controller.CreateAccountController;
 import controller.NavigationManager;
 
 @SuppressWarnings("serial")

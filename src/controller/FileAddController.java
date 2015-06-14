@@ -1,6 +1,8 @@
 package controller;
 
+import model.ItemFile;
 import boundary.FileAdd_GUI;
+
 import common.Boundary;
 import common.Controller;
 
@@ -21,6 +23,13 @@ public class FileAddController extends Controller {
 
 	public void btnCloseClicked() {
 		gui.close();
+	}
+
+
+	@Override
+	protected Boundary initBoundary(ItemFile file) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -22,6 +22,7 @@ import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -326,9 +327,9 @@ public class MyBoxController extends Controller implements Observer {
 
 	@Override
 	protected void registerMoreListeners() {
-		//gui.registerTableMouseListener(new TableMouseListener());   //
-		//gui.registerMouseListener(new MyBoxMouseListener());        /*Gil, THIS 3 CRUSH THE CLIENT!! CHECK IT*/
-		//gui.registerTreeModeListener(new FileTreeModelListenter()); //Maybe it's because my DB tables aren't right
+		((MyBox_GUI)getGui()).registerTableMouseListener(new TableMouseListener());
+		((MyBox_GUI)getGui()).registerMouseListener(new MyBoxMouseListener());
+		((MyBox_GUI)getGui()).registerTreeModeListener(new FileTreeModelListenter());
 	}
 	
 	

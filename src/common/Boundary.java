@@ -1,12 +1,12 @@
 package common;
 
+
 public interface Boundary {
 
 	/**
 	 * Method that when overridden is used to draw the UI
 	 */
 	public void draw();
-	
 	
 	public void display();
 	

@@ -13,8 +13,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+
 import common.Controller;
 import common.JDialogBoundary;
+
 import controller.PortAndIPController;
 
 public class PortAndIP_GUI extends JDialogBoundary {

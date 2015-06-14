@@ -1,10 +1,11 @@
 package controller;
 
 
-import common.Boundary;
-import common.Controller;
 import boundary.PortAndIP_GUI;
 import client.Client;
+
+import common.Boundary;
+import common.Controller;
 
 public class PortAndIPController extends Controller{
 
