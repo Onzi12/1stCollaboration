@@ -44,11 +44,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		lblJoinMybox.setForeground(Color.WHITE);
 		lblJoinMybox.setFont(new Font("Tahoma", Font.BOLD, 20));
 		add(lblJoinMybox);
-<<<<<<< HEAD
-		
-=======
-				
->>>>>>> master
+
 		fieldNewUsername = new JTextField();
 		fieldNewUsername.setBounds(43, 72, 193, 20);
 		TextPrompt placeHolderNewUsername = new TextPrompt("Username", fieldNewUsername);
@@ -66,11 +62,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		placeHolderNewPassword.changeStyle(Font.BOLD + Font.ITALIC);
 		fieldNewPassword.setColumns(10);
 		add(fieldNewPassword);
-<<<<<<< HEAD
-		
-=======
-				
->>>>>>> master
+
 		btnCreateAccount = new JButton("Create Account");
 		btnCreateAccount.setBounds(62, 134, 152, 23);
 		btnCreateAccount.setBackground(Color.WHITE);

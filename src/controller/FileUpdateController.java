@@ -17,6 +17,7 @@ public class FileUpdateController extends Controller{
 
 	FileUpdate_GUI gui;
 	private ItemFile file;
+	private File f;
 	
 	public FileUpdateController(ItemFile file) {
 		super(file);
@@ -59,8 +60,10 @@ public class FileUpdateController extends Controller{
 //			newFile.setLocation(gui.getLocationText());
 			
 			try {
-				Message msg = new Message(newFile, MessageType.UPLOAD_FILE);
+				Message msg = new Message(f, MessageType.UPLOAD_FILE);
 				Client.getInstance().sendMessage(msg);
+				
+				Client.getInstance().sendToServer(f);
 			} catch (IOException e1) {
 				gui.showMessage("Exception: " + e1.getMessage());
 			}
@@ -87,10 +90,18 @@ public class FileUpdateController extends Controller{
 		int returnVal = fc.showOpenDialog(gui);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
+            
+            if (f != null) {
+            	System.out.println("File not null");
+            } else {
+            	System.out.println("File null");
+            }
 
             gui.setLocation(f.getAbsolutePath());
             
-            file.setFile(f);
+            this.f = f;
+            
+//            file.setFile(f);
             
         } else {
         	

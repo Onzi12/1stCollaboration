@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,10 +23,8 @@ import ocsf.server.ConnectionToClient;
 import ocsf.server.OriginatorMessage;
 import server.Server;
 import boundary.Server_GUI;
-
 import common.Message;
 import common.MessageType;
-
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -161,7 +161,9 @@ public class ServerController implements Observer {
 						client.setInfo("username", user.getUsername());
 						if (isConnected) {
 							user.setCounter(0);
+							userDAO.setCounterDB(user);
 							user.setStatus(1);
+							userDAO.setStatusDB(user);
 							Message response = new Message(user, MessageType.LOGIN); 
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
@@ -170,10 +172,13 @@ public class ServerController implements Observer {
 							if(user.getCounter() == 2)
 							{
 								user.setStatus(2);
+								userDAO.setStatusDB(user);
 								response = new Message("Password is incorrect.the user " + user.getUsername() +" is blocked", MessageType.ERROR_MESSAGE);
 							}
 							else{ 
+								System.out.println("fdg");
 								user.setCounter(user.getCounter()+1);
+								userDAO.setCounterDB(user);
 								response = new Message("Password is incorrect.", MessageType.ERROR_MESSAGE); 
 							}
 							client.sendToClient(response);
@@ -256,8 +261,10 @@ public class ServerController implements Observer {
 					
 				case UPLOAD_FILE:
 					
-					ItemFile itemFile = (ItemFile)msg.getData();
-					File file = itemFile.getFile();
+//					ItemFile itemFile = (ItemFile)msg.getData();
+//					File file = itemFile.getFile();
+					
+					File file = (File)msg.getData();
 					
 					try {
 						addFile(file);
@@ -271,6 +278,19 @@ public class ServerController implements Observer {
 				default:
 					break;
 				}
+				
+			} else if (arg instanceof File) {
+				
+				
+				File file = (File)arg;
+				
+				try {
+					addFile(file);
+				} catch (IOException e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+				
 				
 			}
 
@@ -328,5 +348,24 @@ public class ServerController implements Observer {
 		String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 		Files.move(Paths.get(file.getPath()), Paths.get(myBoxPath + file.getName()), StandardCopyOption.REPLACE_EXISTING);
 	}
+	
+    private void copyFileBytes(File originalFile, String targetFileName) throws IOException {
+    	 
+        FileInputStream in = null;
+        FileOutputStream out = null;
+ 
+ 
+        in = new FileInputStream(originalFile);
+        out = new FileOutputStream(targetFileName);
+        int c;
+ 
+        while ((c = in.read()) != -1) {
+            out.write(c);
+        }
+ 
+        out.close();
+        in.close();
+ 
+    }
 	
 }

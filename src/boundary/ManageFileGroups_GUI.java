@@ -3,23 +3,102 @@ package boundary;
 import common.Controller;
 import common.JDialogBoundary;
 import javax.swing.JPanel;
+import java.awt.Color;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JList;
+import javax.swing.JButton;
 
 public class ManageFileGroups_GUI extends JDialogBoundary {
-
+	
+	private JTextField tfFilename;
+	private JList listOtherGroups;
+	private JButton btnAssociate,btnExclude,btnClose,btnConfirm;
+	
+	
 	public ManageFileGroups_GUI(Controller controller) {
 		super(controller);
-		getContentPane().setLayout(null);
+		getContentPane().setBackground(Color.WHITE);
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 543, 339);
-		getContentPane().add(panel);
-		panel.setLayout(null);
 	}
 
 	@Override
 	public void draw() {
+getContentPane().setLayout(null);
 		
-		// TODO Auto-generated method stub
+		JPanel contents = new JPanel();
+		contents.setBackground(Color.WHITE);
+		contents.setBounds(0, 0, 542, 339);
+		getContentPane().add(contents);
+		contents.setLayout(null);
+		
+		JLabel lblManageFileGroups = new JLabel("Manage File Groups Association");
+		lblManageFileGroups.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		lblManageFileGroups.setBounds(10, 11, 498, 42);
+		contents.add(lblManageFileGroups);
+		
+		JSeparator separator = new JSeparator();
+		separator.setForeground(Color.BLUE);
+		separator.setBounds(10, 50, 522, 11);
+		contents.add(separator);
+		
+		JLabel lblFilename = new JLabel("Filename:");
+		lblFilename.setBounds(10, 64, 56, 14);
+		contents.add(lblFilename);
+		
+		tfFilename = new JTextField();
+		tfFilename.setEditable(false);
+		tfFilename.setBounds(71, 61, 461, 20);
+		contents.add(tfFilename);
+		tfFilename.setColumns(10);
+		
+		JLabel lblGroupsAssociated = new JLabel("Groups Associated:");
+		lblGroupsAssociated.setBounds(10, 89, 112, 14);
+		contents.add(lblGroupsAssociated);
+		
+		JScrollPane spGroupsAssociated = new JScrollPane();
+		spGroupsAssociated.setBounds(10, 107, 184, 221);
+		contents.add(spGroupsAssociated);
+		
+		JList listGroupsAssociated = new JList();
+		spGroupsAssociated.setViewportView(listGroupsAssociated);
+		
+		JLabel lblOtherGroups = new JLabel("Other Groups:");
+		lblOtherGroups.setBounds(349, 92, 112, 14);
+		contents.add(lblOtherGroups);
+		
+		JScrollPane spOtherGroups = new JScrollPane();
+		spOtherGroups.setBounds(348, 107, 184, 221);
+		contents.add(spOtherGroups);
+		
+		listOtherGroups = new JList();
+		spOtherGroups.setViewportView(listOtherGroups);
+		
+		btnAssociate = new JButton("<< Associate");
+		btnAssociate.setBounds(217, 136, 113, 23);
+		contents.add(btnAssociate);
+		
+		btnExclude = new JButton("Exclude >>");
+		btnExclude.setBounds(217, 261, 113, 23);
+		contents.add(btnExclude);
+		
+		JPanel panelButtons = new JPanel();
+		panelButtons.setBackground(Color.WHITE);
+		panelButtons.setBounds(10, 328, 531, 41);
+		getContentPane().add(panelButtons);
+		panelButtons.setLayout(null);
+		
+		btnClose = new JButton("Close");
+		btnClose.setBounds(432, 11, 89, 23);
+		panelButtons.add(btnClose);
+		
+		btnConfirm = new JButton("Confirm");
+		btnConfirm.setBounds(331, 11, 89, 23);
+		panelButtons.add(btnConfirm);
 
 	}
 

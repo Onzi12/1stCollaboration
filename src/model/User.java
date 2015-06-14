@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.sql.Connection;
 import java.sql.Statement;
 
+import dao.UserDAO;
 import model.User;
 import model.User.Status;
 
@@ -28,7 +29,6 @@ public class User extends HashMap<String, Object> {
 	}
 	
 
-	
 	private static final long serialVersionUID = 5100974740161696228L;
 	
 	
@@ -42,7 +42,6 @@ public class User extends HashMap<String, Object> {
 	public User(String username, String password) {
 		setUsername(username);
 		setPassword(password);
-
 		}
 	
 	/**
@@ -81,11 +80,6 @@ public class User extends HashMap<String, Object> {
 	 */
 	public void setCounter(int counter)throws SQLException {
 		put("counter",counter);
-		PreparedStatement stmt = null;
-		stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
-		stmt.setInt(1, this.getCounter());
-		stmt.setString(2, this.getUsername());
-		stmt.executeQuery();
 	}
 	
 	/**
@@ -164,7 +158,6 @@ public class User extends HashMap<String, Object> {
 			put("status", Status.BLOCKED);
 			break;
 		}
-
 	}
 	
 	

@@ -37,9 +37,9 @@ public class UserDAO {
 				passwordFromDB = rs.getString("password");
 				user.setId(rs.getInt("iduser"));
 				user.setStatus(rs.getInt("status"));
-				System.out.println("Jak");
+				setStatusDB(user);
 				user.setCounter(rs.getInt("counter"));
-				System.out.println("Jak");
+				setCounterDB(user);
 				if(user.getStatus() == 2)
 					throw new SQLException("The username " + user.getUsername() + " is blocked.");
 			} else {
@@ -58,18 +58,21 @@ public class UserDAO {
 	}
 	
 	
-	public void setStatusDB(User user,int status) throws SQLException{
+	public void setStatusDB(User user) throws SQLException{
 		PreparedStatement stmt = null;
 		stmt = connection.prepareStatement("UPDATE user SET status=? where username = ?");
-		System.out.println("Jak");
-		stmt.setInt(1, status);
-		System.out.println("Jak");
+		stmt.setInt(1, user.getStatus());
 		stmt.setString(2, user.getUsername());
-		System.out.println("Jak");
-		stmt.executeQuery();
+		stmt.executeUpdate();
 	}
 	
-	
+	public void setCounterDB(User user) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
+		stmt.setInt(1, user.getCounter());
+		stmt.setString(2, user.getUsername());
+		stmt.executeUpdate();
+	}
 	
 	/**
 	 * Adds the user to the users table in the data base
