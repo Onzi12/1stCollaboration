@@ -33,7 +33,7 @@ public class MyBoxController extends Controller implements Observer {
 	MyBox_GUI gui;
 	
 	public MyBoxController(User user) {
-
+		
 		this.user = user;
 		this.gui = (MyBox_GUI)super.gui;
 
@@ -325,10 +325,12 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	@Override
-	protected void registerMoreListeners() {
-		((MyBox_GUI)getGui()).registerTableMouseListener(new TableMouseListener()); 
-		((MyBox_GUI)getGui()).registerMouseListener(new MyBoxMouseListener()); 
+	protected void registerMoreListeners() {	
+		((MyBox_GUI)getGui()).registerTableMouseListener(new TableMouseListener());  
+		((MyBox_GUI)getGui()).registerMouseListener(new MyBoxMouseListener());      
 		((MyBox_GUI)getGui()).registerTreeModeListener(new FileTreeModelListenter());
+		
+
 	}
 	
 	
