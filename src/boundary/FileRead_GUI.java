@@ -33,6 +33,8 @@ import javax.swing.UIManager;
 import controller.FileReadController;
 import javax.swing.JSeparator;
 import java.awt.Font;
+import javax.swing.border.LineBorder;
+import java.awt.SystemColor;
 
 public class FileRead_GUI extends JDialogBoundary {
 
@@ -73,7 +75,7 @@ public class FileRead_GUI extends JDialogBoundary {
 		center.add(lblFilename);
 		
 		tfFilename = new JTextField(30);
-		tfFilename.setBackground(UIManager.getColor("text"));
+		tfFilename.setBackground(SystemColor.controlHighlight);
 		tfFilename.setBounds(83, 7, 523, 20);
 		tfFilename.setEditable(false);
 		center.add(tfFilename);
@@ -83,6 +85,7 @@ public class FileRead_GUI extends JDialogBoundary {
 		center.add(lblPath);
 		
 		tfLocation = new JTextField(30);
+		tfLocation.setBackground(SystemColor.controlHighlight);
 		tfLocation.setBounds(83, 31, 523, 20);
 		tfLocation.setEditable(false);
 		center.add(tfLocation);
@@ -98,8 +101,8 @@ public class FileRead_GUI extends JDialogBoundary {
 		
 		taDescription = new JTextArea();
 		taDescription.setLineWrap(true);
-		taDescription.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		taDescription.setBackground(UIManager.getColor("menu"));
+		taDescription.setBorder(new LineBorder(new Color(0, 0, 0), 0));
+		taDescription.setBackground(SystemColor.controlHighlight);
 		taDescription.setEditable(false);
 		scrollPane.setViewportView(taDescription);
 		
@@ -108,6 +111,7 @@ public class FileRead_GUI extends JDialogBoundary {
 		center.add(lblPrivilege);
 		
 		cbPrivilege = new JComboBox<String>();
+		cbPrivilege.setBackground(SystemColor.controlHighlight);
 		cbPrivilege.setBounds(83, 57, 85, 24);
 		cbPrivilege.addItem("Private");
 		cbPrivilege.addItem("Group");

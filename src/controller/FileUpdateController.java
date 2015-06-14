@@ -81,5 +81,10 @@ public class FileUpdateController extends Controller{
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void btnSaveLocationClicked() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

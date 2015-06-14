@@ -15,7 +15,6 @@ import javax.swing.ScrollPaneConstants;
 import controller.FileAddController;
 import javax.swing.UIManager;
 import javax.swing.JLabel;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 import javax.swing.JSeparator;
 import java.awt.Font;
 
