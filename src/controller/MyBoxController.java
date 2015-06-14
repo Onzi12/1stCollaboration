@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
@@ -297,6 +299,7 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	public void btnAddFileClicked() {
+		new FileAddController();
 		// TODO Auto-generated method stub
 		
 	}
