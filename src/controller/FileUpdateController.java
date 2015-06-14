@@ -17,15 +17,14 @@ public class FileUpdateController extends Controller{
 	private ItemFile file;
 	
 	public FileUpdateController(ItemFile file) {
+		super(file);
 		this.gui = (FileUpdate_GUI)super.gui;
 		this.file = file;
 		
 		if (file == null) {
-			gui.setSelected(false);
 			gui.setFilename("");
 			gui.setLocation("");
 		} else {
-			gui.setSelected(true);
 			gui.setFilename(file.getName());
 			gui.setLocation(file.getFullPath());
 		}
@@ -72,8 +71,8 @@ public class FileUpdateController extends Controller{
 	}
 
 	@Override
-	protected Boundary initBoundary() {
-		return new FileUpdate_GUI(this);
+	protected Boundary initBoundary(ItemFile file) {
+		return new FileUpdate_GUI(this,file);
 	}
 
 
@@ -85,6 +84,12 @@ public class FileUpdateController extends Controller{
 	public void btnSaveLocationClicked() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected Boundary initBoundary() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
