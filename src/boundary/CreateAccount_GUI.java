@@ -22,11 +22,8 @@ public class CreateAccount_GUI extends JPanelBoundary{
 	private static final long serialVersionUID = -8879377620723123663L;
 	private JButton btnCreateAccount;
 	private JButton btnShowSignIn;
-	private JTextField fieldFirstName;
-	private JTextField fieldLastName;
 	private JTextField fieldNewUsername;
 	private JPasswordField fieldNewPassword;
-	private JTextField fieldEmail;
 
 	public CreateAccount_GUI(Controller controller) {
 		super(controller);
@@ -43,24 +40,6 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		lblJoinMybox.setBounds(61, 36, 193, 25);
 		lblJoinMybox.setFont(new Font("Tahoma", Font.BOLD, 20));
 		add(lblJoinMybox);
-		
-		fieldFirstName = new JTextField();
-		TextPrompt placeHolderFirstName = new TextPrompt("First Name", fieldFirstName);
-		placeHolderFirstName.setForeground(Color.GRAY);
-		placeHolderFirstName.changeAlpha(0.5f);
-		placeHolderFirstName.changeStyle(Font.BOLD + Font.ITALIC);
-		fieldFirstName.setBounds(61, 97, 193, 20);
-		add(fieldFirstName);
-		fieldFirstName.setColumns(10);
-		
-		fieldLastName = new JTextField();
-		TextPrompt placeHolderLastName = new TextPrompt("Last Name", fieldLastName);
-		placeHolderLastName.setForeground(Color.GRAY);
-		placeHolderLastName.changeAlpha(0.5f);
-		placeHolderLastName.changeStyle(Font.BOLD + Font.ITALIC);
-		fieldLastName.setColumns(10);
-		fieldLastName.setBounds(61, 128, 193, 20);
-		add(fieldLastName);
 		
 		fieldNewUsername = new JTextField();
 		TextPrompt placeHolderNewUsername = new TextPrompt("Username", fieldNewUsername);
@@ -79,15 +58,6 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		fieldNewPassword.setColumns(10);
 		fieldNewPassword.setBounds(61, 190, 193, 20);
 		add(fieldNewPassword);
-		
-		fieldEmail = new JTextField();
-		TextPrompt placeHolderEmail = new TextPrompt("Email", fieldEmail);
-		placeHolderEmail.setForeground(Color.GRAY);
-		placeHolderEmail.changeAlpha(0.5f);
-		placeHolderEmail.changeStyle(Font.BOLD + Font.ITALIC);
-		fieldEmail.setColumns(10);
-		fieldEmail.setBounds(61, 221, 193, 20);
-		add(fieldEmail);
 		
 		btnCreateAccount = new JButton("Create Account");
 		btnCreateAccount.setBounds(82, 262, 152, 23);
@@ -115,17 +85,7 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		return new String(fieldNewPassword.getPassword());
 	}
 	
-	public String getFirstNameText() {
-		return fieldFirstName.getText();
-	}
-	
-	public String getLastNameText() {
-		return fieldLastName.getText();
-	}
-	
-	public String getEmailText() {
-		return fieldEmail.getText();
-	}
+
 
 
 

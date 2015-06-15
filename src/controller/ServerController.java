@@ -142,6 +142,12 @@ public class ServerController implements Observer {
 					break;
 					
 				case LOGOUT:
+					User user2 = (User)msg.getData();
+					try{
+					user2.setStatus(0);
+					}catch (SQLException e) {
+						gui.showMessage(e.getMessage());
+					}
 					gui.showMessage(client.getInfo("username") + " logged out.");
 					break;
 					
@@ -152,12 +158,22 @@ public class ServerController implements Observer {
 						Boolean isConnected = userDAO.authenticate(user);
 						client.setInfo("username", user.getUsername());
 						if (isConnected) {
+							user.setCounter(0);
+							user.setStatus(1);
 							Message response = new Message(user, MessageType.LOGIN); 
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
 						} else {
-							Message response = new Message("Password is incorrect.", MessageType.ERROR_MESSAGE); 
-							
+							Message response;
+							if(user.getCounter() == 2)
+							{
+								user.setStatus(2);
+								response = new Message("Password is incorrect.the user " + user.getUsername() +" is blocked", MessageType.ERROR_MESSAGE);
+							}
+							else{ 
+								user.setCounter(user.getCounter()+1);
+								response = new Message("Password is incorrect.", MessageType.ERROR_MESSAGE); 
+							}
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " authentication failed.");
 						}

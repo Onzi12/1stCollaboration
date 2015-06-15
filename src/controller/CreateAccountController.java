@@ -20,10 +20,7 @@ public class CreateAccountController extends Controller {
 		final CreateAccount_GUI gui = (CreateAccount_GUI)getGui();
 		
 		if( gui.getUsernameText().equals("") ||
-			gui.getPasswordText().length()==0 || 
-			gui.getFirstNameText().equals("") ||
-			gui.getLastNameText().equals("") ||
-			gui.getEmailText().equals("") ) 
+			gui.getPasswordText().length()==0 )
 		{
 			
 			gui.showMessage("Please fill all fields!");
@@ -34,9 +31,6 @@ public class CreateAccountController extends Controller {
 		if (initClient()) {
 			try {
 				User user = new User(gui.getUsernameText(), gui.getPasswordText());
-				user.setEmail(gui.getEmailText());
-				user.setFirstName(gui.getFirstNameText());
-				user.setLastName(gui.getLastNameText());
 				Message msg = new Message(user, MessageType.CREATE_ACCOUNT);
 				Client.getInstance().sendMessage(msg, new LoginCallback() {
 					
