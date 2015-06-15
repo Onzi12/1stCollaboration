@@ -23,6 +23,7 @@ import ocsf.server.ConnectionToClient;
 import ocsf.server.OriginatorMessage;
 import server.Server;
 import boundary.Server_GUI;
+import common.ByteArray;
 import common.Message;
 import common.MessageType;
 import dao.FileDAO;
@@ -150,6 +151,11 @@ public class ServerController implements Observer {
 				case LOGOUT:
 					User user2 = (User)msg.getData();
 					user2.setStatus(0);
+					UserDAO userDAO2 = new UserDAO(server.getConnection());
+					try{
+					userDAO2.setStatusDB(user2);
+					}catch (SQLException e) {
+							gui.showMessage(e.getMessage());}
 					gui.showMessage(client.getInfo("username") + " logged out.");
 					break;
 					
@@ -159,7 +165,7 @@ public class ServerController implements Observer {
 						UserDAO userDAO = new UserDAO(server.getConnection()); 
 						Boolean isConnected = userDAO.authenticate(user);
 						client.setInfo("username", user.getUsername());
-						if (isConnected) {
+						if (isConnected && user.getStatus() != 1) {
 							user.setCounter(0);
 							userDAO.setCounterDB(user);
 							user.setStatus(1);
@@ -167,7 +173,10 @@ public class ServerController implements Observer {
 							Message response = new Message(user, MessageType.LOGIN); 
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
-						} else {
+							}else if (isConnected && user.getStatus() == 1){
+							gui.showMessage(user.getUsername() + " is alredy logged in");
+							} 
+							else {
 							Message response;
 							if(user.getCounter() == 2)
 							{
@@ -261,17 +270,22 @@ public class ServerController implements Observer {
 					
 				case UPLOAD_FILE:
 					
-//					ItemFile itemFile = (ItemFile)msg.getData();
-//					File file = itemFile.getFile();
+					ItemFile file = (ItemFile)msg.getData();
 					
-					File file = (File)msg.getData();
-					
-					try {
-						addFile(file);
-					} catch (IOException e) {
-						System.out.println(e.getMessage());
-						e.printStackTrace();
-					}
+			        byte[] bFile = file.getFile();//(byte[])msg.getData();
+
+			        try {
+				   
+						String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+
+						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName());
+				 
+					    System.out.println("Done");
+					    
+			        }catch(Exception e){
+			            e.printStackTrace();
+			        }
+
 					
 					break;
 
@@ -279,20 +293,7 @@ public class ServerController implements Observer {
 					break;
 				}
 				
-			} else if (arg instanceof File) {
-				
-				
-				File file = (File)arg;
-				
-				try {
-					addFile(file);
-				} catch (IOException e) {
-					System.out.println(e.getMessage());
-					e.printStackTrace();
-				}
-				
-				
-			}
+			} 
 
 		}
 	}
@@ -324,7 +325,9 @@ public class ServerController implements Observer {
 			gui.showMessage("ERROR - Could not listen for clients!");
 		}
 		server.addObserver(ServerController.this);
-				
+			
+		
+
 	}
 	
 	
@@ -338,34 +341,5 @@ public class ServerController implements Observer {
 		File file = new File(myBoxPath + name);
 		return file;
 	}
-	
-	/**
-	 * Add file to Server directory
-	 * @param file
-	 * @throws IOException
-	 */
-	public void addFile(File file) throws IOException {
-		String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
-		Files.move(Paths.get(file.getPath()), Paths.get(myBoxPath + file.getName()), StandardCopyOption.REPLACE_EXISTING);
-	}
-	
-    private void copyFileBytes(File originalFile, String targetFileName) throws IOException {
-    	 
-        FileInputStream in = null;
-        FileOutputStream out = null;
- 
- 
-        in = new FileInputStream(originalFile);
-        out = new FileOutputStream(targetFileName);
-        int c;
- 
-        while ((c = in.read()) != -1) {
-            out.write(c);
-        }
- 
-        out.close();
-        in.close();
- 
-    }
-	
+		
 }

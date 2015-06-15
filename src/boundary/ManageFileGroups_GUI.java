@@ -1,18 +1,24 @@
 package boundary;
 
-import common.Controller;
-import common.JDialogBoundary;
-import javax.swing.JPanel;
 import java.awt.Color;
-import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JList;
-import javax.swing.JButton;
 
+import common.Controller;
+import common.JDialogBoundary;
+
+import controller.ManageFileGroupsController;
+
+@SuppressWarnings("serial")
 public class ManageFileGroups_GUI extends JDialogBoundary {
 	
 	private JTextField tfFilename;
@@ -104,7 +110,43 @@ getContentPane().setLayout(null);
 
 	@Override
 	public void registerListeners() {
-		// TODO Auto-generated method stub
+		final ManageFileGroupsController control = (ManageFileGroupsController)controller;
+		
+		btnClose.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCloseClicked(); 
+				
+			}
+		});
+		
+		btnAssociate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnAssociateClicked();
+				
+			}
+		});
+		
+		btnConfirm.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnConfirmClicked();
+				
+			}
+		});
+		
+		btnExclude.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnExcludeClicked();
+				
+			}
+		});
 
 	}
 }

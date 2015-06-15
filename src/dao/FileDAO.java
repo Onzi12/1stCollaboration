@@ -106,6 +106,28 @@ public class FileDAO {
 		}
 	}
 	
+	public int uploadFile(ItemFile file,User user) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;		
+		try {
+			stmt = connection.prepareStatement("insert into file" + " (name, fileDesc)" + " values(?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, file.getName());
+			stmt.setString(2, file.getFullPath());
+			stmt.executeUpdate();
+			
+			rs = stmt.getGeneratedKeys();
+		    if (rs.next()) {
+		    	return rs.getInt(1);
+		    } 		    
+		    return 0;
+		}
+		finally {
+			if (rs != null)
+				rs.close();
+			if (stmt != null) 
+				stmt.close();
+		}
+	}
 	public void deleteFile(ItemFile file) throws SQLException {
 		PreparedStatement stmt = null;
 		

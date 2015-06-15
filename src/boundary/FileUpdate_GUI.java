@@ -23,6 +23,7 @@ import common.Controller;
 import common.JDialogBoundary;
 
 import controller.FileUpdateController;
+import javax.swing.JComboBox;
 
 
 public class FileUpdate_GUI extends JDialogBoundary{
@@ -36,6 +37,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private JTextField tfSaveLocation;
 	private JButton btnSaveLocation;
 	private JTextArea taDescription;
+	private JComboBox<String> cbPrivilege;
 	
 	
 	public FileUpdate_GUI(Controller controller,ItemFile file) {
@@ -114,7 +116,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	
 	private void drawNotSelectedRow(){
 
-		setBounds(100, 100, 601, 278);
+		setBounds(100, 100, 601, 294);
 		getContentPane().setBackground(UIManager.getColor("text"));
 		getContentPane().setLayout(null);
 		JLabel lblUpdateFile = new JLabel("Upload New File");
@@ -128,7 +130,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		getContentPane().add(separator);
 		
 		JPanel contentsPanel = new JPanel();
-		contentsPanel.setBounds(10, 56, 565, 141);
+		contentsPanel.setBounds(10, 56, 565, 161);
 		contentsPanel.setBackground(UIManager.getColor("text"));
 		getContentPane().add(contentsPanel);
 		contentsPanel.setLayout(null);
@@ -187,10 +189,23 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		taDescription.setLineWrap(true);
 		spDescription.setViewportView(taDescription);
 		
+		JLabel label = new JLabel("Privilege:");
+		label.setBounds(0, 138, 58, 23);
+		contentsPanel.add(label);
+		
+		cbPrivilege = new JComboBox<String>();
+		cbPrivilege.setEditable(true);
+		cbPrivilege.setBackground(SystemColor.controlHighlight);
+		cbPrivilege.addItem("Public");
+		cbPrivilege.addItem("Group");
+		cbPrivilege.addItem("Private");
+		cbPrivilege.setBounds(95, 137, 85, 24);
+		contentsPanel.add(cbPrivilege);
+		
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBounds(10, 193, 575, 36);
-		buttonPanel.setBackground(Color.WHITE);
+		buttonPanel.setBounds(20, 218, 555, 36);
 		getContentPane().add(buttonPanel);
+		buttonPanel.setBackground(Color.WHITE);
 		buttonPanel.setLayout(null);
 		
 		btnCancel = new JButton("Cancel");

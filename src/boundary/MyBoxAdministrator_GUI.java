@@ -1,9 +1,15 @@
 package boundary;
 
 import common.Controller;
+
 import javax.swing.JPanel;
+
 import java.awt.Color;
+
 import javax.swing.JButton;
+
+import controller.MyBoxAdministratorController;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -15,6 +21,8 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JButton btnManageGroupRequests;
+	private JButton btnManageFileGroups;
 
 
 	public MyBoxAdministrator_GUI(Controller controller) {
@@ -32,25 +40,43 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 		add(panelAdminButtons);
 		panelAdminButtons.setLayout(null);
 		
-		JButton btnNewButton = new JButton("Manage File Groups");
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnNewButton.addActionListener(new ActionListener() {
+		btnManageFileGroups = new JButton("Manage File Groups");
+		btnManageFileGroups.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnManageFileGroups.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		btnNewButton.setBounds(20, 11, 151, 30);
-		panelAdminButtons.add(btnNewButton);
+		btnManageFileGroups.setBounds(20, 11, 151, 30);
+		panelAdminButtons.add(btnManageFileGroups);
 		
-		JButton btnNewButton_1 = new JButton("Group Rquests");
-		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnNewButton_1.setBounds(181, 11, 143, 30);
-		panelAdminButtons.add(btnNewButton_1);
+		btnManageGroupRequests = new JButton("Group Rquests");
+		btnManageGroupRequests.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnManageGroupRequests.setBounds(181, 11, 143, 30);
+		panelAdminButtons.add(btnManageGroupRequests);
 	}
 			
 	
 	@Override
 	public void registerListeners() {
 		super.registerListeners();
+		
+		final MyBoxAdministratorController control = (MyBoxAdministratorController)controller;
+		
+		btnManageFileGroups.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnManageFileGroupsClicked();	
+			}
+		});
+		
+		btnManageGroupRequests.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnManageGroupRequestsClicked();
+				
+			}
+		});
 	}
 
 }

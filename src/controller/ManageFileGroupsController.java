@@ -12,4 +12,24 @@ public class ManageFileGroupsController extends Controller {
 		return new ManageFileGroups_GUI(this);
 	}
 
+	public void btnCloseClicked() {
+		gui.close();
+		
+	}
+
+	public void btnAssociateClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void btnConfirmClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void btnExcludeClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

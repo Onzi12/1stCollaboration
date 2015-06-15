@@ -1,13 +1,13 @@
 package model;
 
-import java.io.File;
 
 
 public class ItemFile extends Item {
 
 	private static final long serialVersionUID = 243683429589199787L;
 	
-	private File file;
+	private byte[] file;
+	private String fileDesc;
 	
 	public ItemFile(int id) {
 		super(id);
@@ -15,12 +15,19 @@ public class ItemFile extends Item {
 	
 	public ItemFile() {}
 
-	public File getFile() {
+	public byte[] getFile() {
 		return file;
 	}
 
-	public void setFile(File file) {
+	public void setFile(byte[] file) {
 		this.file = file;
 	}
-
+	
+	public void setFileDesc(String fileDesc){
+		this.fileDesc = fileDesc;
+	}
+	
+	public String getFileDesc(){
+			return fileDesc;
+	}
 }

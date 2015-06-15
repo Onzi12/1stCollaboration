@@ -1,6 +1,5 @@
 package controller;
 
-import model.ItemFile;
 import boundary.FileAdd_GUI;
 
 import common.Boundary;
@@ -26,10 +25,7 @@ public class FileAddController extends Controller {
 	}
 
 
-	@Override
-	protected Boundary initBoundary(ItemFile file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+	
 
 }

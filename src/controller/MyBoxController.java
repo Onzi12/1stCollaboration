@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -17,14 +19,15 @@ import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
 import model.User;
+import boundary.AppFrame;
 import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
+import common.JDialogBoundary;
 import common.Message;
 import common.MessageType;
 
@@ -267,8 +270,18 @@ public class MyBoxController extends Controller implements Observer {
 		client.deleteObservers();
 		client.disconnect();
 		
+		AppFrame.getInstance();
+		Frame[] frames = Frame.getFrames();
+		for (Frame x : frames){
+			if (x.isActive()) {
+				x.setVisible(false);
+				x.dispose();
+			}
+		}
+		
 		// show login panel
 		new LoginController();		
+		
 	}
 	
 	public void btnUpdateFileClicked() {

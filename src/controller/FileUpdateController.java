@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -9,6 +10,7 @@ import model.ItemFile;
 import boundary.FileUpdate_GUI;
 import client.Client;
 import common.Boundary;
+import common.ByteArray;
 import common.Controller;
 import common.Message;
 import common.MessageType;
@@ -18,6 +20,7 @@ public class FileUpdateController extends Controller{
 	FileUpdate_GUI gui;
 	private ItemFile file;
 	private File f;
+	private String fileDesc;
 	
 	public FileUpdateController(ItemFile file) {
 		super(file);
@@ -37,38 +40,64 @@ public class FileUpdateController extends Controller{
 	
 	
 	public void btnSaveClicked() {
-		
-		if (file == null) {
-			
+		 
+        try {
+            byte[] bFile = ByteArray.convertFileToByteArray(f);		    		    
+		    
 			ItemFile newFile = new ItemFile();
 			newFile.setName(gui.getFilenameText());
-//			newFile.setLocation(gui.getLocationText());
+			newFile.setFile(bFile);
+			newFile.setName(f.getName());
 			
-			try {
-				Message msg = new Message(newFile, MessageType.ADD_FILE);
-				Client.getInstance().sendMessage(msg);
-			} catch (IOException e1) {
-				gui.showMessage("Exception: " + e1.getMessage());
-			}
-			
-		} else {
-			
-			ItemFile newFile = new ItemFile(file.getID());
-			newFile.setName(gui.getFilenameText());
-			newFile.setFile(file.getFile());
-			
-//			newFile.setLocation(gui.getLocationText());
-			
-			try {
-				Message msg = new Message(f, MessageType.UPLOAD_FILE);
-				Client.getInstance().sendMessage(msg);
-				
-				Client.getInstance().sendToServer(f);
-			} catch (IOException e1) {
-				gui.showMessage("Exception: " + e1.getMessage());
-			}
-			
-		}
+			Message msg = new Message(newFile, MessageType.UPLOAD_FILE);
+			Client.getInstance().sendMessage(msg);
+	 
+		    System.out.println("Done");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		
+//		try {
+//			Message msg = new Message(f, MessageType.UPLOAD_FILE);
+//			Client.getInstance().sendMessage(msg);
+//			
+////			Client.getInstance().sendToServer(f);
+//		} catch (IOException e1) {
+//			gui.showMessage("Exception: " + e1.getMessage());
+//		}
+		
+//		if (file == null) {
+//			
+//			ItemFile newFile = new ItemFile();
+//			newFile.setName(gui.getFilenameText());
+////			newFile.setLocation(gui.getLocationText());
+//			
+//			try {
+//				Message msg = new Message(newFile, MessageType.ADD_FILE);
+//				Client.getInstance().sendMessage(msg);
+//			} catch (IOException e1) {
+//				gui.showMessage("Exception: " + e1.getMessage());
+//			}
+//			
+//		} else {
+//			
+//			ItemFile newFile = new ItemFile(file.getID());
+//			newFile.setName(gui.getFilenameText());
+//			newFile.setFile(file.getFile());
+//			
+////			newFile.setLocation(gui.getLocationText());
+//			System.out.println("dahkfdajlshfljakdshfkjads");
+//			try {
+//				Message msg = new Message(f, MessageType.UPLOAD_FILE);
+//				Client.getInstance().sendMessage(msg);
+//				
+//				Client.getInstance().sendToServer(f);
+//			} catch (IOException e1) {
+//				gui.showMessage("Exception: " + e1.getMessage());
+//			}
+//			
+//		}
 		
 		gui.close();
 	}

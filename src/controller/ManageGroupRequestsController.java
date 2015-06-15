@@ -11,4 +11,17 @@ public class ManageGroupRequestsController extends Controller {
 		return new ManageGroupRequests_GUI(this);
 	}
 
+	public void btnCloseClicked() {
+		gui.close();
+	}
+
+	public void btnAcceptClicked() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void btnDeclineClicked() {
+		// TODO Auto-generated method stub
+		
+	}
 }
