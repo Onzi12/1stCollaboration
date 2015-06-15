@@ -12,11 +12,6 @@ import model.User.Status;
 
 public class User extends HashMap<String, Object> {
 
-	private Connection connection; 
-	
-	public User(Connection connection) {
-		this.connection = connection;
-	}
 	
 	public enum Status {
 		NOTCONNECTED(0) ,CONNECTED(1) , BLOCKED(2);
@@ -154,11 +149,10 @@ public class User extends HashMap<String, Object> {
 //		put("status", status);
 //	}
 	
-	public void setStatus(int status)throws SQLException {
+	public void setStatus(int status) {
 		
 		switch (status) {
 		case 0:
-			System.out.println("Jak");
 			put("status", Status.NOTCONNECTED);
 			break;
 
@@ -170,16 +164,7 @@ public class User extends HashMap<String, Object> {
 			put("status", Status.BLOCKED);
 			break;
 		}
-		PreparedStatement stmt = null;
-		
-		stmt = connection.prepareStatement("UPDATE user SET status=? where username = ?");
-		
-		System.out.println("Jak");
-		stmt.setInt(1, status);
-		System.out.println("Jak");
-		stmt.setString(2, this.getUsername());
-		System.out.println("Jak");
-		stmt.executeQuery();
+
 	}
 	
 	

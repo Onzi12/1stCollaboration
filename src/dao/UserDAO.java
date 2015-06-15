@@ -56,7 +56,21 @@ public class UserDAO {
 				stmt.close();
 		}	
 	}
-
+	
+	
+	public void setStatusDB(User user,int status) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = connection.prepareStatement("UPDATE user SET status=? where username = ?");
+		System.out.println("Jak");
+		stmt.setInt(1, status);
+		System.out.println("Jak");
+		stmt.setString(2, user.getUsername());
+		System.out.println("Jak");
+		stmt.executeQuery();
+	}
+	
+	
+	
 	/**
 	 * Adds the user to the users table in the data base
 	 * @param user - The user to sign up
