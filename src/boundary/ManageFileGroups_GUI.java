@@ -17,6 +17,7 @@ import common.Controller;
 import common.JDialogBoundary;
 
 import controller.ManageFileGroupsController;
+import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 public class ManageFileGroups_GUI extends JDialogBoundary {
@@ -28,6 +29,7 @@ public class ManageFileGroups_GUI extends JDialogBoundary {
 	
 	public ManageFileGroups_GUI(Controller controller) {
 		super(controller);
+		setBounds(new Rectangle(200, 150, 560, 420));
 		getContentPane().setBackground(Color.WHITE);
 		
 	}
@@ -63,7 +65,7 @@ getContentPane().setLayout(null);
 		tfFilename.setColumns(10);
 		
 		JLabel lblGroupsAssociated = new JLabel("Groups Associated:");
-		lblGroupsAssociated.setBounds(10, 89, 112, 14);
+		lblGroupsAssociated.setBounds(10, 89, 120, 14);
 		contents.add(lblGroupsAssociated);
 		
 		JScrollPane spGroupsAssociated = new JScrollPane();

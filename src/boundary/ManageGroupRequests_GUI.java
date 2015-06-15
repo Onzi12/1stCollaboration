@@ -23,6 +23,7 @@ import javax.swing.JButton;
 
 import controller.FileAddController;
 import controller.ManageGroupRequestsController;
+import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 public class ManageGroupRequests_GUI extends JDialogBoundary {
@@ -33,6 +34,7 @@ public class ManageGroupRequests_GUI extends JDialogBoundary {
 
 	public ManageGroupRequests_GUI(Controller controller) {
 		super(controller);
+		setBounds(new Rectangle(200, 150, 570, 405));
 	}
 
 	@Override

@@ -22,13 +22,12 @@ public class MyBoxAdministratorController extends MyBoxController {
 	}
 
 	public void btnManageFileGroupsClicked() {
-		// TODO Auto-generated method stub
+		new ManageFileGroupsController();
 		
 	}
 
 	public void btnManageGroupRequestsClicked() {
-		// TODO Auto-generated method stub
-		
+		new ManageGroupRequestsController();
 	}
 	
 }

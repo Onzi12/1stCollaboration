@@ -1,12 +1,12 @@
 package controller;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.nio.file.Files;
 
 import javax.swing.JFileChooser;
 
 import model.ItemFile;
+import model.ItemFile.Privilege;
 import boundary.FileUpdate_GUI;
 import client.Client;
 import common.Boundary;
@@ -19,8 +19,7 @@ public class FileUpdateController extends Controller{
 
 	FileUpdate_GUI gui;
 	private ItemFile file;
-	private File f;
-	private String fileDesc;
+	private boolean isSelectedFile;
 	
 	public FileUpdateController(ItemFile file) {
 		super(file);
@@ -28,9 +27,15 @@ public class FileUpdateController extends Controller{
 		this.file = file;
 		
 		if (file == null) {
+			this.file = new ItemFile();
+			gui.setPrivilege(Privilege.PUBLIC);
+			gui.setDescription("");
 			gui.setFilename("");
 			gui.setLocation("");
 		} else {
+			isSelectedFile = true;
+			gui.setDescription(file.getDescription());
+			gui.setPrivilege(file.getPrivilege());
 			gui.setFilename(file.getName());
 			gui.setLocation(file.getFullPath());
 		}
@@ -40,22 +45,29 @@ public class FileUpdateController extends Controller{
 	
 	
 	public void btnSaveClicked() {
-		 
-        try {
-            byte[] bFile = ByteArray.convertFileToByteArray(f);		    		    
-		    
-			ItemFile newFile = new ItemFile();
-			newFile.setName(gui.getFilenameText());
-			newFile.setFile(bFile);
-			newFile.setName(f.getName());
+		
+		if (isSelectedFile == false) {
 			
-			Message msg = new Message(newFile, MessageType.UPLOAD_FILE);
-			Client.getInstance().sendMessage(msg);
-	 
-		    System.out.println("Done");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+	        try {
+			    
+	        	if (file != null) {
+	        		
+					file.setName(gui.getFilenameText());
+					file.setDescription(gui.getDescription());
+					file.setPrivilege(gui.getPrivilege());
+					file.setOwner(Client.getInstance().getUser().getID());
+					
+					Message msg = new Message(file, MessageType.UPLOAD_FILE);
+					Client.getInstance().sendMessage(msg);
+	        		
+	        	} 
+		 
+	        }catch(Exception e){
+	            e.printStackTrace();
+	        }
+			
+		}
+		
 		
 		
 //		try {
@@ -114,23 +126,23 @@ public class FileUpdateController extends Controller{
 
 	public void btnPathClicked() {
 
-		JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		int returnVal = fc.showOpenDialog(gui);
+		JFileChooser filechooser = new JFileChooser();
+		filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int returnVal = filechooser.showOpenDialog(gui);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File f = fc.getSelectedFile();
-            
-            if (f != null) {
-            	System.out.println("File not null");
-            } else {
-            	System.out.println("File null");
-            }
+            File f = filechooser.getSelectedFile();
 
             gui.setLocation(f.getAbsolutePath());
             
-            this.f = f;
-            
-//            file.setFile(f);
+            try {
+            	
+				byte[] bFile = ByteArray.convertFileToByteArray(f);
+				file.setFile(bFile);
+				String extension = f.getName().substring(f.getName().lastIndexOf('.'));
+				file.setType(extension);
+						
+			} catch (Exception e) {}		    		    
+
             
         } else {
         	
@@ -141,12 +153,10 @@ public class FileUpdateController extends Controller{
 
 	public void btnSaveLocationClicked() {
 		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
+	@Override //On: Leave this blank , this is fine 
 	protected Boundary initBoundary() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

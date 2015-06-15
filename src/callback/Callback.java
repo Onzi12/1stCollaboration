@@ -19,10 +19,10 @@ public abstract class Callback implements Observer {
 			MessageType type = msg.getType();
 			Object obj = msg.getData();
 			messageReceived(obj, type);
+			arg0.deleteObserver(this);
 			
 		}
 		
-		arg0.deleteObserver(this);
 		
 	}
 

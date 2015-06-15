@@ -17,7 +17,6 @@ public class ManageGroupRequestsController extends Controller {
 
 	public void btnAcceptClicked() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void btnDeclineClicked() {

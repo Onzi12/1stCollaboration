@@ -2,15 +2,25 @@ package boundary;
 
 import common.Controller;
 import common.JDialogBoundary;
+
 import javax.swing.JPanel;
+
 import java.awt.Color;
+
 import javax.swing.JLabel;
+
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JList;
 import javax.swing.JButton;
+
+import controller.GroupsController;
+import java.awt.Rectangle;
 
 public class Groups_GUI extends JDialogBoundary{
 
@@ -23,10 +33,12 @@ public class Groups_GUI extends JDialogBoundary{
 
 	public Groups_GUI(Controller controller) {
 		super(controller);
+		setBounds(new Rectangle(200, 150, 540, 415));
 	}
 
 	@Override
 	public void draw() {
+		getContentPane().setBounds(0, 0, 542, 339);
 		setBackground(Color.WHITE);
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
@@ -49,7 +61,7 @@ public class Groups_GUI extends JDialogBoundary{
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBounds(10, 88, 192, 233);
+		scrollPane.setBounds(10, 88, 182, 233);
 		panel.add(scrollPane);
 		
 		listMyGroups = new JList();
@@ -57,18 +69,18 @@ public class Groups_GUI extends JDialogBoundary{
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane_1.setBounds(306, 88, 192, 233);
+		scrollPane_1.setBounds(316, 88, 182, 233);
 		panel.add(scrollPane_1);
 		
 		list = new JList();
 		scrollPane_1.setViewportView(list);
 		
 		btnJoin = new JButton("<< Join");
-		btnJoin.setBounds(212, 130, 84, 23);
+		btnJoin.setBounds(202, 129, 104, 23);
 		panel.add(btnJoin);
 		
 		btnLeave = new JButton("Leave >>");
-		btnLeave.setBounds(212, 189, 84, 23);
+		btnLeave.setBounds(202, 192, 104, 23);
 		panel.add(btnLeave);
 		
 		JLabel lblMyGroups = new JLabel("My Groups:");
@@ -92,7 +104,7 @@ public class Groups_GUI extends JDialogBoundary{
 		panel_1.add(btnClose);
 		
 		btnSendRequests = new JButton("Send Requests");
-		btnSendRequests.setBounds(286, 11, 117, 23);
+		btnSendRequests.setBounds(273, 11, 130, 23);
 		panel_1.add(btnSendRequests);
 		// TODO Auto-generated method stub
 		
@@ -101,7 +113,43 @@ public class Groups_GUI extends JDialogBoundary{
 	@Override
 	public void registerListeners() {
 		
-		// TODO Auto-generated method stub
+		final GroupsController control = (GroupsController)controller;
+		
+		btnSendRequests.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnSendRequestsClicked();
+				
+			}
+		});
+		
+		btnClose.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCloseClicked();
+				
+			}
+		});
+		
+		btnLeave.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnLeaveClicked();
+				
+			}
+		});
+		
+		btnJoin.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnJoinClicked();
+				
+			}
+		});
 		
 	}
 }

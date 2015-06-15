@@ -21,10 +21,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
-
+import model.ItemFile;
 import common.Controller;
 import common.JPanelBoundary;
-
 import controller.MyBoxController;
 import custom_gui.ImageRenderer;
 
@@ -87,25 +86,25 @@ public class MyBox_GUI extends JPanelBoundary {
 		add(btnDeleteFile);
 		
 		btnRestoreFile = new JButton("Restore File");
-		btnRestoreFile.setToolTipText("Add a file from WorldBox ");
+		btnRestoreFile.setToolTipText("Restore a deleted file ");
 		btnRestoreFile.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnRestoreFile.setBounds(419, 78, 128, 31);
 		add(btnRestoreFile);
 		
 		btnLogout = new JButton("LogOut");
-		btnLogout.setToolTipText("Add a file from WorldBox ");
+		//btnLogout.setToolTipText("Log out...");
 		btnLogout.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnLogout.setBounds(567, 78, 120, 31);
 		add(btnLogout);
 		
 		btnNewFolder = new JButton("New Folder");
-		btnNewFolder.setToolTipText("Add a file from WorldBox ");
+		btnNewFolder.setToolTipText("Create a new folder in the current folder");
 		btnNewFolder.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnNewFolder.setBounds(12, 122, 123, 31);
 		add(btnNewFolder);
 		
 		btnGroups = new JButton("Groups");
-		btnGroups.setToolTipText("Add a file from WorldBox ");
+		btnGroups.setToolTipText("Join Or Leave Groups");
 		btnGroups.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnGroups.setBounds(149, 122, 107, 31);
 		add(btnGroups);
@@ -161,7 +160,16 @@ public class MyBox_GUI extends JPanelBoundary {
 		return (Item) table.getValueAt(row, FileTableModel.OBJECT_COL);
 	}
 	
-	public void refreshTable(ArrayList<Item> files) {
+	public void refreshTable(ArrayList<Item> items) {
+		
+		ArrayList<ItemFile> files = new ArrayList<ItemFile>();
+		
+		for (Item item : items) {
+			if (item instanceof ItemFile) {
+				files.add((ItemFile)item);
+			}
+		}
+		
 		FileTableModel model = new FileTableModel(files);
 		table.setModel(model);
 	    table.getColumnModel().getColumn(0).setCellRenderer(new ImageRenderer());
@@ -221,6 +229,10 @@ public class MyBox_GUI extends JPanelBoundary {
 				control.btnUpdateFileClicked();
 			}
 		});
+	}
+	
+	public MyBoxController getController() {
+		return (MyBoxController) controller;
 	}
 	
 }

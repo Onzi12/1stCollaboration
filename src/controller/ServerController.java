@@ -149,11 +149,14 @@ public class ServerController implements Observer {
 					break;
 					
 				case LOGOUT:
-					User user2 = (User)msg.getData();
-					user2.setStatus(0);
-					UserDAO userDAO2 = new UserDAO(server.getConnection());
+					
 					try{
-					userDAO2.setStatusDB(user2);
+						User user2 = (User)msg.getData();
+						System.out.println(user2.getStatus());
+						user2.setStatus(0);
+						System.out.println(user2.getStatus());
+						UserDAO userDAO2 = new UserDAO(server.getConnection());
+						userDAO2.setStatusDB(user2);
 					}catch (SQLException e) {
 							gui.showMessage(e.getMessage());}
 					gui.showMessage(client.getInfo("username") + " logged out.");
@@ -174,7 +177,7 @@ public class ServerController implements Observer {
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
 							}else if (isConnected && user.getStatus() == 1){
-							gui.showMessage(user.getUsername() + " is alredy logged in");
+							gui.showMessage(user.getUsername() + " is already logged in");
 							} 
 							else {
 							Message response;
@@ -272,21 +275,28 @@ public class ServerController implements Observer {
 					
 					ItemFile file = (ItemFile)msg.getData();
 					
-			        byte[] bFile = file.getFile();//(byte[])msg.getData();
+			        byte[] bFile = file.getFile();
 
 			        try {
 				   
 						String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 
-						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName());
+						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName() + file.getType());
 				 
-					    System.out.println("Done");
+						
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						fileDAO.uploadFile(file);
+												
+						Message response = new Message(file, MessageType.UPLOAD_FILE);
+						client.sendToClient(response);
+						
+					    System.out.println("Successfully uploaded file to the DB.");
 					    
-			        }catch(Exception e){
-			            e.printStackTrace();
-			        }
-
-					
+			        } catch (SQLException e) {
+						gui.showMessage("Failed to upload file to DB: " + e.getMessage());
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					} catch (Exception e) {}
 					break;
 
 				default:
@@ -318,11 +328,12 @@ public class ServerController implements Observer {
 		try {
 			server = new Server(port, url, user, password);
 		} catch (IOException e1) {
-			try {
-				server.close();
-			} catch (IOException e) {}
+		//	try {
+				//server.close();  //On: if we are here the server wasn't created so .close cause a NullPointerException
+		//} catch (IOException e) {}
 			server = null;
 			gui.showMessage("ERROR - Could not listen for clients!");
+			return;
 		}
 		server.addObserver(ServerController.this);
 			

@@ -69,10 +69,14 @@ public class Item implements Serializable {
 		return Integer.toString(getID());
 	}
 	
-	public ItemFolder getFolder() {
+	private ItemFolder getFolder() {
 		User user = Client.getInstance().getUser();
-		ItemFolder fo = (ItemFolder)(user.getFiles().get("folder" + Integer.toString(folderID)));
-		return fo;
+		ItemFolder folder = (ItemFolder)(user.getFiles().get("folder" + Integer.toString(folderID)));
+		return folder;
+	}
+	
+	public int getFolderID() {
+		return folderID;
 	}
 	
 	public void setFolder(int folderID) {

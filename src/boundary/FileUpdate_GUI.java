@@ -18,11 +18,11 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
 import model.ItemFile;
-
+import model.ItemFile.Privilege;
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileUpdateController;
+
 import javax.swing.JComboBox;
 
 
@@ -37,7 +37,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	private JTextField tfSaveLocation;
 	private JButton btnSaveLocation;
 	private JTextArea taDescription;
-	private JComboBox<String> cbPrivilege;
+	private JComboBox<Privilege> cbPrivilege;
 	
 	
 	public FileUpdate_GUI(Controller controller,ItemFile file) {
@@ -116,7 +116,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	
 	private void drawNotSelectedRow(){
 
-		setBounds(100, 100, 601, 294);
+		setBounds(100, 100, 601, 305 );
 		getContentPane().setBackground(UIManager.getColor("text"));
 		getContentPane().setLayout(null);
 		JLabel lblUpdateFile = new JLabel("Upload New File");
@@ -193,12 +193,12 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		label.setBounds(0, 138, 58, 23);
 		contentsPanel.add(label);
 		
-		cbPrivilege = new JComboBox<String>();
+		cbPrivilege = new JComboBox<Privilege>();
 		cbPrivilege.setEditable(true);
 		cbPrivilege.setBackground(SystemColor.controlHighlight);
-		cbPrivilege.addItem("Public");
-		cbPrivilege.addItem("Group");
-		cbPrivilege.addItem("Private");
+		cbPrivilege.addItem(Privilege.PUBLIC);
+		cbPrivilege.addItem(Privilege.GROUP);
+		cbPrivilege.addItem(Privilege.PRIVATE);
 		cbPrivilege.setBounds(95, 137, 85, 24);
 		contentsPanel.add(cbPrivilege);
 		
@@ -263,6 +263,22 @@ public class FileUpdate_GUI extends JDialogBoundary{
 
 	public String getFilenameText() {
 		return tfFilename.getText();
+	}
+	
+	public String getDescription() {
+		return taDescription.getText();
+	}
+	
+	public void setDescription(String desc) {
+		taDescription.append(desc);
+	}
+	
+	public void setPrivilege(Privilege p) {
+		cbPrivilege.setSelectedItem(p);
+	}
+	
+	public Privilege getPrivilege() {
+		return (Privilege) cbPrivilege.getSelectedItem();
 	}
 	
 	@Override

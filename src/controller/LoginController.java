@@ -7,7 +7,6 @@ import model.User;
 import boundary.Login_GUI;
 import callback.LoginCallback;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -21,8 +20,10 @@ public class LoginController extends Controller {
 			//here user has logged in successfully					
 			//show MyBox Window
 			Client.getInstance().setUser(user);
-			
-			new MyBoxController(user);
+			if (user.getAdmin() == 1)
+				new MyBoxAdministratorController(user);
+			else	
+				new MyBoxController(user);
 		} else {
 			System.out.println("WHY??????");
 		}
@@ -54,7 +55,7 @@ public class LoginController extends Controller {
 
 					@Override
 					public void error(String message) {
-						((Login_GUI)getGui()).showMessage(message);
+						getGui().showMessage(message);
 						Client.getInstance().deleteObservers();
 					}
 					

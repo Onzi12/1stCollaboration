@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,9 +23,9 @@ import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
-import common.JDialogBoundary;
 import common.Message;
 import common.MessageType;
 
@@ -115,37 +113,27 @@ public class MyBoxController extends Controller implements Observer {
 			{				
 				@SuppressWarnings("unchecked")
 				HashMap<String, Item> items = (HashMap<String, Item>)msg.getData();
-				Client.getInstance().getUser().setFiles(items);
-
 				
-				HashMap<String, ItemFile> filesDB = new HashMap<String, ItemFile>();
+
+				ArrayList<Item> files = new ArrayList<Item>();
 				for (Item item : items.values()) {
+					
+					ItemFolder directory = (ItemFolder) items.get("folder" + Integer.toString(item.getFolderID()));
+					if (directory != null) {
+						directory.addFile(item);
+					}
+					
 					if (item instanceof ItemFile) {
-						
-						ItemFile file = (ItemFile)item;
-						ItemFolder folder = file.getFolder();
-						if (folder != null) {
-							
-							folder.addFile(file);
-							
-						}
-						
-						filesDB.put(item.getStringID(), (ItemFile) item);
-					} else if (item instanceof ItemFolder) {
-						
-						ItemFolder folder = (ItemFolder)item;
-						ItemFolder folderTarget = folder.getFolder();
-						if (folderTarget != null) {
-							
-							folderTarget.addFile(folder);
-							
-						}
-						
+						files.add(item);
 					}
 				}
-				processTreeHierarchy(Client.getInstance().getUser().getFiles());
-				ArrayList<Item> files = new ArrayList<Item>();
-				files.addAll(filesDB.values());
+				
+				user.setFiles(items);
+
+				// update the tree 
+				processTreeHierarchy(user.getFiles());
+				
+				// update the table
 				gui.refreshTable(files);
 			}
 				break;
@@ -177,9 +165,24 @@ public class MyBoxController extends Controller implements Observer {
 				
 				String str = (String)msg.getData();
 				if (str.equals(Client.CONNECTION_EXCEPTION)) {
-					((MyBox_GUI)getGui()).showMessage("Please try to connect again later.");
+					getGui().showMessage("Please try to connect again later.");
 					logout();
 				}
+				
+				break;
+				
+			case UPLOAD_FILE: 
+				
+				System.out.println("UPLOAD_FILE");
+				
+				ItemFile file = (ItemFile)msg.getData();
+
+				user.getFiles().put(file.getStringID(), file);
+				
+				ArrayList<Item> files = new ArrayList<Item>();
+				files.addAll(user.getFiles().values());
+				
+				gui.refreshTable(files);
 				
 				break;
 				
@@ -198,7 +201,13 @@ public class MyBoxController extends Controller implements Observer {
 			
 			if (item instanceof ItemFolder) {
 				
-				addObject(item);
+				if (item.getFolderID() == 0) {
+					addObject(root, item, false);
+				} else {
+					
+					
+					
+				}
 				
 			}
 			
@@ -259,27 +268,25 @@ public class MyBoxController extends Controller implements Observer {
 		}
 	}
 	
-	private void logout() {
+	public void logout() {
 		Client client = Client.getInstance();
 		
 		try {
-			Message logout = new Message(client, MessageType.LOGOUT);
+			Message logout = new Message(user, MessageType.LOGOUT);
 			client.sendMessage(logout);
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			System.out.println("ERROR " + e.getMessage());
+		}
 		
+		client.setUser(null);
 		client.deleteObservers();
 		client.disconnect();
 		
-		AppFrame.getInstance();
-		Frame[] frames = Frame.getFrames();
-		for (Frame x : frames){
-			if (x.isActive()) {
-				x.setVisible(false);
-				x.dispose();
-			}
-		}
+		java.awt.Window win[] = java.awt.Window.getWindows(); // close all windows and return to Login window
+		for (int i = 0; i< win.length; i++) 
+			if (!(win[i] instanceof boundary.AppFrame))
+				win[i].dispose();
 		
-		// show login panel
 		new LoginController();		
 		
 	}
@@ -313,9 +320,7 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	public void btnAddFileClicked() {
-		new FileAddController();
-		// TODO Auto-generated method stub
-		
+		new FileAddController();	
 	}
 
 	public void btnDeleteFileClicked() {
@@ -324,8 +329,7 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	public void btnGroupsClicked() {
-		// TODO Auto-generated method stub
-		
+		new GroupsController();	
 	}
 
 	public void btnNewFolderClicked() {
@@ -334,7 +338,7 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	public void btnRestoreFileClicked() {
-		// TODO Auto-generated method stub
+		new FileRestoreController();
 		
 	}
 

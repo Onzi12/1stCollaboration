@@ -40,6 +40,7 @@ public class UserDAO {
 				setStatusDB(user);
 				user.setCounter(rs.getInt("counter"));
 				setCounterDB(user);
+				user.setAdmin(rs.getInt("admin"));
 				if(user.getStatus() == 2)
 					throw new SQLException("The username " + user.getUsername() + " is blocked.");
 			} else {
@@ -103,4 +104,5 @@ public class UserDAO {
 				stmt.close();
 		}
 	}
+	
 }

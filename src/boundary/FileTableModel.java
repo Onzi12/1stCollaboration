@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import model.Item;
+import model.ItemFile;
 
 class FileTableModel extends AbstractTableModel {
 	
@@ -16,9 +17,9 @@ class FileTableModel extends AbstractTableModel {
 	private static final int LOCATION_COL = 1;
 
 	private String[] columnNames = {"Filename", "Location"};
-	private ArrayList<Item> files;
+	private ArrayList<ItemFile> files;
 
-	public FileTableModel(ArrayList<Item> files) {
+	public FileTableModel(ArrayList<ItemFile> files) {
 		this.files = files;
 	}
 

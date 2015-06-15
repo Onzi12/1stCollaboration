@@ -19,7 +19,15 @@ public class FilePopUpMenuController {
 		gui.registerMenuItemUpdateListener(new BtnUpdateFileActionListener());
 		gui.registerMenuItemReadListener(new BtnReadFileActionListener());
 	}
-	
+	private class btnEditFileActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			btnEditClicked();
+			
+		}
+		
+	}
 	private class BtnReadFileActionListener implements ActionListener {
 
 		@Override
@@ -51,6 +59,11 @@ public class FilePopUpMenuController {
 		((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
 	}
 	
+	public void btnEditClicked() {
+		 new FileEditController(file);
+		 ((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
+	}
+
 	public void btnReadClicked() {
 		new FileReadController(file);
 	}

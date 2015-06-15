@@ -66,7 +66,36 @@ public class FileDAO {
 				stmt2.close();
 		}
 	}
-	
+	public HashMap<String, Item> getAllAddFiles(User user) throws SQLException {
+		HashMap<String, Item> items = new HashMap<String, Item>();
+		ResultSet rs = null;
+		PreparedStatement stmt = null;
+		try {
+			stmt = connection.prepareStatement("SELECT * FROM userfile u,file f where u.userId <> ? and f.id = u.fileId and ()");//where userId = ?
+			stmt.setInt(1, user.getID());
+			rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+
+					
+					ItemFile file = new ItemFile(rs.getInt("id"));
+					file.setName(rs.getString("name"));
+					file.setFolder(rs.getInt("folderId"));
+					items.put("file" + Integer.toString(file.getID()), file);
+					
+
+				
+			}
+
+			return items;		
+		}
+		finally {
+			if (rs != null)
+				rs.close();
+			if (stmt != null) 
+				stmt.close();
+		}
+	}
 	public void updateFile(ItemFile file) throws SQLException {
 		PreparedStatement stmt = null;
 
@@ -106,26 +135,33 @@ public class FileDAO {
 		}
 	}
 	
-	public int uploadFile(ItemFile file,User user) throws SQLException {
-		PreparedStatement stmt = null;
+	public void uploadFile(ItemFile file) throws SQLException {
+		PreparedStatement stmt = null,stmt2 = null;
 		ResultSet rs = null;		
 		try {
-			stmt = connection.prepareStatement("insert into file" + " (name, fileDesc)" + " values(?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt = connection.prepareStatement("insert into file" + " (name, fileDesc, priv, ownerId)" + " values(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, file.getName());
-			stmt.setString(2, file.getFullPath());
+			System.out.println( file.getID());
+			stmt.setString(2, file.getDescription());
+			stmt.setInt(3, file.getPrivilege().getValue());
+			stmt.setInt(4, file.getOwner());
 			stmt.executeUpdate();
-			
 			rs = stmt.getGeneratedKeys();
 		    if (rs.next()) {
-		    	return rs.getInt(1);
+				file.setID(rs.getInt(1));
+				stmt2 = connection.prepareStatement("insert into userfile" + " (userId,  fileId)" + " values(?, ?)");
+				stmt2.setInt(1,file.getOwner());
+				stmt2.setInt(2, file.getID());
+				stmt2.executeUpdate();
 		    } 		    
-		    return 0;
 		}
 		finally {
 			if (rs != null)
 				rs.close();
 			if (stmt != null) 
 				stmt.close();
+			if (stmt2 != null) 
+				stmt2.close();
 		}
 	}
 	public void deleteFile(ItemFile file) throws SQLException {

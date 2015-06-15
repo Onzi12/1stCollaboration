@@ -12,7 +12,6 @@ import model.User;
 import model.User.Status;
 
 public class User extends HashMap<String, Object> {
-
 	
 	public enum Status {
 		NOTCONNECTED(0) ,CONNECTED(1) , BLOCKED(2);
@@ -109,10 +108,7 @@ public class User extends HashMap<String, Object> {
 	public int getID() {
 		return (int)get("uid");
 	}
-	
-
-	
-	
+		
 	public int getCounter() {
 		return (int)get("counter");
 	}
@@ -158,6 +154,14 @@ public class User extends HashMap<String, Object> {
 			put("status", Status.BLOCKED);
 			break;
 		}
+	}
+
+	public void setAdmin(int admin) {
+		put("admin",admin);
+	}
+	
+	public int getAdmin(){
+		return (int) get("admin");
 	}
 	
 	
