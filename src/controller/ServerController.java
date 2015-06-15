@@ -143,11 +143,7 @@ public class ServerController implements Observer {
 					
 				case LOGOUT:
 					User user2 = (User)msg.getData();
-					try{
 					user2.setStatus(0);
-					}catch (SQLException e) {
-						gui.showMessage(e.getMessage());
-					}
 					gui.showMessage(client.getInfo("username") + " logged out.");
 					break;
 					
