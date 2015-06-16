@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
@@ -109,13 +111,11 @@ public class MyBox_GUI extends JPanelBoundary {
 		btnGroups.setBounds(149, 122, 107, 31);
 		add(btnGroups);
 		
-		DefaultMutableTreeNode fileSystem = new DefaultMutableTreeNode("Root");
 		FileTreeCellRenderer renderer = new FileTreeCellRenderer();
 		renderer.setIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
 		renderer.setLeafIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
 		
-		FileTreeModel model = new FileTreeModel(fileSystem);
-		tree = new JTree(model);
+		tree = new JTree();
 		tree.setVisibleRowCount(12);
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);        
@@ -150,6 +150,11 @@ public class MyBox_GUI extends JPanelBoundary {
 
 	public JTree getTree() {
 		return tree;
+	}
+	
+	public DefaultMutableTreeNode getRoot() {
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)getTree().getModel().getRoot();
+		return root;
 	}
 	
 	public JTable getTable() {
@@ -227,6 +232,13 @@ public class MyBox_GUI extends JPanelBoundary {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				control.btnUpdateFileClicked();
+			}
+		});
+		
+		tree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				control.clickedOnTreeNode();
 			}
 		});
 	}

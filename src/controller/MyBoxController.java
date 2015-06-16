@@ -4,8 +4,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -19,12 +17,12 @@ import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
 import model.User;
-import boundary.AppFrame;
 import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -115,8 +113,14 @@ public class MyBoxController extends Controller implements Observer {
 				@SuppressWarnings("unchecked")
 				HashMap<String, Item> items = (HashMap<String, Item>)msg.getData();
 				
+				ItemFolder rootFolder = new ItemFolder(0);
+				rootFolder.setName("MyBox");
+				rootFolder.setFolder(-1);
+				rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
+				items.put("folder0", rootFolder);
+				
+				gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
 
-				ArrayList<Item> files = new ArrayList<Item>();
 				for (Item item : items.values()) {
 					
 					ItemFolder directory = (ItemFolder) items.get("folder" + Integer.toString(item.getFolderID()));
@@ -124,18 +128,19 @@ public class MyBoxController extends Controller implements Observer {
 						directory.addFile(item);
 					}
 					
-					if (item instanceof ItemFile) {
-						files.add(item);
-					}
 				}
 				
 				user.setFiles(items);
 
 				// update the tree 
-				processTreeHierarchy(user.getFiles());
+				processTreeHierarchy(rootFolder);
+				
+				// expand the root folder
+				TreePath path = new TreePath(gui.getRoot());
+				gui.getTree().expandPath(path);
 				
 				// update the table
-				gui.refreshTable(files);
+				showFilesOfSelectedFolder();
 			}
 				break;
 				
@@ -194,48 +199,48 @@ public class MyBoxController extends Controller implements Observer {
 		
 	}
 	
-	public void processTreeHierarchyTest(ItemFolder folder) {
-
-		for (Item item : folder.getFiles().values()) {
-			
-			
-			
-		}
+	public void clickedOnTreeNode() {
+		
+		showFilesOfSelectedFolder();
 		
 	}
 	
-	
-	public void processTreeHierarchy(HashMap<String, Item> items) {
-
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode)gui.getTree().getModel().getRoot();
+	private void showFilesOfSelectedFolder() {
 		
-		for (Item item : items.values()) {
+		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent(); 
+		if (selectedNode != null) {
+			
+			if (selectedNode.getUserObject() instanceof ItemFolder) {
+				ItemFolder folder = (ItemFolder)selectedNode.getUserObject();
+				
+				ArrayList<Item> files = new ArrayList<Item>();
+				
+				for (Item item : folder.getFiles().values()) {
+					if (item instanceof ItemFile) {
+						files.add(item);
+					}
+				}
+				
+				gui.refreshTable(files);
+			}
+
+		}
+	}
+	
+	public void processTreeHierarchy(ItemFolder folder) {
+
+		DefaultMutableTreeNode parent = folder.getTreeNode();
+		
+		for (Item item : folder.getFiles().values()) {
 			
 			if (item instanceof ItemFolder) {
 				
-				ItemFolder folder = (ItemFolder)item;
-
-				if (item.getFolderID() == 0) {
-					folder.setTreeNode(addObject(root, folder, false)); 
-				} else {
-					
-//					ItemFolder parentFolder = (ItemFolder)items.get("folder" + item.getFolderID());
-//					DefaultMutableTreeNode subDirectory = parentFolder.getTreeNode();
-//					
-//					if (subDirectory != null) {
-//						folder.setTreeNode(addObject(subDirectory, folder, false)); 
-//					}
-					
-
-				}
-				
+				ItemFolder f = (ItemFolder)item;
+				f.setTreeNode(addObject(parent, f, false)); 
+				processTreeHierarchy(f);
 			}
 			
 		}
-		
-		// expand the root folder
-		TreePath path = new TreePath(root);
-		gui.getTree().expandPath(path);
 		
 	}
 	
@@ -244,7 +249,7 @@ public class MyBoxController extends Controller implements Observer {
 
 	    DefaultMutableTreeNode parentNode = null;
 	    TreePath parentPath = gui.getTree().getSelectionPath();
-		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)gui.getTree().getModel().getRoot();
+		DefaultMutableTreeNode rootNode = gui.getRoot();
 
 	    if (parentPath == null) {
 	        //There is no selection. Default to the root node.
@@ -374,4 +379,5 @@ public class MyBoxController extends Controller implements Observer {
 	protected Boundary initBoundary() {
 		return new MyBox_GUI(this);
 	}
+
 }
