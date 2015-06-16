@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import boundary.Server_GUI;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.ObservableServer;
 import ocsf.server.OriginatorMessage;
@@ -26,17 +27,19 @@ public class Server extends ObservableServer {
 	
 	/** The connection to the mysql data base */
 	private Connection connection;
+	private Server_GUI gui;
 
 	/**
 	 * Constructs an instance of the server.
 	 * @param port - The port number to connect on.
 	 * @throws IOException
 	 */
-	public Server(int port, String url, String user, String password) throws IOException {
+	public Server(int port, String url, String user, String password, Server_GUI gui) throws IOException {
 		super(port);
 		this.url = url;
 		this.user = user;
 		this.password = password;
+		this.gui = gui;
 		listen();
 	}
 	
@@ -57,7 +60,12 @@ public class Server extends ObservableServer {
 			connection = DriverManager.getConnection(url, user, password);
     	    setChanged();
     	    notifyObservers(CONNECTION_SUCCEEDED);
-        } catch (Exception e) {
+        } 
+		catch (SQLException e) {
+			gui.showMessage(e.getMessage());
+		}
+		catch (Exception e) {
+			gui.showMessage(e.getMessage());
     	    setChanged();
     	    notifyObservers(CONNECTION_FAILED);
         }
@@ -67,6 +75,7 @@ public class Server extends ObservableServer {
 	protected void serverStopped() {
 		super.serverStopped();
 		try {
+			if(connection != null )
 			connection.close();
 		} catch (SQLException e) {}
 	}

@@ -30,7 +30,6 @@ public class FileDAO {
 			rs1 = stmt1.executeQuery();
 			
 			while (rs1.next()) {
-
 					ItemFolder folder = new ItemFolder(rs1.getInt("id"));
 					folder.setName(rs1.getString("name"));
 					folder.setFolder(rs1.getInt("folderId"));
@@ -42,15 +41,10 @@ public class FileDAO {
 			rs2 = stmt2.executeQuery();
 			
 			while (rs2.next()) {
-
-					
 					ItemFile file = new ItemFile(rs2.getInt("id"));
 					file.setName(rs2.getString("name"));
 					file.setFolder(rs2.getInt("folderId"));
 					items.put("file" + Integer.toString(file.getID()), file);
-					
-
-				
 			}
 
 			return items;		
@@ -66,25 +60,21 @@ public class FileDAO {
 				stmt2.close();
 		}
 	}
+	
 	public HashMap<String, Item> getAllAddFiles(User user) throws SQLException {
 		HashMap<String, Item> items = new HashMap<String, Item>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		try {
-			stmt = connection.prepareStatement("SELECT * FROM userfile u,file f where u.userId <> ? and f.id = u.fileId and ()");//where userId = ?
+			stmt = connection.prepareStatement("SELECT * FROM userfile u,file f where u.userId <> ? and f.id = u.fileId and u.priv <> 0" );//where userId = ?
 			stmt.setInt(1, user.getID());
 			rs = stmt.executeQuery();
 			
 			while (rs.next()) {
-
-					
 					ItemFile file = new ItemFile(rs.getInt("id"));
 					file.setName(rs.getString("name"));
 					file.setFolder(rs.getInt("folderId"));
 					items.put("file" + Integer.toString(file.getID()), file);
-					
-
-				
 			}
 
 			return items;		
@@ -96,6 +86,8 @@ public class FileDAO {
 				stmt.close();
 		}
 	}
+	
+	
 	public void updateFile(ItemFile file) throws SQLException {
 		PreparedStatement stmt = null;
 
@@ -177,4 +169,15 @@ public class FileDAO {
 				stmt.close();
 		}
 	}
+	
+	public void setFileDB(ItemFile file) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = connection.prepareStatement("UPDATE file SET priv=?,fileDesc=?,name=? where name = ?");
+		stmt.setInt(1, file.getPrivilege().getValue());
+		stmt.setString(2, file.getDescription());
+		stmt.setString(3, file.getName());
+		stmt.setString(4, file.getName());
+		stmt.executeUpdate();
+	}
+
 }

@@ -60,7 +60,7 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 		menuItemDelete.addActionListener(listener);
 	}
 
-	public void registerMenuItemRenameListener(ActionListener listener) {
+	public void registerMenuItemEditListener(ActionListener listener) {
 		menuItemEdit.addActionListener(listener);
 	}
 	

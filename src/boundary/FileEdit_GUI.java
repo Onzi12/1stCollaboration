@@ -1,20 +1,34 @@
 package boundary;
 
 import model.ItemFile;
+import model.ItemFile.Privilege;
 import common.Controller;
 import common.JDialogBoundary;
+
 import javax.swing.JPanel;
+
 import java.awt.Color;
+
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 import javax.swing.JComboBox;
+
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
+
+import controller.FileEditController;
+
+import java.awt.Rectangle;
 
 public class FileEdit_GUI extends JDialogBoundary{
 	
@@ -22,20 +36,20 @@ public class FileEdit_GUI extends JDialogBoundary{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ItemFile file;
+
 	private JTextField tfFilename;
 	private JTextArea taDescription;
-	private JComboBox<String> cbPrivilege;
+	private JComboBox<Privilege> cbPrivilege;
 	private JButton btnCancel;
 	private JButton btnSave;
 	
 	public FileEdit_GUI(Controller controller, ItemFile file) {
-		super(controller);
-		this.file = file;
+		super(controller,file);
+		setBounds(new Rectangle(150, 200, 570, 250));
 	}
 
 	@Override
-	public void draw() {
+	public void draw(ItemFile file) {
 		getContentPane().setBackground(Color.WHITE);
 		
 		getContentPane().setLayout(null);
@@ -82,10 +96,13 @@ public class FileEdit_GUI extends JDialogBoundary{
 		lblPrivilege.setBounds(10, 136, 80, 14);
 		panel.add(lblPrivilege);
 		
-		cbPrivilege = new JComboBox<String>();
+		cbPrivilege = new JComboBox<Privilege>();
 		cbPrivilege.setEditable(true);
 		cbPrivilege.setBackground(SystemColor.controlHighlight);
 		cbPrivilege.setBounds(90, 133, 85, 24);
+		cbPrivilege.addItem(Privilege.PUBLIC);
+		cbPrivilege.addItem(Privilege.GROUP);
+		cbPrivilege.addItem(Privilege.PRIVATE);
 		panel.add(cbPrivilege);
 		
 		JPanel panel_1 = new JPanel();
@@ -100,15 +117,57 @@ public class FileEdit_GUI extends JDialogBoundary{
 		
 		btnSave = new JButton("Save");
 		btnSave.setBounds(351, 0, 89, 23);
-		panel_1.add(btnSave);
-		
-		// TODO Auto-generated method stub
-		
+		panel_1.add(btnSave);	
 	}
 
 	@Override
 	public void registerListeners() {
-		// TODO Auto-generated method stub
 		
+		final FileEditController control = (FileEditController)controller;
+		
+		btnCancel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCancelClicked();
+				
+			}
+		});
+		
+		btnSave.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnSaveClicked();
+				
+			}
+		});
 	}
+	
+	public String getFilename(){
+		return tfFilename.getText();
+	}
+	
+	public void setFilename(String filename) {
+		tfFilename.setText(filename);
+	}
+	
+	public String getDescriptionText() {
+		return taDescription.getText();
+	}
+
+	public void setDescriptionText(String taDescription) {
+		this.taDescription.setText(taDescription);
+	}
+
+	public Privilege getPrivilege() {
+		return (Privilege)cbPrivilege.getSelectedItem();
+	}
+
+	public void setPrivilege(Privilege p) {
+		this.cbPrivilege.setSelectedItem(p);
+	}
+
+	@Override
+	public void draw() { }
 }

@@ -18,6 +18,7 @@ public class FilePopUpMenuController {
 		gui.registerMenuItemDeleteListener(new BtnDeleteFileActionListener());
 		gui.registerMenuItemUpdateListener(new BtnUpdateFileActionListener());
 		gui.registerMenuItemReadListener(new BtnReadFileActionListener());
+		gui.registerMenuItemEditListener(new btnEditFileActionListener());
 	}
 	private class btnEditFileActionListener implements ActionListener {
 

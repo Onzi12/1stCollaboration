@@ -80,13 +80,15 @@ public class ServerController implements Observer {
 				
 			case Server.SERVER_STOPPED:
 				gui.showMessage("Server has stopped listening for connections.");
+				gui.enableUI();
 				break;
 				
 			case Server.CONNECTION_FAILED:
-				try {
-					server.close();
-				} catch (IOException e) {}
+//				try {
+//					server.close();			//On: Cause a NullPointerException
+//				} catch (IOException e) {}
 				gui.showMessage("Connection to DB failed.");
+				server = null;
 				break;
 				
 			case Server.CONNECTION_SUCCEEDED:
@@ -272,13 +274,11 @@ public class ServerController implements Observer {
 					break;
 					
 				case UPLOAD_FILE:
-					
-					ItemFile file = (ItemFile)msg.getData();
-					
-			        byte[] bFile = file.getFile();
 
 			        try {
-				   
+						ItemFile file = (ItemFile)msg.getData();
+				        byte[] bFile = file.getFile();
+				        
 						String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 
 						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName() + file.getType());
@@ -298,7 +298,21 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					} catch (Exception e) {}
 					break;
-
+					
+				case FILE_EDIT:
+					
+			        try {
+				   
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						ItemFile file = (ItemFile)msg.getData();
+						
+						fileDAO.setFileDB(file);
+						gui.showMessage("Successfully edited file to the DB.");
+					} catch (SQLException e) {
+						gui.showMessage("Failed to edit file to DB: " + e.getMessage());
+					}
+					break;
+					
 				default:
 					break;
 				}
@@ -326,13 +340,16 @@ public class ServerController implements Observer {
 		String user = gui.getUser().trim();
 		String password = gui.getPassword().trim();
 		try {
-			server = new Server(port, url, user, password);
-		} catch (IOException e1) {
+			if(server != null )
+				server.close();
+			server = new Server(port, url, user, password,gui);
+		} catch (IOException e) {
 		//	try {
 				//server.close();  //On: if we are here the server wasn't created so .close cause a NullPointerException
 		//} catch (IOException e) {}
 			server = null;
 			gui.showMessage("ERROR - Could not listen for clients!");
+			gui.showMessage(e.getMessage());
 			return;
 		}
 		server.addObserver(ServerController.this);

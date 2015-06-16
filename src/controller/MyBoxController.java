@@ -4,6 +4,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -23,7 +25,6 @@ import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -192,7 +193,18 @@ public class MyBoxController extends Controller implements Observer {
 		}
 		
 	}
+	
+	public void processTreeHierarchyTest(ItemFolder folder) {
 
+		for (Item item : folder.getFiles().values()) {
+			
+			
+			
+		}
+		
+	}
+	
+	
 	public void processTreeHierarchy(HashMap<String, Item> items) {
 
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)gui.getTree().getModel().getRoot();
@@ -201,12 +213,20 @@ public class MyBoxController extends Controller implements Observer {
 			
 			if (item instanceof ItemFolder) {
 				
+				ItemFolder folder = (ItemFolder)item;
+
 				if (item.getFolderID() == 0) {
-					addObject(root, item, false);
+					folder.setTreeNode(addObject(root, folder, false)); 
 				} else {
 					
+//					ItemFolder parentFolder = (ItemFolder)items.get("folder" + item.getFolderID());
+//					DefaultMutableTreeNode subDirectory = parentFolder.getTreeNode();
+//					
+//					if (subDirectory != null) {
+//						folder.setTreeNode(addObject(subDirectory, folder, false)); 
+//					}
 					
-					
+
 				}
 				
 			}

@@ -114,5 +114,15 @@ public class Server_GUI extends JFrame {
 		tfURL.setEditable(false);
 		tfUser.setEditable(false);
 	}
+	
+	public void enableUI() {
+		btnStart.setEnabled(true);
+		btnStart.setVisible(true);
+		tPortNumber.setEditable(true);
+		tfPassword.setEditable(true);
+		tfURL.setEditable(true);
+		tfUser.setEditable(true);
+		displayHostIP("");
+	}
 
 }
