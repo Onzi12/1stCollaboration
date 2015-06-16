@@ -4,17 +4,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.swing.JOptionPane;
+
+import org.apache.ibatis.jdbc.ScriptRunner;
 
 import model.Item;
 import model.ItemFile;
@@ -34,13 +44,62 @@ public class ServerController implements Observer {
 	private Server_GUI gui;
 	private Server server;
 	
-	public ServerController(Server_GUI gui) {
-		this.gui = gui;
+	public ServerController(final Server_GUI ui) {
+		this.gui = ui;
 		
 		gui.addWindowListener(new ServerWindowListener());
 		gui.registerStartListener(new BtnStartActionListener());
+		gui.registerCloseListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnCloseClicked();
+			}
+		});
+		gui.registerInitDBListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+						initDBClicked();
+				 	}
+			
+		});
 	}
 	
+	
+	private void initDBClicked() {
+		String confirm = "Are you sure you wish execute a full server initialization?"+
+				"\nTHIS WILL REMOVE ALL EXISTING DATABASE DATA!!!";
+		int rs = JOptionPane.showConfirmDialog(gui, confirm,"Init Database",JOptionPane.YES_NO_OPTION);
+		if (rs != JOptionPane.YES_OPTION)
+			return;
+        String script = "db.sql";
+        String url = gui.getURL().trim();
+        String user = gui.getUser().trim();
+        String pass = gui.getPassword().trim();
+        try {
+        	Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con;
+            con = DriverManager.getConnection(url,user, pass);
+            new ScriptRunner(con)
+                    .runScript(new BufferedReader(new FileReader(script)));
+        } catch (Exception e2) {
+            gui.showMessage(e2.getMessage());
+            return;
+        }
+        
+      gui.showMessage("Database Initiated Successfully!");
+	}
+	
+	
+	
+	private void btnCloseClicked() {
+		try {
+			server.close();
+		} catch (IOException e) {
+			gui.showMessage(e.getMessage());;
+		}
+		
+	}
+
 	private class ServerWindowListener extends WindowAdapter {
 
 		@Override
