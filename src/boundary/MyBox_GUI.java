@@ -111,13 +111,11 @@ public class MyBox_GUI extends JPanelBoundary {
 		btnGroups.setBounds(149, 122, 107, 31);
 		add(btnGroups);
 		
-		DefaultMutableTreeNode fileSystem = new DefaultMutableTreeNode("Root");
 		FileTreeCellRenderer renderer = new FileTreeCellRenderer();
 		renderer.setIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
 		renderer.setLeafIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
 		
-		FileTreeModel model = new FileTreeModel(fileSystem);
-		tree = new JTree(model);
+		tree = new JTree();
 		tree.setVisibleRowCount(12);
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);        

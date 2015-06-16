@@ -4,8 +4,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -19,12 +17,12 @@ import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
 import model.User;
-import boundary.AppFrame;
 import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -115,6 +113,13 @@ public class MyBoxController extends Controller implements Observer {
 				@SuppressWarnings("unchecked")
 				HashMap<String, Item> items = (HashMap<String, Item>)msg.getData();
 				
+				ItemFolder rootFolder = new ItemFolder(0);
+				rootFolder.setName("MyBox");
+				rootFolder.setFolder(-1);
+				rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
+				items.put("folder0", rootFolder);
+				
+				gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
 
 				for (Item item : items.values()) {
 					
@@ -128,7 +133,11 @@ public class MyBoxController extends Controller implements Observer {
 				user.setFiles(items);
 
 				// update the tree 
-				processTreeHierarchy(user.getFiles());
+				processTreeHierarchy(rootFolder);
+				
+				// expand the root folder
+				TreePath path = new TreePath(gui.getRoot());
+				gui.getTree().expandPath(path);
 				
 				// update the table
 				showFilesOfSelectedFolder();
@@ -197,6 +206,7 @@ public class MyBoxController extends Controller implements Observer {
 	}
 	
 	private void showFilesOfSelectedFolder() {
+		
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent(); 
 		if (selectedNode != null) {
 			
@@ -215,33 +225,6 @@ public class MyBoxController extends Controller implements Observer {
 			}
 
 		}
-	}
-	
-	public void processTreeHierarchy(HashMap<String, Item> items) {
-
-		DefaultMutableTreeNode root = gui.getRoot();
-		
-		for (Item item : items.values()) {
-			
-			if (item instanceof ItemFolder) {
-				
-				ItemFolder folder = (ItemFolder)item;
-
-				if (item.getFolderID() == 0) {
-					
-					folder.setTreeNode(addObject(root, folder, false)); 
-					processTreeHierarchy(folder);
-					
-				}
-				
-			}
-			
-		}
-		
-		// expand the root folder
-		TreePath path = new TreePath(root);
-		gui.getTree().expandPath(path);
-		
 	}
 	
 	public void processTreeHierarchy(ItemFolder folder) {
