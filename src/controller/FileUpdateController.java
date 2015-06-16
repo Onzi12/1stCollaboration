@@ -1,19 +1,20 @@
 package controller;
 
 import java.io.File;
-import java.nio.file.Files;
 
 import javax.swing.JFileChooser;
 
 import model.ItemFile;
 import model.ItemFile.Privilege;
 import boundary.FileUpdate_GUI;
+import callback.UploadFileCallback;
 import client.Client;
 import common.Boundary;
 import common.ByteArray;
 import common.Controller;
 import common.Message;
 import common.MessageType;
+import common.MyBoxException;
 
 public class FileUpdateController extends Controller{
 
@@ -58,7 +59,15 @@ public class FileUpdateController extends Controller{
 					file.setOwner(Client.getInstance().getUser().getID());
 					
 					Message msg = new Message(file, MessageType.UPLOAD_FILE);
-					Client.getInstance().sendMessage(msg);
+					Client.getInstance().sendMessage(msg, new UploadFileCallback() {
+						
+						@Override
+						protected void done(ItemFile file, MyBoxException exception) {
+							MyBoxController controller = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+							controller.handleUploadedFileCallback(file, exception);
+						}
+						
+					});
 	        		
 	        	} 
 		 
@@ -126,7 +135,8 @@ public class FileUpdateController extends Controller{
 
 	public void btnPathClicked() {
 
-		JFileChooser filechooser = new JFileChooser();
+		String userhome = System.getProperty("user.home") + "\\desktop";
+		JFileChooser filechooser = new JFileChooser(userhome);
 		filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int returnVal = filechooser.showOpenDialog(gui);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

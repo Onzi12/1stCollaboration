@@ -31,12 +31,13 @@ public class Client extends ObservableClient {
 		return instance;
 	}
 	
-	public void sendMessage(Message msg) throws IOException {
-		sendToServer(msg);
-	}
+//	public void sendMessage(Message msg) throws IOException {
+//		sendToServer(msg);
+//	}
 	
-	public void sendMessage(Message msg, Callback callback) throws IOException {
-		addObserver(callback);
+	public void sendMessage(Message msg, Callback<?> callback) throws IOException {
+		if (callback != null)
+			addObserver(callback);
 		sendToServer(msg);
 	}
 	

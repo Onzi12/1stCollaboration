@@ -7,11 +7,11 @@ import model.User;
 import boundary.CreateAccount_GUI;
 import callback.LoginCallback;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
 import common.MessageType;
+import common.MyBoxException;
 
 public class CreateAccountController extends Controller {
 	
@@ -37,15 +37,16 @@ public class CreateAccountController extends Controller {
 				Client.getInstance().sendMessage(msg, new LoginCallback() {
 					
 					@Override
-					public void userSignIn(User user) {
-						handleUserSignIn(user);
+					public void done(User user, MyBoxException exception) {
+						
+						if (exception == null) {
+							handleUserSignIn(user);
+						} else {
+							getGui().showMessage(exception.getMessage());
+						}
+						
 					}
 					
-					@Override
-					public void error(String message) {
-						gui.showMessage(message);
-						Client.getInstance().deleteObservers();
-					}
 				});
 			} catch (IOException e) {
 				gui.showMessage("Failed to connect!");

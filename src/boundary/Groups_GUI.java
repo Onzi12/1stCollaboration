@@ -1,26 +1,23 @@
 package boundary;
 
-import common.Controller;
-import common.JDialogBoundary;
-
-import javax.swing.JPanel;
-
 import java.awt.Color;
-
-import javax.swing.JLabel;
-
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JSeparator;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JList;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
+
+import common.Controller;
+import common.JDialogBoundary;
 
 import controller.GroupsController;
-import java.awt.Rectangle;
 
 public class Groups_GUI extends JDialogBoundary{
 

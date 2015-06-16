@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import model.User;
-import model.User.Status;
 
 
 public class UserDAO {

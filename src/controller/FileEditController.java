@@ -50,8 +50,7 @@ public class FileEditController extends Controller{
 			}
 			
 		Message msg = new Message(file, MessageType.FILE_EDIT);
-		
-		Client.getInstance().sendMessage(msg);
+		Client.getInstance().sendMessage(msg, null); // TODO GIL: implement FileEditCallback
 			
 		} catch (IOException e) {
 			e.printStackTrace();

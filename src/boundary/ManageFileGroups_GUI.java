@@ -2,6 +2,7 @@ package boundary;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +18,6 @@ import common.Controller;
 import common.JDialogBoundary;
 
 import controller.ManageFileGroupsController;
-import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 public class ManageFileGroups_GUI extends JDialogBoundary {

@@ -1,15 +1,7 @@
 package model;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.sql.Connection;
-import java.sql.Statement;
-
-import dao.UserDAO;
-import model.User;
-import model.User.Status;
 
 public class User extends HashMap<String, Object> {
 	

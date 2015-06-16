@@ -33,7 +33,7 @@ public class FileDAO {
 					ItemFolder folder = new ItemFolder(rs1.getInt("id"));
 					folder.setName(rs1.getString("name"));
 					folder.setFolder(rs1.getInt("folderId"));
-					items.put("folder" + Integer.toString(folder.getID()), folder);
+					items.put("folder" + folder.getStringID(), folder);
 			}
 			
 			stmt2 = connection.prepareStatement("SELECT * FROM test.userfile,file where userId = ? and file.id = userfile.fileId");//where userId = ?
@@ -44,7 +44,7 @@ public class FileDAO {
 					ItemFile file = new ItemFile(rs2.getInt("id"));
 					file.setName(rs2.getString("name"));
 					file.setFolder(rs2.getInt("folderId"));
-					items.put("file" + Integer.toString(file.getID()), file);
+					items.put("file" + file.getStringID(), file);
 			}
 
 			return items;		

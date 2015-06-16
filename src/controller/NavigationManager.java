@@ -65,6 +65,8 @@ public class NavigationManager {
 		frame.dismissView(controller.getGui());
 	}
 
-
+	public Controller getCurrentController() {
+		return stack.peek();
+	}
 	
 }

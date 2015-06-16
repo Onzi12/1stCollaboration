@@ -21,12 +21,13 @@ import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
+import callback.GetFilesCallback;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
 import common.MessageType;
+import common.MyBoxException;
 
 public class MyBoxController extends Controller implements Observer {
 
@@ -108,65 +109,7 @@ public class MyBoxController extends Controller implements Observer {
 			MessageType type = msg.getType();
 			
 			switch (type) {
-			case GET_FILES:
-			{				
-				@SuppressWarnings("unchecked")
-				HashMap<String, Item> items = (HashMap<String, Item>)msg.getData();
-				
-				ItemFolder rootFolder = new ItemFolder(0);
-				rootFolder.setName("MyBox");
-				rootFolder.setFolder(-1);
-				rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
-				items.put("folder0", rootFolder);
-				
-				gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
 
-				for (Item item : items.values()) {
-					
-					ItemFolder directory = (ItemFolder) items.get("folder" + Integer.toString(item.getFolderID()));
-					if (directory != null) {
-						directory.addFile(item);
-					}
-					
-				}
-				
-				user.setFiles(items);
-
-				// update the tree 
-				processTreeHierarchy(rootFolder);
-				
-				// expand the root folder
-				TreePath path = new TreePath(gui.getRoot());
-				gui.getTree().expandPath(path);
-				
-				// update the table
-				showFilesOfSelectedFolder();
-			}
-				break;
-				
-			case UPDATE_FILE:
-			{
-				ItemFile file = (ItemFile)msg.getData();
-				user.getFiles().put(file.getStringID(), file);
-				ArrayList<Item> files = new ArrayList<Item>();
-				files.addAll(user.getFiles().values());
-				gui.refreshTable(files);
-			}
-				break;
-				
-			case ADD_FILE:
-			{
-				ItemFile file = (ItemFile)msg.getData();
-				user.getFiles().put(file.getStringID(), file);
-				ArrayList<Item> files = new ArrayList<Item>();
-				files.addAll(user.getFiles().values());
-				gui.refreshTable(files);
-			}
-				break;
-
-			case DELETE_FILE: 
-				break;
-				
 			case ERROR_MESSAGE:
 				
 				String str = (String)msg.getData();
@@ -174,21 +117,6 @@ public class MyBoxController extends Controller implements Observer {
 					getGui().showMessage("Please try to connect again later.");
 					logout();
 				}
-				
-				break;
-				
-			case UPLOAD_FILE: 
-				
-				System.out.println("UPLOAD_FILE");
-				
-				ItemFile file = (ItemFile)msg.getData();
-
-				user.getFiles().put(file.getStringID(), file);
-				
-				ArrayList<Item> files = new ArrayList<Item>();
-				files.addAll(user.getFiles().values());
-				
-				gui.refreshTable(files);
 				
 				break;
 				
@@ -298,7 +226,7 @@ public class MyBoxController extends Controller implements Observer {
 		
 		try {
 			Message logout = new Message(user, MessageType.LOGOUT);
-			client.sendMessage(logout);
+			client.sendMessage(logout, null);
 		} catch (IOException e) {
 			System.out.println("ERROR " + e.getMessage());
 		}
@@ -335,13 +263,80 @@ public class MyBoxController extends Controller implements Observer {
 
 	@Override
 	public void updateBoundary() {
-		Client.getInstance().addObserver(this);
-
+		Client.getInstance().addObserver(this); //TODO GIL: decide if to remove this line
+		
 		try {
 			Message getFiles = new Message(Client.getInstance().getUser(), MessageType.GET_FILES);
-			Client.getInstance().sendMessage(getFiles);
+			Client.getInstance().sendMessage(getFiles, new GetFilesCallback() {
+				
+				@Override
+				protected void done(HashMap<String, Item> items, MyBoxException exception) {
+					
+					if (exception == null) {
+						updateViewWithItemsFromDB(items);
+					} else {
+						getGui().showMessage(exception.getMessage());
+					}
+					
+				}
+				
+			});
 		} catch (IOException e) {}
 		
+	}
+	
+	public void handleUploadedFileCallback(ItemFile file, MyBoxException exception) {
+		
+		if (exception == null) {
+			
+			System.out.println("UPLOAD_FILE");
+			
+			user.getFiles().put("file" + file.getStringID(), file);
+			
+			
+			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
+			folder.addFile(file);
+			
+			ArrayList<Item> files = new ArrayList<Item>();
+			files.addAll(user.getFiles().values());
+			
+			showFilesOfSelectedFolder();
+			
+		} else {
+			getGui().showMessage(exception.getMessage());
+		}
+	}
+	
+	private void updateViewWithItemsFromDB(HashMap<String, Item> items) {
+		
+		ItemFolder rootFolder = new ItemFolder(0);
+		rootFolder.setName("MyBox");
+		rootFolder.setFolder(-1);
+		rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
+		items.put("folder0", rootFolder);
+		
+		gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
+
+		for (Item item : items.values()) {
+			
+			ItemFolder directory = (ItemFolder) items.get("folder" + Integer.toString(item.getFolderID()));
+			if (directory != null) {
+				directory.addFile(item);
+			}
+			
+		}
+		
+		user.setFiles(items);
+
+		// update the tree 
+		processTreeHierarchy(rootFolder);
+		
+		// expand the root folder
+		TreePath path = new TreePath(gui.getRoot());
+		gui.getTree().expandPath(path);
+		
+		// update the table
+		showFilesOfSelectedFolder();
 	}
 
 	public void btnAddFileClicked() {

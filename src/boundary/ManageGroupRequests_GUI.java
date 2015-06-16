@@ -1,29 +1,23 @@
 package boundary;
-import common.Controller;
-import common.JDialogBoundary;
-
-import javax.swing.JPanel;
-
-import java.awt.SystemColor;
-
-import javax.swing.JSeparator;
-
 import java.awt.Color;
-
-import javax.swing.JLabel;
-
 import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.JButton;
 
-import controller.FileAddController;
+import common.Controller;
+import common.JDialogBoundary;
+
 import controller.ManageGroupRequestsController;
-import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 public class ManageGroupRequests_GUI extends JDialogBoundary {

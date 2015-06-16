@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.6.23, for Win64 (x86_64)
 --
 -- Host: localhost    Database: test
 -- ------------------------------------------------------
--- Server version	5.6.23-log
+-- Server version	5.6.24-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -84,7 +84,7 @@ CREATE TABLE `folder` (
   `userId` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `folder` (
 
 LOCK TABLES `folder` WRITE;
 /*!40000 ALTER TABLE `folder` DISABLE KEYS */;
-INSERT INTO `folder` VALUES (1,NULL,1,'r'),(2,3,2,'g'),(3,NULL,2,'gf');
+INSERT INTO `folder` VALUES (1,NULL,1,'r'),(2,3,2,'g'),(3,NULL,2,'gf'),(4,NULL,2,'new folder'),(5,NULL,2,'1'),(6,NULL,2,'2'),(7,NULL,2,'3'),(8,NULL,2,'4'),(9,NULL,2,'5'),(10,NULL,2,'6'),(11,NULL,2,'7'),(12,NULL,2,'8'),(13,NULL,2,'9'),(14,NULL,2,'10'),(15,NULL,2,'11'),(16,NULL,2,'12'),(17,NULL,2,'13'),(18,NULL,2,'14'),(19,NULL,2,'15'),(20,NULL,2,'16'),(21,NULL,2,'17'),(22,NULL,2,'18'),(23,NULL,2,'19'),(24,NULL,2,'20'),(25,NULL,2,'21'),(26,NULL,2,'22'),(27,NULL,2,'23'),(28,NULL,2,'24'),(29,NULL,2,'25'),(30,NULL,2,'26');
 /*!40000 ALTER TABLE `folder` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +164,7 @@ CREATE TABLE `userfile` (
   `fileId` int(11) NOT NULL,
   `canUpdate` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +173,7 @@ CREATE TABLE `userfile` (
 
 LOCK TABLES `userfile` WRITE;
 /*!40000 ALTER TABLE `userfile` DISABLE KEYS */;
-INSERT INTO `userfile` VALUES (3,8,0,12,1);
+INSERT INTO `userfile` VALUES (3,8,0,12,1),(4,2,2,3,1);
 /*!40000 ALTER TABLE `userfile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -204,10 +204,6 @@ LOCK TABLES `usergroups` WRITE;
 /*!40000 ALTER TABLE `usergroups` DISABLE KEYS */;
 /*!40000 ALTER TABLE `usergroups` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'test'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -218,4 +214,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-15 22:29:25
+-- Dump completed on 2015-06-16 23:50:43

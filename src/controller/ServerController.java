@@ -6,36 +6,32 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JOptionPane;
 
-import org.apache.ibatis.jdbc.ScriptRunner;
-
 import model.Item;
 import model.ItemFile;
 import model.User;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.OriginatorMessage;
+
+import org.apache.ibatis.jdbc.ScriptRunner;
+
 import server.Server;
 import boundary.Server_GUI;
+
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
+
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -210,17 +206,19 @@ public class ServerController implements Observer {
 					break;
 					
 				case LOGOUT:
-					
+				{
 					try{
-						User user2 = (User)msg.getData();
-						System.out.println(user2.getStatus());
-						user2.setStatus(0);
-						System.out.println(user2.getStatus());
-						UserDAO userDAO2 = new UserDAO(server.getConnection());
-						userDAO2.setStatusDB(user2);
+						User user = (User)msg.getData();
+						System.out.println(user.getStatus());
+						user.setStatus(0);
+						System.out.println(user.getStatus());
+						UserDAO userDAO = new UserDAO(server.getConnection());
+						userDAO.setStatusDB(user);
 					}catch (SQLException e) {
-							gui.showMessage(e.getMessage());}
+						gui.showMessage(e.getMessage());
+					}
 					gui.showMessage(client.getInfo("username") + " logged out.");
+				}
 					break;
 					
 				case LOGIN:
@@ -237,18 +235,17 @@ public class ServerController implements Observer {
 							Message response = new Message(user, MessageType.LOGIN); 
 							client.sendToClient(response);
 							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
-							}else if (isConnected && user.getStatus() == 1){
-							gui.showMessage(user.getUsername() + " is already logged in");
-							} 
-							else {
-							Message response;
-							if(user.getCounter() == 2)
-							{
+						} else if (isConnected && user.getStatus() == 1){
+							gui.showMessage(user.getUsername() + " is already logged in.");
+							Message response = new Message(user.getUsername() + " is already logged in.", MessageType.ERROR_MESSAGE); 
+							client.sendToClient(response);
+						} else {
+								Message response;
+							if(user.getCounter() == 2) {
 								user.setStatus(2);
 								userDAO.setStatusDB(user);
 								response = new Message("Password is incorrect.the user " + user.getUsername() +" is blocked", MessageType.ERROR_MESSAGE);
-							}
-							else{ 
+							} else { 
 								System.out.println("fdg");
 								user.setCounter(user.getCounter()+1);
 								userDAO.setCounterDB(user);
@@ -353,6 +350,12 @@ public class ServerController implements Observer {
 					    
 			        } catch (SQLException e) {
 						gui.showMessage("Failed to upload file to DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to upload file to DB: " + e.getMessage(), MessageType.UPLOAD_FILE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					} catch (Exception e) {}
@@ -366,9 +369,9 @@ public class ServerController implements Observer {
 						ItemFile file = (ItemFile)msg.getData();
 						
 						fileDAO.setFileDB(file);
-						gui.showMessage("Successfully edited file to the DB.");
+						gui.showMessage("Successfully edited file in the DB.");
 					} catch (SQLException e) {
-						gui.showMessage("Failed to edit file to DB: " + e.getMessage());
+						gui.showMessage("Failed to edit file in the DB: " + e.getMessage());
 					}
 					break;
 					

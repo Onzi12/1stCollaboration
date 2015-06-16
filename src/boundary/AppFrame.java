@@ -6,8 +6,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import client.Client;
 import common.Boundary;
+import common.Controller;
 import common.JPanelBoundary;
 import controller.MyBoxController;
 import controller.NavigationManager;
@@ -47,9 +47,9 @@ public class AppFrame extends JFrame {
 					
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					
-					if (getContentPane().getComponent(0) instanceof MyBox_GUI) {
-						((MyBox_GUI)(getContentPane().getComponent(0))).getController().logout();
-
+					Controller controller = NavigationManager.getInstance().getCurrentController();
+					if (controller instanceof MyBoxController) {
+						((MyBoxController)controller).logout();
 					}
 					
 			
