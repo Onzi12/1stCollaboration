@@ -1,7 +1,10 @@
 package custom_gui;
 
+import java.util.ArrayList;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import model.Item;
@@ -17,7 +20,7 @@ public class MyBoxTree extends JTree {
 	}
 	
 	// Add a child by a selection path
-	public DefaultMutableTreeNode addObject(Object child) {
+	public DefaultMutableTreeNode addObject(Object child, boolean shouldBeVisible) {
 
 	    DefaultMutableTreeNode parentNode = null;
 	    TreePath parentPath = getSelectionPath();
@@ -30,7 +33,7 @@ public class MyBoxTree extends JTree {
 	        parentNode = (DefaultMutableTreeNode)parentPath.getLastPathComponent();
 	    }
 
-	    return addObject(parentNode, child, true);
+	    return addObject(parentNode, child, shouldBeVisible);
 	}
 	
 	// Add a child to a specific parent
@@ -73,6 +76,15 @@ public class MyBoxTree extends JTree {
 			
 		}
 		
+	}
+	
+	public static TreePath getPath(TreeNode treeNode) {
+		ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
+    	while (treeNode != null) {
+    		nodes.add(0, treeNode);
+    		treeNode = treeNode.getParent();
+    	}
+	    return nodes.isEmpty() ? null : new TreePath(nodes.toArray());
 	}
 	
 }

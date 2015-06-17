@@ -14,6 +14,8 @@ public class ItemFolder extends Item {
 		super(id);
 	}
 	
+	public ItemFolder() {}
+	
 	public HashMap<String, Item> getFiles() {
 		return files;
 	}

@@ -10,6 +10,8 @@ import java.util.Observer;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -22,7 +24,7 @@ import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
 import callback.Callback;
-import callback.EditFileCallback;
+import callback.CreateNewFolderCallback;
 import callback.GetFilesCallback;
 import client.Client;
 import common.Boundary;
@@ -30,6 +32,8 @@ import common.Controller;
 import common.Message;
 import common.MessageType;
 import common.MyBoxException;
+import custom_gui.MyBoxTree;
+import custom_gui.TreeNodeEditorListener;
 
 public class MyBoxController extends Controller implements Observer {
 
@@ -270,6 +274,7 @@ public class MyBoxController extends Controller implements Observer {
 		// expand the root folder
 		TreePath path = new TreePath(gui.getTree().getRoot());
 		gui.getTree().expandPath(path);
+		gui.getTree().setSelectionPath(path);
 		
 		// update the table
 		showFilesOfSelectedFolder();
@@ -288,9 +293,53 @@ public class MyBoxController extends Controller implements Observer {
 		new GroupsController();	
 	}
 
+	/**
+	 * Create new Tree node and make it editable.
+	 */
 	public void btnNewFolderClicked() {
-		// TODO Auto-generated method stub
 		
+		ItemFolder newFolder = new ItemFolder();
+		
+		DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(newFolder, true);
+		newFolder.setTreeNode(newTreeNode);
+		
+		DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode) newTreeNode.getParent();
+		ItemFolder parentFolder = (ItemFolder)parentTreeNode.getUserObject();
+		
+		parentFolder.addFile(newFolder);
+		newFolder.setFolder(parentFolder.getID());
+		
+		TreePath path = MyBoxTree.getPath(newTreeNode);
+		
+		gui.getTree().setEditable(true);
+		gui.getTree().startEditingAtPath(path);
+		
+		gui.getTree().getCellEditor().addCellEditorListener(new TreeNodeEditorListener(newFolder) {
+			
+			@Override
+			protected void editingDone(ItemFolder folder) {
+				finishedEditingNewFolderName(folder);
+			}			
+		});
+
+	}
+	
+	private void finishedEditingNewFolderName(ItemFolder folder) {
+		gui.getTree().setEditable(false);
+		String enteredName = gui.getTree().getCellEditor().getCellEditorValue().toString();
+		
+		try {
+			Message msg = new Message(folder, MessageType.CREATE_NEW_FOLDER);
+			Client.getInstance().sendMessage(msg, new CreateNewFolderCallback() {
+				
+				@Override
+				protected void done(ItemFolder folder, MyBoxException exception) {
+					
+					
+					
+				}
+			});
+		} catch (IOException e) {}
 	}
 
 	public void btnRestoreFileClicked() {
@@ -311,6 +360,11 @@ public class MyBoxController extends Controller implements Observer {
 		return new MyBox_GUI(this);
 	}
 
+	/**
+	 * Called from FileEditController after file edit
+	 * @param file
+	 * @param exception
+	 */
 	public void handleEditFileCallback(ItemFile file, MyBoxException exception) {
 	
 		if (exception == null) {
@@ -328,36 +382,67 @@ public class MyBoxController extends Controller implements Observer {
 		
 	}
 
-	public void moveFileToFolder(final ItemFolder folder) {
-		
-        int rowindex = gui.getTable().getSelectedRow();
-        if (rowindex < 0)
-            return;
-		ItemFile file = (ItemFile)gui.tableGetFile(rowindex);
-		
-		try {
-			Message msg = new Message(file, MessageType.UPDATE_FILE_LOCATION);
-			Client.getInstance().sendMessage(msg, new Callback<ItemFile>() {
+	/**
+	 * Move file from folder to folder 
+	 * @param folder
+	 * @param file
+	 */
+	public void moveFileToFolder(ItemFolder folder, ItemFile file) {
 
-				@Override
-				protected void messageReceived(ItemFile file, MyBoxException exception) {
-					ItemFolder oldFolder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
-					oldFolder.removeFile(file);
-					
-					file.setFolder(folder.getID());
-					folder.addFile(file);
-					
-					showFilesOfSelectedFolder();
-				}
+		if (file != null) {
+			
+			ItemFolder oldFolder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
 
-				@Override
-				protected MessageType getMessageType() {
-					return MessageType.UPDATE_FILE_LOCATION;
-				}
+			if (folder.getID() != oldFolder.getID()) {
 				
-			});
-		} catch (IOException e) {} 
+				oldFolder.removeFile(file);
+				
+				file.setFolder(folder.getID());
+				folder.addFile(file);
+				
+				try {
+					Message msg = new Message(file, MessageType.UPDATE_FILE_LOCATION);
+					Client.getInstance().sendMessage(msg, new Callback<ItemFile>() {
 
+						@Override
+						protected void messageReceived(ItemFile file, MyBoxException exception) {
+							
+							if (exception == null) {
+								
+								showFilesOfSelectedFolder();
+								
+							} else {
+								getGui().showMessage(exception.getMessage());
+							}
+							
+						}
+
+						@Override
+						protected MessageType getMessageType() {
+							return MessageType.UPDATE_FILE_LOCATION;
+						}
+						
+					});
+				} catch (IOException e) {} 
+				
+			}
+						
+		}
+
+	}
+
+
+	public void handleDeleteFileCallback(ItemFile file, MyBoxException exception) {
+		
+		if (exception == null){
+			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
+			folder.removeFile(file);
+			user.getFiles().remove("file"+file.getStringID());
+			showFilesOfSelectedFolder();
+		}else {
+			getGui().showMessage(exception.getMessage());			
+		}
+		
 	}
 
 }

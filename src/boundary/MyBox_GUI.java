@@ -237,6 +237,8 @@ public class MyBox_GUI extends JPanelBoundary {
 				control.clickedOnTreeNode();
 			}
 		});
+		
+		tree.getModel().addTreeModelListener(new FileTreeModelListenter());
 	}
 	
 	public MyBoxController getController() {

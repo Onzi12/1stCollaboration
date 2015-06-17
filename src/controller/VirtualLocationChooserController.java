@@ -2,6 +2,7 @@ package controller;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import model.ItemFile;
 import model.ItemFolder;
 import boundary.FileTreeModel;
 import boundary.VirtualLocationChooser_GUI;
@@ -13,10 +14,12 @@ public class VirtualLocationChooserController extends Controller {
 	private Controller guiController;
 	private VirtualLocationChooser_GUI gui;
 	private ItemFolder folder;
+	private ItemFile file;
 	
-	public VirtualLocationChooserController(Controller guiController) {
+	public VirtualLocationChooserController(Controller guiController, ItemFile file) {
 		this.guiController = guiController;
 		this.gui = (VirtualLocationChooser_GUI)super.gui;
+		this.file = file;
 		
 		MyBoxController myBoxController = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 		gui.getTree().setModel(new FileTreeModel(myBoxController.gui.getTree().getRoot()));
@@ -32,7 +35,7 @@ public class VirtualLocationChooserController extends Controller {
 		if (guiController instanceof FileUpdateController) {
 			((FileUpdateController)guiController).setVirtualSaveLocation(folder);
 		} else if (guiController instanceof MyBoxController) {
-			((MyBoxController)guiController).moveFileToFolder(folder);
+			((MyBoxController)guiController).moveFileToFolder(folder, file);
 		}
 		gui.close();
 	}

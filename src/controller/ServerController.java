@@ -306,11 +306,10 @@ public class ServerController implements Observer {
 					
 				case ADD_FILE:
 					try {
+						User user = (User)msg.getData();
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						int id = fileDAO.addFile(file);
-						file.setID(id);
-						Message response = new Message(file, MessageType.ADD_FILE);
+						fileDAO.addFile(file);			Message response = new Message(file, MessageType.ADD_FILE);
 						client.sendToClient(response);
 						gui.showMessage("Successfully add file to the DB.");
 					} catch (SQLException e) {
@@ -320,12 +319,13 @@ public class ServerController implements Observer {
 					}
 					break;	
 					
-				case DELETE_FILE:
+				case DELETE_FILE_PHYSICAL:
 					try {
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.deleteFile(file);
-						Message response = new Message(null, MessageType.DELETE_FILE);
+						if(!deleteLocalFile(file)){throw new SQLException("the delete f");}
+						fileDAO.deletePhysicalFile(file);
+						Message response = new Message(null, MessageType.DELETE_FILE_PHYSICAL);
 						client.sendToClient(response);
 						gui.showMessage("Successfully deleted file from the DB.");
 					} catch (SQLException e) {
@@ -334,7 +334,9 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
-					
+				
+				case READ:
+					break;
 				case UPLOAD_FILE:
 
 			        try {
@@ -449,5 +451,22 @@ public class ServerController implements Observer {
 		File file = new File(myBoxPath + name);
 		return file;
 	}
-		
+	
+	/**
+	 * Remove the selected file from the server Physically
+	 * @param itemFile
+	 * @return true/false
+	 */
+	public boolean deleteLocalFile(ItemFile itemFile){
+		try{
+			String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+			File file = new File (myBoxPath+itemFile.getName()+itemFile.getType());
+			if (!file.delete())
+				throw new Exception();
+			return true;
+		}
+		catch(Exception e){
+			return false;
+		}
+	}
 }

@@ -168,7 +168,7 @@ public class FileUpdateController extends Controller{
 	}
 
 	public void btnSaveLocationClicked() {
-		new VirtualLocationChooserController(this);
+		new VirtualLocationChooserController(this, file);
 	}
 
 	@Override //On: Leave this blank , this is fine 

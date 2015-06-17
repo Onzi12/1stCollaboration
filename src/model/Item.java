@@ -15,7 +15,8 @@ public class Item implements Serializable {
 	private int id;
 	
 	private int folderID;
-	
+	private int userId;
+
 	/**
 	 * Constructs an instance of an Item.
 	 * @param id - the uniqe id of the item.
@@ -106,5 +107,13 @@ public class Item implements Serializable {
 	@Override
 	public String toString() {
 		return getName();
+	}
+	
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 }

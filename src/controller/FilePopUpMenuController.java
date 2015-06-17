@@ -64,7 +64,7 @@ public class FilePopUpMenuController {
 		}
 
 		private void btnMovetoClicked() {
-			new VirtualLocationChooserController(myboxController);			
+			new VirtualLocationChooserController(myboxController, file);			
 		}
 		
 	}

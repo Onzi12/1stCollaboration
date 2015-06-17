@@ -2,6 +2,7 @@ package boundary;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,18 +13,15 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import model.ItemFile;
+
 import common.Controller;
 import common.JDialogBoundary;
-import controller.FileDeleteController;
 
-import java.awt.Rectangle;
-import java.io.File;
-import java.awt.Component;
+import controller.FileDeleteController;
 
 public class FileDelete_GUI extends JDialogBoundary{
 
@@ -118,6 +116,11 @@ public class FileDelete_GUI extends JDialogBoundary{
 
 	public void addListValue(ItemFile x) {
 		listModel.addElement(x);
+	}
+
+	public ItemFile getSelectedFile() {
+		// TODO idan : return the selected file to delete
+		return null;
 	}
 	
 	

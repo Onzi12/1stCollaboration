@@ -69,7 +69,6 @@ public class ItemFile extends Item {
 
 	public void setOwner(int owner) {
 		this.owner = owner;
-	}
-
+	}	
 	
 }
