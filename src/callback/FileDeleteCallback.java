@@ -5,7 +5,7 @@ import common.MyBoxException;
 
 import model.ItemFile;
 
-public abstract class PhysicalDeleteFileCallback extends Callback<ItemFile>{
+public abstract class FileDeleteCallback extends Callback<ItemFile>{
 
 	protected abstract void done(ItemFile file, MyBoxException exception);
 	

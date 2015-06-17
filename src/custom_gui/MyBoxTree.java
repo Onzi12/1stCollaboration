@@ -30,7 +30,7 @@ public class MyBoxTree extends JTree {
 	        //There is no selection. Default to the root node.
 	        parentNode = rootNode;
 	    } else {
-	        parentNode = (DefaultMutableTreeNode)parentPath.getLastPathComponent();
+	        parentNode = (DefaultMutableTreeNode)getLastSelectedPathComponent();
 	    }
 
 	    return addObject(parentNode, child, shouldBeVisible);

@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 
 import model.Item;
 import model.ItemFile;
+import model.ItemFolder;
 import model.User;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.OriginatorMessage;
@@ -27,11 +29,9 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import server.Server;
 import boundary.Server_GUI;
-
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
-
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -204,7 +204,6 @@ public class ServerController implements Observer {
 					}
 				}
 					break;
-					
 				case LOGOUT:
 				{
 					try{
@@ -334,7 +333,24 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
-				
+					
+				case DELETE_FILE_VIRTUAL:
+					try{
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						ItemFile file = (ItemFile)msg.getData();
+						System.out.println("fnd");
+						fileDAO.deleteVirtualFile(file);
+						Message response = new Message(null, MessageType.DELETE_FILE_VIRTUAL);
+						client.sendToClient(response);
+						gui.showMessage("Successfully deleted file from the DB.");
+					} catch (SQLException e) {
+						gui.showMessage("Failed to delete file from DB: " + e.getMessage());
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					break;
+					
+					
 				case READ:
 					break;
 				case UPLOAD_FILE:
@@ -394,6 +410,31 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
+					
+				case CREATE_NEW_FOLDER:
+				{
+					try
+					{
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						ItemFolder folder = (ItemFolder)msg.getData();
+						
+						folder.setID(fileDAO.addFolder(folder));
+						Message response = new Message(folder, MessageType.CREATE_NEW_FOLDER);
+						client.sendToClient(response);
+						
+						gui.showMessage("Successfully inserted folder in the DB.");
+					} catch (SQLException e) {
+						gui.showMessage("Failed to insert folder to the DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to insert folder in the DB: " + e.getMessage(), MessageType.CREATE_NEW_FOLDER);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
+					} catch (IOException e1) {
+						gui.showMessage("Failed to send response to client.");
+					}
+				}
 					
 				default:
 					break;
@@ -461,11 +502,14 @@ public class ServerController implements Observer {
 		try{
 			String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 			File file = new File (myBoxPath+itemFile.getName()+itemFile.getType());
+			System.out.println("file is not null"); 	
+			
 			if (!file.delete())
 				throw new Exception();
 			return true;
 		}
 		catch(Exception e){
+			System.out.println("catch");
 			return false;
 		}
 	}

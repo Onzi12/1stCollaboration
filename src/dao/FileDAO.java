@@ -33,6 +33,7 @@ public class FileDAO {
 					ItemFolder folder = new ItemFolder(rs1.getInt("id"));
 					folder.setName(rs1.getString("name"));
 					folder.setFolder(rs1.getInt("folderId"));
+					folder.setUserId(user.getID());
 					items.put("folder" + folder.getStringID(), folder);
 			}
 			
@@ -46,6 +47,7 @@ public class FileDAO {
 					file.setFolder(rs2.getInt("folderId"));
 					file.setOwner(rs2.getInt("ownerId"));
 					file.setUserId(user.getID());
+					file.setType(rs2.getString("type"));
 					items.put("file" + file.getStringID(), file);
 			}
 
@@ -63,17 +65,19 @@ public class FileDAO {
 		}
 	}
 	
-	public int AddFolder(ItemFolder folder) throws SQLException
+	public int addFolder(ItemFolder folder) throws SQLException
 	{
 		PreparedStatement stmt = null,stmt2 = null;
 		ResultSet rs = null,rs2 = null;		
 		try {
-			stmt = connection.prepareStatement("select * from folder where f.name = ? and f.userId = ?");
+			stmt = connection.prepareStatement("select * from folder f where f.name = ? and f.userId = ? and f.folderId = ?");
 			stmt.setString(1, folder.getName());
 			stmt.setInt(2,folder.getUserId());
+			stmt.setInt(3, folder.getFolderID());
 			rs = stmt.executeQuery();
-			if(rs.next())
-				return 0;
+			if(rs.next()){
+				throw new SQLException("there is a folder with the same name");
+			}
 			stmt2 = connection.prepareStatement("insert into folder" + " (folderId, userId, name)" + " values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt2.setInt(1, folder.getFolderID());
 			stmt2.setInt(2, folder.getUserId());
@@ -189,12 +193,13 @@ public class FileDAO {
 		PreparedStatement stmt = null,stmt2 = null;
 		ResultSet rs = null;		
 		try {
-			stmt = connection.prepareStatement("insert into file" + " (name, fileDesc, priv, ownerId)" + " values(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt = connection.prepareStatement("insert into file" + " (name, fileDesc, priv, ownerId, type)" + " values(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, file.getName());
 			System.out.println( file.getID());
 			stmt.setString(2, file.getDescription());
 			stmt.setInt(3, file.getPrivilege().getValue());
 			stmt.setInt(4, file.getOwner());
+			stmt.setString(5, file.getType());
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 		    if (rs.next()) {
@@ -240,6 +245,20 @@ public class FileDAO {
 		}
 	}
 	
+	public void deleteVirtualFile(ItemFile file) throws SQLException {
+		PreparedStatement stmt = null ;
+		try {
+			stmt = connection.prepareStatement("delete from userfile where fileId = ? , userId = ?");
+			stmt.setInt(1, file.getID());
+			stmt.setInt(2, file.getUserId());
+			System.out.println("fhd");
+			stmt.executeUpdate();
+		}
+		finally {
+			if (stmt != null)
+				stmt.close();
+		}
+	}
 	
 	
 	public void setFileDB(ItemFile file) throws SQLException{

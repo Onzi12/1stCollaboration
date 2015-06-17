@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import callback.EditFileCallback;
-import callback.PhysicalDeleteFileCallback;
+import callback.FileDeleteCallback;
 import client.Client;
 import model.Item;
 import model.ItemFile;
@@ -43,7 +43,7 @@ public class FileDeleteController extends Controller{
 		ItemFile file = gui.getSelectedFile();  
 		Message msg = new Message(file,MessageType.DELETE_FILE_PHYSICAL);
 		try {
-			Client.getInstance().sendMessage(msg,new PhysicalDeleteFileCallback(){
+			Client.getInstance().sendMessage(msg,new FileDeleteCallback(){
 
 				@Override
 				protected void done(ItemFile file, MyBoxException exception) {
@@ -53,6 +53,8 @@ public class FileDeleteController extends Controller{
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally { 
+			gui.close();
 		}
 	}
 

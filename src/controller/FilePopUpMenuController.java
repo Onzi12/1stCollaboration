@@ -42,7 +42,7 @@ public class FilePopUpMenuController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			btnDeleteFileClicked();
 		}
 	
 	}
@@ -74,6 +74,13 @@ public class FilePopUpMenuController {
 		((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
 	}
 	
+	public void btnDeleteFileClicked() {
+		MyBoxController control = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+		control.FileDeleteVirtualControl(file);
+		((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
+		
+	}
+
 	public void btnEditClicked() {
 		 new FileEditController(file);
 		 ((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
