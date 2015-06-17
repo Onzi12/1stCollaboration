@@ -192,7 +192,7 @@ public class MyBox_GUI extends JPanelBoundary {
 		btnDeleteFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MyBoxController)controller).btnDeleteFileClicked();
+				control.btnDeleteFileClicked();
 			}
 		});
 		

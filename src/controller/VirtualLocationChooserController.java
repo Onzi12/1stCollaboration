@@ -10,12 +10,12 @@ import common.Controller;
 
 public class VirtualLocationChooserController extends Controller {
 
-	private FileUpdateController fileUpdateController;
+	private Controller guiController;
 	private VirtualLocationChooser_GUI gui;
 	private ItemFolder folder;
 	
-	public VirtualLocationChooserController(FileUpdateController fileUpdateController) {
-		this.fileUpdateController = fileUpdateController;
+	public VirtualLocationChooserController(Controller guiController) {
+		this.guiController = guiController;
 		this.gui = (VirtualLocationChooser_GUI)super.gui;
 		
 		MyBoxController myBoxController = (MyBoxController)NavigationManager.getInstance().getCurrentController();
@@ -29,7 +29,11 @@ public class VirtualLocationChooserController extends Controller {
 	}
 
 	public void btnOKClicked() {
-		fileUpdateController.setVirtualSaveLocation(folder);
+		if (guiController instanceof FileUpdateController) {
+			((FileUpdateController)guiController).setVirtualSaveLocation(folder);
+		} else if (guiController instanceof MyBoxController) {
+			((MyBoxController)guiController).moveFileToFolder(folder);
+		}
 		gui.close();
 	}
 
@@ -45,6 +49,7 @@ public class VirtualLocationChooserController extends Controller {
 				ItemFolder folder = (ItemFolder)selectedNode.getUserObject();
 				this.folder = folder;
 			}
+			
 		}
 	}
 

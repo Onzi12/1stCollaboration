@@ -18,9 +18,10 @@ public class FilePopUpMenuController {
 		gui.registerMenuItemDeleteListener(new BtnDeleteFileActionListener());
 		gui.registerMenuItemUpdateListener(new BtnUpdateFileActionListener());
 		gui.registerMenuItemReadListener(new BtnReadFileActionListener());
-		gui.registerMenuItemEditListener(new btnEditFileActionListener());
+		gui.registerMenuItemEditListener(new BtnEditFileActionListener());
+		gui.registerMenuItemMovetoListener(new BtnMovetoActionListener());
 	}
-	private class btnEditFileActionListener implements ActionListener {
+	private class BtnEditFileActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -54,6 +55,19 @@ public class FilePopUpMenuController {
 		}	
 	}
 	
+	private class BtnMovetoActionListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			btnMovetoClicked();
+			
+		}
+
+		private void btnMovetoClicked() {
+			new VirtualLocationChooserController(myboxController);			
+		}
+		
+	}
 	public void btnUpdateClicked() {
 
 		new FileUpdateController(file);

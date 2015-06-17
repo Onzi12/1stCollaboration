@@ -164,7 +164,7 @@ public class FileEdit_GUI extends JDialogBoundary{
 	}
 
 	public void setPrivilege(Privilege p) {
-		this.cbPrivilege.setSelectedItem(p);
+		this.cbPrivilege.setSelectedIndex(p.getValue());
 	}
 
 	

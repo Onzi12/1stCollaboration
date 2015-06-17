@@ -21,6 +21,8 @@ import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
+import callback.Callback;
+import callback.EditFileCallback;
 import callback.GetFilesCallback;
 import client.Client;
 import common.Boundary;
@@ -235,9 +237,6 @@ public class MyBoxController extends Controller implements Observer {
 			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
 			folder.addFile(file);
 			
-			ArrayList<Item> files = new ArrayList<Item>();
-			files.addAll(user.getFiles().values());
-			
 			showFilesOfSelectedFolder();
 			
 		} else {
@@ -254,9 +253,8 @@ public class MyBoxController extends Controller implements Observer {
 		items.put("folder0", rootFolder);
 		
 		gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
-
+		
 		for (Item item : items.values()) {
-			
 			ItemFolder directory = (ItemFolder) items.get("folder" + Integer.toString(item.getFolderID()));
 			if (directory != null) {
 				directory.addFile(item);
@@ -282,9 +280,9 @@ public class MyBoxController extends Controller implements Observer {
 	}
 
 	public void btnDeleteFileClicked() {
-		// TODO Auto-generated method stub
-		
+		new FileDeleteController();
 	}
+	
 
 	public void btnGroupsClicked() {
 		new GroupsController();	
@@ -311,6 +309,55 @@ public class MyBoxController extends Controller implements Observer {
 	@Override
 	protected Boundary initBoundary() {
 		return new MyBox_GUI(this);
+	}
+
+	public void handleEditFileCallback(ItemFile file, MyBoxException exception) {
+	
+		if (exception == null) {
+			
+			user.getFiles().put("file" + file.getStringID(), file);
+				
+			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
+			folder.addFile(file);
+			
+			showFilesOfSelectedFolder();
+			
+		} else {
+			getGui().showMessage(exception.getMessage());
+		}
+		
+	}
+
+	public void moveFileToFolder(final ItemFolder folder) {
+		
+        int rowindex = gui.getTable().getSelectedRow();
+        if (rowindex < 0)
+            return;
+		ItemFile file = (ItemFile)gui.tableGetFile(rowindex);
+		
+		try {
+			Message msg = new Message(file, MessageType.UPDATE_FILE_LOCATION);
+			Client.getInstance().sendMessage(msg, new Callback<ItemFile>() {
+
+				@Override
+				protected void messageReceived(ItemFile file, MyBoxException exception) {
+					ItemFolder oldFolder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
+					oldFolder.removeFile(file);
+					
+					file.setFolder(folder.getID());
+					folder.addFile(file);
+					
+					showFilesOfSelectedFolder();
+				}
+
+				@Override
+				protected MessageType getMessageType() {
+					return MessageType.UPDATE_FILE_LOCATION;
+				}
+				
+			});
+		} catch (IOException e) {} 
+
 	}
 
 }

@@ -16,9 +16,14 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
+import model.ItemFile;
 import common.Controller;
 import common.JDialogBoundary;
 import controller.FileDeleteController;
+
+import java.awt.Rectangle;
+import java.io.File;
+import java.awt.Component;
 
 public class FileDelete_GUI extends JDialogBoundary{
 
@@ -27,17 +32,19 @@ public class FileDelete_GUI extends JDialogBoundary{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private DefaultListModel<String> listModel = new DefaultListModel<String>();
+	private DefaultListModel<ItemFile> listModel;
 	private JButton btnDelete;
 	private JButton btnClose;
-	private JList<String> listFiles;
+	private JList<ItemFile> listFiles;
 
 	public FileDelete_GUI(Controller controller) {
 		super(controller);
+		
 	}
 
 	@Override
 	public void draw() {
+		setBounds(new Rectangle(150, 200, 580, 380));
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
 		
@@ -62,7 +69,8 @@ public class FileDelete_GUI extends JDialogBoundary{
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		panelContents.add(scrollPane);
 		
-		listFiles = new JList<String>();
+		listModel = new DefaultListModel<ItemFile>();
+		listFiles = new JList<ItemFile>();
 		listFiles.setModel(listModel);
 		listFiles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(listFiles);
@@ -99,17 +107,17 @@ public class FileDelete_GUI extends JDialogBoundary{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					control.btnSaveClicked();
+					control.btnDeleteClicked();
 				}
 			});
 	}
 
-	public String getListValue() {
+	public ItemFile getListValue() {
 		return listFiles.getSelectedValue();
 	}
 
-	public void setListValue(String filename) {
-		listModel.addElement(filename);
+	public void addListValue(ItemFile x) {
+		listModel.addElement(x);
 	}
 	
 	

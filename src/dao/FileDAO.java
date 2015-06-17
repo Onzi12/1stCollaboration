@@ -36,12 +36,12 @@ public class FileDAO {
 					items.put("folder" + folder.getStringID(), folder);
 			}
 			
-			stmt2 = connection.prepareStatement("SELECT * FROM test.userfile,file where userId = ? and file.id = userfile.fileId");//where userId = ?
+			stmt2 = connection.prepareStatement("SELECT * FROM userfile,file where userId = ? and file.id = userfile.fileId");//where userId = ?
 			stmt2.setInt(1, user.getID());
 			rs2 = stmt2.executeQuery();
 			
 			while (rs2.next()) {
-					ItemFile file = new ItemFile(rs2.getInt("id"));
+					ItemFile file = new ItemFile(rs2.getInt("fileId"));
 					file.setName(rs2.getString("name"));
 					file.setFolder(rs2.getInt("folderId"));
 					items.put("file" + file.getStringID(), file);
@@ -74,7 +74,7 @@ public class FileDAO {
 					ItemFile file = new ItemFile(rs.getInt("id"));
 					file.setName(rs.getString("name"));
 					file.setFolder(rs.getInt("folderId"));
-					items.put("file" + Integer.toString(file.getID()), file);
+					items.put("file" + file.getStringID(), file);
 			}
 
 			return items;		
@@ -87,7 +87,7 @@ public class FileDAO {
 		}
 	}
 	
-	
+	@Deprecated
 	public void updateFile(ItemFile file) throws SQLException {
 		PreparedStatement stmt = null;
 
@@ -174,12 +174,44 @@ public class FileDAO {
 	public void setFileDB(ItemFile file) throws SQLException{
 		PreparedStatement stmt = null;
 		
-		stmt = connection.prepareStatement("update file" + " set (priv, fileDesc, name)" + " values(?, ?, ?)");
-		stmt.setInt(1, file.getPrivilege().getValue());
-		stmt.setString(2, file.getDescription());
-		stmt.setString(3, file.getName());
-		stmt.setString(4, file.getName());
-		stmt.executeUpdate();
+		try {
+			
+			stmt = connection.prepareStatement("update file " + "set priv = ?,fileDesc = ?,name = ?" + " where id = ?");
+			stmt.setInt(1, file.getPrivilege().getValue());
+			stmt.setString(2, file.getDescription());
+			stmt.setString(3, file.getName());
+			stmt.setInt(4, file.getID());
+			stmt.executeUpdate();
+			
+		} finally {
+			if (stmt != null)
+				stmt.close();
+		}
+		
+	}
+	
+	/**
+	 * Update the file's folderId after moving the file to another folder
+	 * @param file
+	 * @throws SQLException
+	 */
+	public void updateUserFile(ItemFile file) throws SQLException {
+		
+		PreparedStatement stmt = null;
+		
+		try {
+			//TODO GIL: do i need to update 'canUpdate'
+			stmt = connection.prepareStatement("update userfile " + "set folderId = ?" + " where userId = ? and fileId = ?");
+			stmt.setInt(1, file.getFolderID());
+			stmt.setInt(2, file.getOwner());
+			stmt.setInt(3, file.getID());
+			stmt.executeUpdate();
+			
+		} finally {
+			if (stmt != null)
+				stmt.close();
+		}
+		
 	}
 
 }

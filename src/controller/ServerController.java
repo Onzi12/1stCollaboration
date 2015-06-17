@@ -267,16 +267,22 @@ public class ServerController implements Observer {
 					}
 					break;
 					
-				case UPDATE_FILE:
+				case UPDATE_FILE_LOCATION:
 					try {
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.updateFile(file);
-						Message response = new Message(file, MessageType.UPDATE_FILE);
+						fileDAO.updateUserFile(file);
+						Message response = new Message(file, MessageType.UPDATE_FILE_LOCATION);
 						client.sendToClient(response);
-						gui.showMessage("Successfully updated file in the DB.");
+						gui.showMessage("Successfully updated file's location in the DB.");
 					} catch (SQLException e) {
-						gui.showMessage("Failed to update file in DB.");
+						gui.showMessage("Failed to update file's location in DB.");
+						try {
+							Message response = new Message("Failed to update file's location in DB.", MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					}
@@ -369,9 +375,21 @@ public class ServerController implements Observer {
 						ItemFile file = (ItemFile)msg.getData();
 						
 						fileDAO.setFileDB(file);
+						
+						Message response = new Message(file, MessageType.FILE_EDIT);
+						client.sendToClient(response);
+						
 						gui.showMessage("Successfully edited file in the DB.");
 					} catch (SQLException e) {
 						gui.showMessage("Failed to edit file in the DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to edit file in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
 					}
 					break;
 					

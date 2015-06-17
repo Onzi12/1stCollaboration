@@ -19,8 +19,20 @@ public class ItemFolder extends Item {
 	}
 
 
-	public void addFile(Item file) {
-		files.put(file.getStringID(), file);
+	public void addFile(Item item) {
+		if (item instanceof ItemFile) {
+			files.put("file" + item.getStringID(), item);
+		} else if (item instanceof ItemFolder) {
+			files.put("folder" + item.getStringID(), item);
+		}
+	}
+	
+	public void removeFile(Item item) {
+		if (item instanceof ItemFile) {
+			files.remove("file" + item.getStringID());
+		} else if (item instanceof ItemFolder) {
+			files.remove("folder" + item.getStringID());
+		}
 	}
 
 	public DefaultMutableTreeNode getTreeNode() {

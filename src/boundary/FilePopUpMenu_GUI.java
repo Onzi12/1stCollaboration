@@ -15,6 +15,7 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 	private JMenuItem menuItemDelete;
 	private JMenuItem menuItemRead;
 	private JMenuItem menuItemEdit;
+	private JMenuItem menuItemMoveto;
 	
 	public FilePopUpMenu_GUI(String title) {
 		super(title);
@@ -45,6 +46,11 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 	    menuItemEdit = new JMenuItem("Edit");
 	    menuItemEdit.setBackground(Color.WHITE);
 	    add(menuItemEdit);
+	    
+	    menuItemMoveto = new JMenuItem("Move To..");
+	    menuItemMoveto.setBackground(Color.WHITE);
+	    add(menuItemMoveto);
+	    
 	}
 	
 	
@@ -64,4 +70,7 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 		menuItemEdit.addActionListener(listener);
 	}
 	
+	public void registerMenuItemMovetoListener(ActionListener listener) {
+		menuItemMoveto.addActionListener(listener);
+	}
 }

@@ -1,5 +1,9 @@
 package controller;
 
+import java.util.HashMap;
+
+import client.Client;
+import model.Item;
 import model.ItemFile;
 import boundary.FileDelete_GUI;
 import common.Boundary;
@@ -8,19 +12,18 @@ import common.Controller;
 public class FileDeleteController extends Controller{
 
 	private FileDelete_GUI gui;
-	private ItemFile file;
+	private HashMap<String,Item> files;
 	
-	public FileDeleteController(ItemFile file){
-		super(file);
-		this.file = file;
+	public FileDeleteController(){
 		gui = (FileDelete_GUI)super.gui;
+		files = Client.getInstance().getUser().getFiles();
+		for (Item x : files.values())
+			if ( x instanceof ItemFile)
+				if (((ItemFile) x).getOwner() == Client.getInstance().getUser().getID())
+					gui.addListValue((ItemFile)x);
+			
 	}
-	
-	@Override
-	protected Boundary initBoundary(ItemFile file) {
-		return new FileDelete_GUI(this);
-	}
-	
+		
 	@Override
 	protected Boundary initBoundary() {
 		return new FileDelete_GUI(this);
@@ -31,8 +34,8 @@ public class FileDeleteController extends Controller{
 		
 	}
 
-	public void btnSaveClicked() {
-		// TODO Auto-generated method stub
+	public void btnDeleteClicked() {
+		
 		
 	}
 
