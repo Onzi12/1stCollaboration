@@ -63,12 +63,13 @@ public class FileUpdateController extends Controller{
 					file.setDescription(gui.getDescription());
 					file.setPrivilege(gui.getPrivilege());
 					file.setOwner(Client.getInstance().getUser().getID());
+					file.setUserId(file.getOwner());
 					
 					Message msg = new Message(file, MessageType.UPLOAD_FILE);
 					Client.getInstance().sendMessage(msg, new UploadFileCallback() {
 						
 						@Override
-						protected void done(ItemFile file, MyBoxException exception) {
+						protected void done(ItemFile file, MyBoxException exception) {						
 							MyBoxController controller = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 							controller.handleUploadedFileCallback(file, exception);
 						}
@@ -156,7 +157,6 @@ public class FileUpdateController extends Controller{
 				file.setFile(bFile);
 				String extension = f.getName().substring(f.getName().lastIndexOf('.'));
 				file.setType(extension);
-						
 			} catch (Exception e) {}		    		    
 
             

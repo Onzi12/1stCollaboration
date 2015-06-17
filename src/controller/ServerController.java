@@ -286,7 +286,23 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
-
+					
+				case GET_ADD_FILES:
+					try {
+						User user = (User)msg.getData();
+						System.out.println(user.getID());
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						HashMap<String, Item> res = fileDAO.getAllAddFiles(user);
+						Message response = new Message(res, MessageType.GET_ADD_FILES);
+						client.sendToClient(response);
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+						gui.showMessage("Failed to retrieve data from DB.");
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					break;
+					
 				case GET_FILES:
 					try {
 						User user = (User)msg.getData();
@@ -308,7 +324,8 @@ public class ServerController implements Observer {
 						User user = (User)msg.getData();
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.addFile(file);			Message response = new Message(file, MessageType.ADD_FILE);
+						fileDAO.addFile(file);		
+						Message response = new Message(file, MessageType.ADD_FILE);
 						client.sendToClient(response);
 						gui.showMessage("Successfully add file to the DB.");
 					} catch (SQLException e) {
@@ -324,7 +341,7 @@ public class ServerController implements Observer {
 						ItemFile file = (ItemFile)msg.getData();
 						if(!deleteLocalFile(file)){throw new SQLException("the delete f");}
 						fileDAO.deletePhysicalFile(file);
-						Message response = new Message(null, MessageType.DELETE_FILE_PHYSICAL);
+						Message response = new Message(file, MessageType.DELETE_FILE_PHYSICAL);
 						client.sendToClient(response);
 						gui.showMessage("Successfully deleted file from the DB.");
 					} catch (SQLException e) {
@@ -338,9 +355,8 @@ public class ServerController implements Observer {
 					try{
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						System.out.println("fnd");
 						fileDAO.deleteVirtualFile(file);
-						Message response = new Message(null, MessageType.DELETE_FILE_VIRTUAL);
+						Message response = new Message(file, MessageType.DELETE_FILE_VIRTUAL);
 						client.sendToClient(response);
 						gui.showMessage("Successfully deleted file from the DB.");
 					} catch (SQLException e) {
@@ -352,6 +368,23 @@ public class ServerController implements Observer {
 					
 					
 				case READ:
+				/*	try{
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						ItemFile file = (ItemFile)msg.getData();
+						fileDAO.
+					}catch (SQLException e) {
+							gui.showMessage("Failed to upload file to DB: " + e.getMessage());
+							try {
+								Message response = new Message("Failed to upload file to DB: " + e.getMessage(), MessageType.UPLOAD_FILE);
+								client.sendToClient(response);
+							} catch (IOException e1) {
+								gui.showMessage("Failed to send response to client.");
+							}
+					}catch(IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					break;
+					*/
 					break;
 				case UPLOAD_FILE:
 
@@ -410,7 +443,24 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
-					
+				case CHANGE_FOLDER_NAME:
+	/*			try{
+	  					FileDAO fileDAO = new FileDAO(server.getConnection());
+						ItemFolder folder = (ItemFolder)msg.getData();
+						fileDAO.changeFolderName(folder);
+						
+						} catch (SQLException e) {
+						gui.showMessage("Failed to edit file in the DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to edit file in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					*/
 				case CREATE_NEW_FOLDER:
 				{
 					try
@@ -500,9 +550,13 @@ public class ServerController implements Observer {
 	 */
 	public boolean deleteLocalFile(ItemFile itemFile){
 		try{
+			System.out.println("file is not null"); 
 			String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+			System.out.println(myBoxPath);
+			System.out.println(itemFile.getType());
+			System.out.println(itemFile.getName());
 			File file = new File (myBoxPath+itemFile.getName()+itemFile.getType());
-			System.out.println("file is not null"); 	
+			System.out.println("ss");
 			
 			if (!file.delete())
 				throw new Exception();

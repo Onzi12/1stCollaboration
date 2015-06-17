@@ -80,10 +80,16 @@ public class MyBoxTree extends JTree {
 	
 	public static TreePath getPath(TreeNode treeNode) {
 		ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
-    	while (treeNode != null) {
-    		nodes.add(0, treeNode);
-    		treeNode = treeNode.getParent();
-    	}
+		
+		if (treeNode != null) {
+		      nodes.add(treeNode);
+		      treeNode = treeNode.getParent();
+		      while (treeNode != null) {
+		    	  nodes.add(0, treeNode);
+		    	  treeNode = treeNode.getParent();
+		      }
+		 }
+		
 	    return nodes.isEmpty() ? null : new TreePath(nodes.toArray());
 	}
 	

@@ -21,7 +21,6 @@ import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
-import callback.Callback;
 import callback.CreateNewFolderCallback;
 import callback.FileDeleteCallback;
 import callback.GetFilesCallback;
@@ -33,7 +32,6 @@ import common.Message;
 import common.MessageType;
 import common.MyBoxException;
 import custom_gui.MyBoxTree;
-import custom_gui.TreeNodeEditorListener;
 
 public class MyBoxController extends Controller implements Observer {
 
@@ -301,34 +299,23 @@ public class MyBoxController extends Controller implements Observer {
 	public void btnNewFolderClicked() {
 		
 	    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
-
+	    
 	    if (parentNode == null) {
 	    	parentNode = gui.getTree().getRoot();
 	    } 
-	    		
-		ItemFolder newFolder = new ItemFolder();
-		
-		ItemFolder parentFolder = (ItemFolder)parentNode.getUserObject();		
-		newFolder.setFolder(parentFolder.getID());
-		newFolder.setUserId(user.getID());
-		
-		DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(parentNode, newFolder, true);
-		newFolder.setTreeNode(newTreeNode);
-
-		TreePath path = MyBoxTree.getPath(newTreeNode);
-		
-		gui.getTree().setEditable(true);
-		gui.getTree().startEditingAtPath(path);
-		
-		gui.getTree().getCellEditor().addCellEditorListener(new TreeNodeEditorListener(newFolder) {
+	    
+	    if (parentNode != null) {
+	    					    
+	    	ItemFolder folder = new ItemFolder();
+			DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(parentNode, folder, true);
 			
-			@Override
-			protected void editingDone(ItemFolder folder) {
-				gui.getTree().clearSelection();
-				gui.getTree().setEditable(false);
-				finishedEditingNewFolderName(folder);
-			}			
-		});
+			TreePath path = new TreePath(newTreeNode.getPath());//MyBoxTree.getPath(newTreeNode);
+
+			if (path != null) {
+				gui.getTree().setEditable(true);
+				gui.getTree().startEditingAtPath(path);
+			}
+	    }
 
 	}
 	
@@ -336,37 +323,70 @@ public class MyBoxController extends Controller implements Observer {
 	 * Called after user finishes entering new folder's name.
 	 * @param folder
 	 */
-	private void finishedEditingNewFolderName(ItemFolder folder) {
-		String enteredName = gui.getTree().getCellEditor().getCellEditorValue().toString();
-		if (folder != null) {
-			System.out.println(enteredName);
-			folder.setName(enteredName);
-		}
+	public void finishedEditingNewFolderName(DefaultMutableTreeNode node) {
 		
-//		try {
-//			Message msg = new Message(folder, MessageType.CREATE_NEW_FOLDER);
-//			Client.getInstance().sendMessage(msg, new CreateNewFolderCallback() {
-//				
-//				@Override
-//				protected void done(ItemFolder folder, MyBoxException exception) {
-//					
-//					if (exception == null) {
-//						
-//						DefaultMutableTreeNode newTreeNode = folder.getTreeNode();
-//						DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode)newTreeNode.getParent();
-//						ItemFolder parentFolder = (ItemFolder)parentTreeNode.getUserObject();
-//						parentFolder.addFile(folder);
-//						user.getFiles().put("folder" + folder.getStringID(), folder);
-//						
-//					} else {
-//						
-//						getGui().showMessage(exception.getMessage());
-//						
-//					}
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
+		
+		System.out.println(parent);
+		
+//		TreePath path = MyBoxTree.getPath(node);
+		
+//		DefaultMutableTreeNode n = (DefaultMutableTreeNode)path.getLastPathComponent();
+
+//		if (parent != null) {
+//			System.out.println("parent name " + parent);
+//			String name = node.toString();
+//			
+//			ItemFolder folder = new ItemFolder();
+//			folder.setName(name);
+//			folder.setTreeNode(node);
+//			folder.setUserId(user.getID());
 //
-//				}
-//			});
-//		} catch (IOException e) {}
+//			ItemFolder parentFolder = (ItemFolder)parent.getUserObject();	
+//			System.out.println("parentFolder.getID(): " + parentFolder.getID());
+//			folder.setFolder(parentFolder.getID());
+//			
+//			ItemFolder parent = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
+//			parentFolder.addFile(folder);
+//			user.getFiles().put("folder" + folder.getStringID(), folder);
+
+//			try {
+//				Message msg = new Message(folder, MessageType.CREATE_NEW_FOLDER);
+//				Client.getInstance().sendMessage(msg, new CreateNewFolderCallback() {
+//					
+//					@Override
+//					protected void done(ItemFolder folder, MyBoxException exception) {
+//						
+//						if (exception == null) {
+//							
+//							System.out.println("ID: " + folder.getID());
+//							System.out.println("Name: " + folder.getName());
+//							System.out.println("Folder: " + folder.getFolderID());
+//
+//							ItemFolder parent = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
+//							parent.addFile(folder);
+//							user.getFiles().put("folder" + folder.getStringID(), folder);
+//
+//							DefaultMutableTreeNode newTreeNode = folder.getTreeNode();
+//							newTreeNode.setUserObject(newTreeNode);
+//							folder.setTreeNode(newTreeNode);
+////							DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode)newTreeNode.getParent();
+////							ItemFolder parentFolder = (ItemFolder)parentTreeNode.getUserObject();
+////							parentFolder.addFile(folder);
+//							
+//							System.out.println("Path: " + folder.getFullPath());
+//						} else {
+//							
+//							getGui().showMessage(exception.getMessage());
+//							
+//						}
+//
+//					}
+//				});
+//			} catch (IOException e) {}
+//			
+//		}
+
 	}
 
 	public void btnRestoreFileClicked() {
@@ -457,7 +477,7 @@ public class MyBoxController extends Controller implements Observer {
 			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
 			folder.removeFile(file);
 			user.getFiles().remove("file"+file.getStringID());
-			showFilesOfSelectedFolder();
+			showFilesOfSelectedFolder();								//TODO : FIX AUTO REFRESH MAIN TABLE
 		}else {
 			getGui().showMessage(exception.getMessage());			
 		}
@@ -466,13 +486,21 @@ public class MyBoxController extends Controller implements Observer {
 
 	public void FileDeleteVirtualControl(ItemFile file) {
 		Message msg = new Message(file, MessageType.DELETE_FILE_VIRTUAL);
+		System.out.println("file delete virtual control file  " + file.getName() + file.getType());
 		try{
 			Client.getInstance().sendMessage(msg, new FileDeleteCallback() {
 				
 				@Override
 				protected void done(ItemFile file, MyBoxException exception) {
 					handleDeleteFileCallback(file, exception);		
+					
 				}
+				
+				@Override
+				protected MessageType getMessageType() {
+					return MessageType.DELETE_FILE_VIRTUAL;
+				}
+				
 			});		
 		} catch(IOException e) {
 			e.printStackTrace();

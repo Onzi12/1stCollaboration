@@ -17,16 +17,21 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
 import model.ItemFile;
+import model.ItemFolder;
 
 import common.Controller;
 import common.JPanelBoundary;
 
 import controller.MyBoxController;
+import custom_gui.FolderTreeCellEditor;
 import custom_gui.ImageRenderer;
 import custom_gui.MyBoxTree;
 
@@ -43,7 +48,7 @@ public class MyBox_GUI extends JPanelBoundary {
 	private JButton btnGroups;
 	private MyBoxTree tree;
 	private JTable table;
-
+//	private FolderTreeCellEditor editor;
 
 	/**
 	 * Create the frame.
@@ -120,6 +125,8 @@ public class MyBox_GUI extends JPanelBoundary {
 		tree.setVisibleRowCount(12);
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);        
+//        editor = new FolderTreeCellEditor(tree, renderer);
+//        tree.setCellEditor(editor);
         
 		JScrollPane scrollBox = new JScrollPane(tree);
 		scrollBox.setBorder(BorderFactory.createEmptyBorder());
@@ -238,7 +245,28 @@ public class MyBox_GUI extends JPanelBoundary {
 			}
 		});
 		
-		tree.getModel().addTreeModelListener(new FileTreeModelListenter());
+//		editor.addCellEditorListener(new CellEditorListener() {
+//			
+//			@Override
+//			public void editingStopped(ChangeEvent e) {
+//				
+//				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+//								
+////				System.out.println(selectedNode);
+////				
+//				tree.clearSelection();
+//				tree.setEditable(false);
+////				
+////				ItemFolder newFolder = (ItemFolder)tree.getCellEditor().getCellEditorValue();
+//				
+//				control.finishedEditingNewFolderName(selectedNode);
+//				
+//			}
+//			
+//			@Override
+//			public void editingCanceled(ChangeEvent e) {}
+//		});
+		
 	}
 	
 	public MyBoxController getController() {

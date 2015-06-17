@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -13,12 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
+import model.ItemFile;
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileAddController;
 
 
@@ -28,11 +30,11 @@ public class FileAdd_GUI extends JDialogBoundary {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private JList list;						//TODO: idan: need to wait for danny to make query for items to show. (items that does NOT exist in user's database and the user HAS privilege to read/delete
 	private JPanel contents,buttonPanel;
 	private JButton btnClose,btnAddFile;
 	private JScrollPane scrollPane;
-	private JTable table;
+	private JList<ItemFile> listFiles;
+	private DefaultListModel<ItemFile> listModel;
 	
 	public FileAdd_GUI(Controller controller) {
 		super(controller);
@@ -50,13 +52,7 @@ public class FileAdd_GUI extends JDialogBoundary {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
 		getContentPane().setLayout(null);
-		
-		table = new JTable();
-		table.setBackground(UIManager.getColor("text"));
-		table.setRowHeight(24);
-		table.getTableHeader().setReorderingAllowed(false);
-		table.getTableHeader().setBackground(Color.BLACK);
-		
+				
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.BLUE);
 		separator.setBounds(10, 50, 522, 11);
@@ -72,9 +68,16 @@ public class FileAdd_GUI extends JDialogBoundary {
 		scrollPane.setBounds(0, 0, 606, 331);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBackground(UIManager.getColor("text"));
-		contents.add(scrollPane);
 		
-		scrollPane.setViewportView(table);
+		listModel = new DefaultListModel<ItemFile>();
+		
+		listFiles = new JList<ItemFile>();
+		listFiles.setModel(listModel);
+		listFiles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		scrollPane.setViewportView(listFiles);
+		
+		contents.add(scrollPane);
 		
 		buttonPanel = new JPanel();
 		buttonPanel.setBounds(10, 412, 606, 30);
@@ -119,5 +122,17 @@ public class FileAdd_GUI extends JDialogBoundary {
 		});
 		
 
+	}
+
+	public ItemFile getListValue() {
+		return listFiles.getSelectedValue();
+	}
+
+	public void addListValue(ItemFile x) {
+		listModel.addElement(x);
+	}
+	
+	public ItemFile getSelectedFile() {
+		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}
 }

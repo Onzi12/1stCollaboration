@@ -34,7 +34,7 @@ public class FileDelete_GUI extends JDialogBoundary{
 	private JButton btnDelete;
 	private JButton btnClose;
 	private JList<ItemFile> listFiles;
-
+	
 	public FileDelete_GUI(Controller controller) {
 		super(controller);
 		
@@ -119,8 +119,7 @@ public class FileDelete_GUI extends JDialogBoundary{
 	}
 
 	public ItemFile getSelectedFile() {
-		// TODO idan : return the selected file to delete
-		return null;
+		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}
 	
 	

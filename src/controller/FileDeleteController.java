@@ -3,12 +3,11 @@ package controller;
 import java.io.IOException;
 import java.util.HashMap;
 
-import callback.EditFileCallback;
-import callback.FileDeleteCallback;
-import client.Client;
 import model.Item;
 import model.ItemFile;
 import boundary.FileDelete_GUI;
+import callback.FileDeleteCallback;
+import client.Client;
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -50,6 +49,7 @@ public class FileDeleteController extends Controller{
 					MyBoxController controller = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 					controller.handleDeleteFileCallback(file, exception);	
 				}
+				
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
