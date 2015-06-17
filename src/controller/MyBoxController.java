@@ -155,65 +155,6 @@ public class MyBoxController extends Controller implements Observer {
 		}
 	}
 	
-	public void processTreeHierarchy(ItemFolder folder) {
-
-		DefaultMutableTreeNode parent = folder.getTreeNode();
-		
-		for (Item item : folder.getFiles().values()) {
-			
-			if (item instanceof ItemFolder) {
-				
-				ItemFolder f = (ItemFolder)item;
-				f.setTreeNode(addObject(parent, f, false)); 
-				processTreeHierarchy(f);
-			}
-			
-		}
-		
-	}
-	
-	// Add a child by a selection path
-	public DefaultMutableTreeNode addObject(Object child) {
-
-	    DefaultMutableTreeNode parentNode = null;
-	    TreePath parentPath = gui.getTree().getSelectionPath();
-		DefaultMutableTreeNode rootNode = gui.getRoot();
-
-	    if (parentPath == null) {
-	        //There is no selection. Default to the root node.
-	        parentNode = rootNode;
-	    } else {
-	        parentNode = (DefaultMutableTreeNode)parentPath.getLastPathComponent();
-	    }
-
-	    return addObject(parentNode, child, true);
-	}
-	
-	// Add a child to a specific parent
-	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
-
-		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
-		FileTreeModel model = (FileTreeModel)gui.getTree().getModel();
-		model.insertNodeInto(childNode, parent, parent.getChildCount());
-		
-		if (shouldBeVisible) {
-			gui.getTree().scrollPathToVisible(new TreePath(childNode.getPath()));
-		}
-		
-		
-		return childNode;
-	}
-	
-	// Remove a child by a selection path
-	public void removeObject() {
-	    TreePath path = gui.getTree().getSelectionPath();
-	    if (path != null) {
-			DefaultMutableTreeNode nodeToRemove = (DefaultMutableTreeNode)path.getLastPathComponent();	    
-			FileTreeModel model = (FileTreeModel)gui.getTree().getModel();
-			model.removeNodeFromParent(nodeToRemove);
-	    }
-	}
-	
 	public void btnLogoutClicked() {
 		int answer = JOptionPane.showConfirmDialog(gui, "Are you sure you want to logout?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (answer == JOptionPane.YES_OPTION) {
@@ -273,7 +214,7 @@ public class MyBoxController extends Controller implements Observer {
 				protected void done(HashMap<String, Item> items, MyBoxException exception) {
 					
 					if (exception == null) {
-						updateViewWithItemsFromDB(items);
+						initViewWithItemsFromDB(items);
 					} else {
 						getGui().showMessage(exception.getMessage());
 					}
@@ -288,12 +229,9 @@ public class MyBoxController extends Controller implements Observer {
 	public void handleUploadedFileCallback(ItemFile file, MyBoxException exception) {
 		
 		if (exception == null) {
-			
-			System.out.println("UPLOAD_FILE");
-			
+					
 			user.getFiles().put("file" + file.getStringID(), file);
-			
-			
+				
 			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
 			folder.addFile(file);
 			
@@ -307,7 +245,7 @@ public class MyBoxController extends Controller implements Observer {
 		}
 	}
 	
-	private void updateViewWithItemsFromDB(HashMap<String, Item> items) {
+	private void initViewWithItemsFromDB(HashMap<String, Item> items) {
 		
 		ItemFolder rootFolder = new ItemFolder(0);
 		rootFolder.setName("MyBox");
@@ -329,10 +267,10 @@ public class MyBoxController extends Controller implements Observer {
 		user.setFiles(items);
 
 		// update the tree 
-		processTreeHierarchy(rootFolder);
+		gui.getTree().processTreeHierarchy(rootFolder);
 		
 		// expand the root folder
-		TreePath path = new TreePath(gui.getRoot());
+		TreePath path = new TreePath(gui.getTree().getRoot());
 		gui.getTree().expandPath(path);
 		
 		// update the table

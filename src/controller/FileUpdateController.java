@@ -6,6 +6,8 @@ import javax.swing.JFileChooser;
 
 import model.ItemFile;
 import model.ItemFile.Privilege;
+import model.ItemFolder;
+import boundary.FileTreeModel;
 import boundary.FileUpdate_GUI;
 import callback.UploadFileCallback;
 import client.Client;
@@ -29,6 +31,10 @@ public class FileUpdateController extends Controller{
 		
 		if (file == null) {
 			this.file = new ItemFile();
+			MyBoxController myBoxController = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+			ItemFolder rootFolder = (ItemFolder)myBoxController.gui.getTree().getRoot().getUserObject();
+			this.file.setFolder(rootFolder.getID());
+			gui.setSaveLocationText(rootFolder.getFullPath());
 			gui.setPrivilege(Privilege.PUBLIC);
 			gui.setDescription("");
 			gui.setFilename("");
@@ -162,12 +168,17 @@ public class FileUpdateController extends Controller{
 	}
 
 	public void btnSaveLocationClicked() {
-		// TODO Auto-generated method stub
+		new VirtualLocationChooserController(this);
 	}
 
 	@Override //On: Leave this blank , this is fine 
 	protected Boundary initBoundary() {
 		return null;
+	}
+
+	public void setVirtualSaveLocation(ItemFolder folder) {
+		gui.setSaveLocationText(folder.getFullPath());
+		file.setFolder(folder.getID());
 	}
 	
 }

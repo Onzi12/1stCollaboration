@@ -7,7 +7,7 @@ import common.Controller;
 
 public class FileAddController extends Controller {
 
-
+	
 
 	@Override
 	protected Boundary initBoundary() {
@@ -16,7 +16,7 @@ public class FileAddController extends Controller {
 
 	
 	public void btnAddFileClicked() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

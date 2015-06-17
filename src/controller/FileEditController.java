@@ -30,7 +30,7 @@ public class FileEditController extends Controller{
 	
 	@Override
 	protected Boundary initBoundary(ItemFile file) {
-		return new FileEdit_GUI(this, file);
+		return new FileEdit_GUI(this);
 	}
 
 	public void btnCancelClicked() {

@@ -28,7 +28,7 @@ public class FileAdd_GUI extends JDialogBoundary {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private JList list;
+	private JList list;						//TODO: idan: need to wait for danny to make query for items to show. (items that does NOT exist in user's database and the user HAS privilege to read/delete
 	private JPanel contents,buttonPanel;
 	private JButton btnClose,btnAddFile;
 	private JScrollPane scrollPane;
@@ -36,8 +36,8 @@ public class FileAdd_GUI extends JDialogBoundary {
 	
 	public FileAdd_GUI(Controller controller) {
 		super(controller);
-		getContentPane().setBackground(UIManager.getColor("text"));
-		setVisible(true);
+		
+		
 	}
 	
 	
@@ -45,7 +45,7 @@ public class FileAdd_GUI extends JDialogBoundary {
 	@Override
 	public void draw() {
 		setTitle("Add File");
-		
+		getContentPane().setBackground(UIManager.getColor("text"));
 		setBounds(100, 100, 647, 500);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		

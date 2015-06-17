@@ -15,19 +15,20 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
 import model.ItemFile;
+
 import common.Controller;
 import common.JPanelBoundary;
+
 import controller.MyBoxController;
 import custom_gui.ImageRenderer;
+import custom_gui.MyBoxTree;
 
 
 public class MyBox_GUI extends JPanelBoundary {
@@ -40,7 +41,7 @@ public class MyBox_GUI extends JPanelBoundary {
 	private JButton btnLogout;
 	private JButton btnNewFolder;
 	private JButton btnGroups;
-	private JTree tree;
+	private MyBoxTree tree;
 	private JTable table;
 
 
@@ -115,7 +116,7 @@ public class MyBox_GUI extends JPanelBoundary {
 		renderer.setIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
 		renderer.setLeafIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
 		
-		tree = new JTree();
+		tree = new MyBoxTree();
 		tree.setVisibleRowCount(12);
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);        
@@ -148,13 +149,8 @@ public class MyBox_GUI extends JPanelBoundary {
 		getTree().getModel().addTreeModelListener(listener);
 	}
 
-	public JTree getTree() {
+	public MyBoxTree getTree() {
 		return tree;
-	}
-	
-	public DefaultMutableTreeNode getRoot() {
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode)getTree().getModel().getRoot();
-		return root;
 	}
 	
 	public JTable getTable() {

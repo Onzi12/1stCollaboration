@@ -7,9 +7,23 @@ import common.Message;
 import common.MessageType;
 import common.MyBoxException;
 
+/**
+ * The Callback class is used to receive specific messages from the server
+ * @param <T>
+ */
 public abstract class Callback<T> implements Observer {
 		
+	/**
+	 * Callback method that is called when a message is received from the server.
+	 * @param obj
+	 * @param exception
+	 */
 	protected abstract void messageReceived(T obj, MyBoxException exception);
+	
+	/**
+	 * Set the expected message type.
+	 * @return
+	 */
 	protected abstract MessageType getMessageType();
 
 	@SuppressWarnings("unchecked")

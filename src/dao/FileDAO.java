@@ -141,9 +141,10 @@ public class FileDAO {
 			rs = stmt.getGeneratedKeys();
 		    if (rs.next()) {
 				file.setID(rs.getInt(1));
-				stmt2 = connection.prepareStatement("insert into userfile" + " (userId,  fileId)" + " values(?, ?)");
+				stmt2 = connection.prepareStatement("insert into userfile" + " (userId, folderId, fileId)" + " values(?, ?, ?)");
 				stmt2.setInt(1,file.getOwner());
-				stmt2.setInt(2, file.getID());
+				stmt2.setInt(2, file.getFolderID());
+				stmt2.setInt(3, file.getID());
 				stmt2.executeUpdate();
 		    } 		    
 		}
@@ -172,7 +173,8 @@ public class FileDAO {
 	
 	public void setFileDB(ItemFile file) throws SQLException{
 		PreparedStatement stmt = null;
-		stmt = connection.prepareStatement("UPDATE file SET priv=?,fileDesc=?,name=? where name = ?");
+		
+		stmt = connection.prepareStatement("update file" + " set (priv, fileDesc, name)" + " values(?, ?, ?)");
 		stmt.setInt(1, file.getPrivilege().getValue());
 		stmt.setString(2, file.getDescription());
 		stmt.setString(3, file.getName());

@@ -281,6 +281,10 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		return (Privilege) cbPrivilege.getSelectedItem();
 	}
 	
+	public void setSaveLocationText(String location) {
+		tfSaveLocation.setText(location);
+	}
+	
 	@Override
 	public void draw() {
 		// TODO Auto-generated method stub

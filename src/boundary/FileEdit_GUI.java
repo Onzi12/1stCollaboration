@@ -43,15 +43,14 @@ public class FileEdit_GUI extends JDialogBoundary{
 	private JButton btnCancel;
 	private JButton btnSave;
 	
-	public FileEdit_GUI(Controller controller, ItemFile file) {
-		super(controller,file);
-		setBounds(new Rectangle(150, 200, 570, 250));
+	public FileEdit_GUI(Controller controller) {
+		super(controller);
 	}
 
 	@Override
-	public void draw(ItemFile file) {
+	public void draw() { 
 		getContentPane().setBackground(Color.WHITE);
-		
+		setBounds(new Rectangle(150, 200, 570, 250));
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -168,6 +167,5 @@ public class FileEdit_GUI extends JDialogBoundary{
 		this.cbPrivilege.setSelectedItem(p);
 	}
 
-	@Override
-	public void draw() { }
+	
 }
