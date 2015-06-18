@@ -322,7 +322,6 @@ public class ServerController implements Observer {
 					
 				case ADD_FILE:
 					try {
-						User user = (User)msg.getData();
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
 						fileDAO.addFile(file);		

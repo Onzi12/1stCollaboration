@@ -124,10 +124,6 @@ public class FileAdd_GUI extends JDialogBoundary {
 
 	}
 
-	public ItemFile getListValue() {
-		return listFiles.getSelectedValue();
-	}
-
 	public void addListValue(ItemFile x) {
 		listModel.addElement(x);
 	}

@@ -1,7 +1,9 @@
 package controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 
+import callback.AddFileCallback;
 import callback.GetFilesCallback;
 import client.Client;
 import model.Item;
@@ -19,6 +21,7 @@ public class FileAddController extends Controller {
 	
 	private FileAdd_GUI gui;
 	private HashMap<String,Item> files;
+	private ItemFile file;
 	
 	public FileAddController() {
 		gui = (FileAdd_GUI)super.gui;
@@ -56,7 +59,22 @@ public class FileAddController extends Controller {
 
 	
 	public void btnAddFileClicked() {
+		file = gui.getSelectedFile();
+		Message msg = new Message(file, MessageType.ADD_FILE);
 		
+		try {
+			Client.getInstance().sendMessage(msg, new AddFileCallback() {
+				
+				@Override
+				protected void done(ItemFile file, MyBoxException exception) {
+					MyBoxController controller = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+					controller.handleAddFileCallback(file, exception);
+					
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 

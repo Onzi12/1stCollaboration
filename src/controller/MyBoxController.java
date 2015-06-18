@@ -472,4 +472,19 @@ public class MyBoxController extends Controller implements Observer {
 		
 	}
 
+	public void handleAddFileCallback(ItemFile file, MyBoxException exception) {
+		if (exception == null){
+			
+			user.getFiles().put("file" + file.getStringID(), file);
+			
+			ItemFolder folder = (ItemFolder) user.getFiles().get("folder0");
+			folder.addFile(file);
+			
+			showFilesOfSelectedFolder();
+		} else {
+			getGui().showMessage(exception.getMessage());
+		}
+		
+	}
+
 }
