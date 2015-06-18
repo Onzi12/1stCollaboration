@@ -119,7 +119,8 @@ public class MyBox_GUI extends JPanelBoundary {
 		tree = new MyBoxTree();
 		tree.setVisibleRowCount(12);
 		tree.setCellRenderer(renderer);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);        
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);    
+        tree.setEditable(true);
 //        editor = new FolderTreeCellEditor(tree, renderer);
 //        tree.setCellEditor(editor);
         

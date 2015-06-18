@@ -76,10 +76,9 @@ public class FileDAO {
 			stmt.setInt(3, folder.getFolderID());
 			System.out.println(folder.getName() + " " + folder.getUserId() + " " + folder.getFolderID());
 			rs = stmt.executeQuery();
-	/*		if(rs.next())
-			{
+			if(rs.next()) {
 				throw new SQLException("there is a folder with the same name");
-			}*/
+			}
 			stmt2 = connection.prepareStatement("insert into folder" + " (folderId, userId, name)" + " values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt2.setInt(1, folder.getFolderID());
 			stmt2.setInt(2, folder.getUserId());
@@ -90,7 +89,7 @@ public class FileDAO {
 		    if (rs2.next()) {
 		    	return rs2.getInt(1);
 		    } 		    
-		    return 0;
+		    throw new SQLException("Failed to create id.");
 		}
 		finally {
 			if (rs != null)

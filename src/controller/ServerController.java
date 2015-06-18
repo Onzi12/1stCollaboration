@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -29,9 +28,11 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import server.Server;
 import boundary.Server_GUI;
+
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
+
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -467,8 +468,8 @@ public class ServerController implements Observer {
 					{
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFolder folder = (ItemFolder)msg.getData();
-						
-						folder.setID(fileDAO.addFolder(folder));
+						int id = fileDAO.addFolder(folder);
+						folder.setID(id);
 						Message response = new Message(folder, MessageType.CREATE_NEW_FOLDER);
 						client.sendToClient(response);
 						

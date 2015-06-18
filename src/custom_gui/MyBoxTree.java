@@ -20,11 +20,11 @@ public class MyBoxTree extends JTree {
 	}
 	
 	// Add a child by a selection path
-	public DefaultMutableTreeNode addObject(Object child, boolean shouldBeVisible) {
+	public DefaultMutableTreeNode addObject(ItemFolder child, boolean shouldBeVisible) {
 
-	    DefaultMutableTreeNode parentNode = null;
+		DefaultMutableTreeNode parentNode = null;
 	    TreePath parentPath = getSelectionPath();
-		DefaultMutableTreeNode rootNode = getRoot();
+	    DefaultMutableTreeNode rootNode = getRoot();
 
 	    if (parentPath == null) {
 	        //There is no selection. Default to the root node.
@@ -37,7 +37,7 @@ public class MyBoxTree extends JTree {
 	}
 	
 	// Add a child to a specific parent
-	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
+	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, ItemFolder child, boolean shouldBeVisible) {
 
 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
 		FileTreeModel model = (FileTreeModel)getModel();
@@ -55,7 +55,7 @@ public class MyBoxTree extends JTree {
 	public void removeObject() {
 	    TreePath path = getSelectionPath();
 	    if (path != null) {
-			DefaultMutableTreeNode nodeToRemove = (DefaultMutableTreeNode)path.getLastPathComponent();	    
+	    	DefaultMutableTreeNode nodeToRemove = (DefaultMutableTreeNode)path.getLastPathComponent();	    
 			FileTreeModel model = (FileTreeModel)getModel();
 			model.removeNodeFromParent(nodeToRemove);
 	    }

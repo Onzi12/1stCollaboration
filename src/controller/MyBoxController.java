@@ -10,8 +10,6 @@ import java.util.Observer;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -28,12 +26,14 @@ import callback.FileDeleteCallback;
 import callback.GetFilesCallback;
 import callback.UpdateFileLocationCallback;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
 import common.MessageType;
 import common.MyBoxException;
-import custom_gui.MyBoxTree;
+
+import custom_gui.FolderCellEditorListener;
 
 public class MyBoxController extends Controller implements Observer {
 
@@ -253,6 +253,7 @@ public class MyBoxController extends Controller implements Observer {
 		ItemFolder rootFolder = new ItemFolder(0);
 		rootFolder.setName("MyBox");
 		rootFolder.setFolder(-1);
+		rootFolder.setUserId(user.getID());
 		rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
 		items.put("folder0", rootFolder);
 		
@@ -300,40 +301,36 @@ public class MyBoxController extends Controller implements Observer {
 	 */
 	public void btnNewFolderClicked() {
 		
-	    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
 	    
 	    if (parentNode == null) {
 	    	parentNode = gui.getTree().getRoot();
 	    } 
 	    
 	    if (parentNode != null) {
-	    					    
-	    	ItemFolder folder = new ItemFolder();
-			DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(parentNode, folder, true);
+	    					
+	    	ItemFolder parentFolder = (ItemFolder)parentNode.getUserObject();
+	    	ItemFolder newFolder = new ItemFolder();
+	    	newFolder.setFolder(parentFolder.getID());
+	    	newFolder.setUserId(user.getID());
+	    	
+	    	DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(parentNode, newFolder, true);
+			newFolder.setTreeNode(newTreeNode);
 			
 			TreePath path = new TreePath(newTreeNode.getPath());
 
 			if (path != null) {
-				
-				gui.getTree().setEditable(true);
-				
-				gui.getTree().getCellEditor().addCellEditorListener(new CellEditorListener() {
+								
+				gui.getTree().getCellEditor().addCellEditorListener(new FolderCellEditorListener(newFolder) {
 					
 					@Override
-					public void editingStopped(ChangeEvent e) {
+					public void doneEditing(ItemFolder folder) {
 						
-						DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
 						gui.getTree().getCellEditor().removeCellEditorListener(this);
-//						gui.getTree().setEditable(false);
-//						gui.getTree().clearSelection();
-//						gui.getTree().stopEditing();
-
-						finishedEditingNewFolderName(selectedNode);
+						folder.setName((String)gui.getTree().getCellEditor().getCellEditorValue());
+						finishedEditingNewFolderName(folder);
 						
 					}
-					
-					@Override
-					public void editingCanceled(ChangeEvent e) {}
 				});
 				
 				gui.getTree().startEditingAtPath(path);
@@ -346,10 +343,27 @@ public class MyBoxController extends Controller implements Observer {
 	 * Called after user finishes entering new folder's name.
 	 * @param folder
 	 */
-	public void finishedEditingNewFolderName(DefaultMutableTreeNode node) {
-		
+	public void finishedEditingNewFolderName(ItemFolder folder) {
+		System.out.println(folder);
 
+		try {
+			Message msg = new Message(folder, MessageType.CREATE_NEW_FOLDER);
+			Client.getInstance().sendMessage(msg, new CreateNewFolderCallback() {
+				
+				@Override
+				protected void done(ItemFolder folder, MyBoxException exception) {
+					
+					ItemFolder parentFolder = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
+					parentFolder.addFile(folder);
+					
+					user.getFiles().put("folder" + folder.getStringID(), folder);
+					
+				    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
 
+				    node.setUserObject(folder);
+				}
+			});
+		} catch (IOException e) {}
 	}
 
 	public void btnRestoreFileClicked() {
