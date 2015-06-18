@@ -347,6 +347,12 @@ public class ServerController implements Observer {
 						gui.showMessage("Successfully deleted file from the DB.");
 					} catch (SQLException e) {
 						gui.showMessage("Failed to delete file from DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to delete file from DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					}
@@ -362,6 +368,12 @@ public class ServerController implements Observer {
 						gui.showMessage("Successfully deleted file from the DB.");
 					} catch (SQLException e) {
 						gui.showMessage("Failed to delete file from DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to delete file from DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					}
@@ -409,7 +421,7 @@ public class ServerController implements Observer {
 			        } catch (SQLException e) {
 						gui.showMessage("Failed to upload file to DB: " + e.getMessage());
 						try {
-							Message response = new Message("Failed to upload file to DB: " + e.getMessage(), MessageType.UPLOAD_FILE);
+							Message response = new Message("Failed to upload file to DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
 							client.sendToClient(response);
 						} catch (IOException e1) {
 							gui.showMessage("Failed to send response to client.");
