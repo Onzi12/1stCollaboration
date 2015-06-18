@@ -292,6 +292,7 @@ public class ServerController implements Observer {
 						User user = (User)msg.getData();
 						System.out.println(user.getID());
 						FileDAO fileDAO = new FileDAO(server.getConnection());
+						
 						HashMap<String, Item> res = fileDAO.getAllAddFiles(user);
 						Message response = new Message(res, MessageType.GET_ADD_FILES);
 						client.sendToClient(response);

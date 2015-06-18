@@ -10,6 +10,8 @@ import java.util.Observer;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -309,10 +311,31 @@ public class MyBoxController extends Controller implements Observer {
 	    	ItemFolder folder = new ItemFolder();
 			DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(parentNode, folder, true);
 			
-			TreePath path = new TreePath(newTreeNode.getPath());//MyBoxTree.getPath(newTreeNode);
+			TreePath path = new TreePath(newTreeNode.getPath());
 
 			if (path != null) {
+				
 				gui.getTree().setEditable(true);
+				
+				gui.getTree().getCellEditor().addCellEditorListener(new CellEditorListener() {
+					
+					@Override
+					public void editingStopped(ChangeEvent e) {
+						
+						DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+						gui.getTree().getCellEditor().removeCellEditorListener(this);
+//						gui.getTree().setEditable(false);
+//						gui.getTree().clearSelection();
+//						gui.getTree().stopEditing();
+
+						finishedEditingNewFolderName(selectedNode);
+						
+					}
+					
+					@Override
+					public void editingCanceled(ChangeEvent e) {}
+				});
+				
 				gui.getTree().startEditingAtPath(path);
 			}
 	    }
@@ -325,67 +348,7 @@ public class MyBoxController extends Controller implements Observer {
 	 */
 	public void finishedEditingNewFolderName(DefaultMutableTreeNode node) {
 		
-		DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
-		
-		System.out.println(parent);
-		
-//		TreePath path = MyBoxTree.getPath(node);
-		
-//		DefaultMutableTreeNode n = (DefaultMutableTreeNode)path.getLastPathComponent();
 
-//		if (parent != null) {
-//			System.out.println("parent name " + parent);
-//			String name = node.toString();
-//			
-//			ItemFolder folder = new ItemFolder();
-//			folder.setName(name);
-//			folder.setTreeNode(node);
-//			folder.setUserId(user.getID());
-//
-//			ItemFolder parentFolder = (ItemFolder)parent.getUserObject();	
-//			System.out.println("parentFolder.getID(): " + parentFolder.getID());
-//			folder.setFolder(parentFolder.getID());
-//			
-//			ItemFolder parent = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
-//			parentFolder.addFile(folder);
-//			user.getFiles().put("folder" + folder.getStringID(), folder);
-
-//			try {
-//				Message msg = new Message(folder, MessageType.CREATE_NEW_FOLDER);
-//				Client.getInstance().sendMessage(msg, new CreateNewFolderCallback() {
-//					
-//					@Override
-//					protected void done(ItemFolder folder, MyBoxException exception) {
-//						
-//						if (exception == null) {
-//							
-//							System.out.println("ID: " + folder.getID());
-//							System.out.println("Name: " + folder.getName());
-//							System.out.println("Folder: " + folder.getFolderID());
-//
-//							ItemFolder parent = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
-//							parent.addFile(folder);
-//							user.getFiles().put("folder" + folder.getStringID(), folder);
-//
-//							DefaultMutableTreeNode newTreeNode = folder.getTreeNode();
-//							newTreeNode.setUserObject(newTreeNode);
-//							folder.setTreeNode(newTreeNode);
-////							DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode)newTreeNode.getParent();
-////							ItemFolder parentFolder = (ItemFolder)parentTreeNode.getUserObject();
-////							parentFolder.addFile(folder);
-//							
-//							System.out.println("Path: " + folder.getFullPath());
-//						} else {
-//							
-//							getGui().showMessage(exception.getMessage());
-//							
-//						}
-//
-//					}
-//				});
-//			} catch (IOException e) {}
-//			
-//		}
 
 	}
 

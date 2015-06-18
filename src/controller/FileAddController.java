@@ -22,21 +22,20 @@ public class FileAddController extends Controller {
 	
 	public FileAddController() {
 		gui = (FileAdd_GUI)super.gui;
-		Message msg = new Message(null,MessageType.GET_ADD_FILES);
+		Message msg = new Message(Client.getInstance().getUser(),MessageType.GET_ADD_FILES);
 		try{
 			Client.getInstance().sendMessage(msg,new GetFilesCallback() {
 				
 				
 				@Override
 				protected void done(HashMap<String, Item> items, MyBoxException exception) {
-					System.out.println("123132");
 					if (exception == null){
 						files = items;
 						for (Item x : files.values())
 							if ( x instanceof ItemFile )
 									gui.addListValue((ItemFile)x);
 					}
-					else getGui().showMessage(exception.getMessage());
+					else exception.getStackTrace();
 				}
 				@Override
 				protected MessageType getMessageType() {

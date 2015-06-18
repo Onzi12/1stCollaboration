@@ -17,21 +17,16 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
 import model.ItemFile;
-import model.ItemFolder;
 
 import common.Controller;
 import common.JPanelBoundary;
 
 import controller.MyBoxController;
-import custom_gui.FolderTreeCellEditor;
 import custom_gui.ImageRenderer;
 import custom_gui.MyBoxTree;
 

@@ -104,6 +104,7 @@ public class FileDAO {
 		}
 	}
 	public HashMap<String, Item> getAllAddFiles(User user) throws SQLException {
+		System.out.println("userid:" + user.getID());
 		String st = "SELECT * FROM file f where f.id not in (select u.fileId from userfile u where u.userId = ?) and f.havedeleted = 0 and f.priv = ";
 		HashMap<String, Item> items = new HashMap<String, Item>();
 		ResultSet rs = null;
@@ -118,7 +119,7 @@ public class FileDAO {
 			while (rs.next()) {
 					ItemFile file = new ItemFile(rs.getInt("id"));
 					file.setName(rs.getString("name"));
-					file.setFolder(rs.getInt("folderId"));
+					System.out.println(file.getName()+("\n"));
 					items.put("file" + file.getStringID(), file);
 			}
 			stmt2 = connection.prepareStatement(st + "1 and f.id in (select fg.fileId from filegroups fg,usergroups ug where fg.groupId = ug.groupId and ug.userId = ?)" );
@@ -129,7 +130,6 @@ public class FileDAO {
 			while (rs2.next()) {
 					ItemFile file = new ItemFile(rs2.getInt("id"));
 					file.setName(rs2.getString("name"));
-					file.setFolder(rs2.getInt("folderId"));
 					items.put("file" + file.getStringID(), file);
 			}
 
