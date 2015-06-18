@@ -353,14 +353,20 @@ public class MyBoxController extends Controller implements Observer {
 				@Override
 				protected void done(ItemFolder folder, MyBoxException exception) {
 					
-					ItemFolder parentFolder = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
-					parentFolder.addFile(folder);
-					
-					user.getFiles().put("folder" + folder.getStringID(), folder);
-					
-				    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+					if (exception == null) {
+						ItemFolder parentFolder = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
+						parentFolder.addFile(folder);
+						
+						user.getFiles().put("folder" + folder.getStringID(), folder);
+						
+					    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
 
-				    node.setUserObject(folder);
+					    node.setUserObject(folder); 
+					} else {
+					    gui.getTree().removeObject();
+						getGui().showMessage(exception.getMessage());
+					}
+
 				}
 			});
 		} catch (IOException e) {}

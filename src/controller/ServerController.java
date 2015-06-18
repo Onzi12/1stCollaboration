@@ -477,7 +477,7 @@ public class ServerController implements Observer {
 					} catch (SQLException e) {
 						gui.showMessage("Failed to insert folder to the DB: " + e.getMessage());
 						try {
-							Message response = new Message("Failed to insert folder in the DB: " + e.getMessage(), MessageType.CREATE_NEW_FOLDER);
+							Message response = new Message("Failed to insert folder in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
 							client.sendToClient(response);
 						} catch (IOException e1) {
 							gui.showMessage("Failed to send response to client.");
