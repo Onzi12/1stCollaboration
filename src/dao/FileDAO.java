@@ -37,7 +37,7 @@ public class FileDAO {
 					items.put("folder" + folder.getStringID(), folder);
 			}
 			
-			stmt2 = connection.prepareStatement("SELECT * FROM userfile,file where userId = ? and file.id = userfile.fileId");//where userId = ?
+			stmt2 = connection.prepareStatement("SELECT * FROM userfiles,file where userId = ? and file.id = userfiles.fileId");//where userId = ?
 			stmt2.setInt(1, user.getID());
 			rs2 = stmt2.executeQuery();
 			
@@ -104,7 +104,7 @@ public class FileDAO {
 	}
 	public HashMap<String, Item> getAllAddFiles(User user) throws SQLException {
 		System.out.println("userid:" + user.getID());
-		String st = "SELECT * FROM file f where f.id not in (select u.fileId from userfile u where u.userId = ?) and f.havedeleted = 0 and f.priv = ";
+		String st = "SELECT * FROM file f where f.id not in (select u.fileId from userFiles u where u.userId = ?) and f.havedeleted = 0 and f.priv = ";
 		HashMap<String, Item> items = new HashMap<String, Item>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -170,7 +170,7 @@ public class FileDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;		
 		try {
-			stmt = connection.prepareStatement("insert into userfile" + " (userId, folderId, fileId)" + " values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt = connection.prepareStatement("insert into userFiles" + " (userId, folderId, fileId)" + " values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, file.getUserId());
 			stmt.setInt(2, file.getFolderID());
 			stmt.setInt(3, file.getID());
@@ -204,7 +204,7 @@ public class FileDAO {
 			rs = stmt.getGeneratedKeys();
 		    if (rs.next()) {
 				file.setID(rs.getInt(1));
-				stmt2 = connection.prepareStatement("insert into userfile" + " (userId, folderId, fileId)" + " values(?, ?, ?)");
+				stmt2 = connection.prepareStatement("insert into userFiles" + " (userId, folderId, fileId)" + " values(?, ?, ?)");
 				stmt2.setInt(1,file.getOwner());
 				stmt2.setInt(2, file.getFolderID());
 				stmt2.setInt(3, file.getID());
@@ -252,7 +252,7 @@ public class FileDAO {
 	public void deleteVirtualFile(ItemFile file) throws SQLException {
 		PreparedStatement stmt = null ;
 		try {
-			stmt = connection.prepareStatement("delete from userfile where fileId = ? and userId = ?;");
+			stmt = connection.prepareStatement("delete from userFiles where fileId = ? and userId = ?;");
 			stmt.setInt(1, file.getID());
 			stmt.setInt(2, file.getUserId());
 			System.out.println(file.getUserId()+ " " + file.getID());
@@ -289,13 +289,13 @@ public class FileDAO {
 	 * @param file
 	 * @throws SQLException
 	 */
-	public void updateUserFile(ItemFile file) throws SQLException {
+	public void updateuserFiles(ItemFile file) throws SQLException {
 		
 		PreparedStatement stmt = null;
 		
 		try {
 			//TODO GIL: do i need to update 'canUpdate'
-			stmt = connection.prepareStatement("update userfile" + " set folderId = ?" + " where userId = ? and fileId = ?");
+			stmt = connection.prepareStatement("update userFiles" + " set folderId = ?" + " where userId = ? and fileId = ?");
 			stmt.setInt(1, file.getFolderID());
 			stmt.setInt(2, file.getUserId());
 			stmt.setInt(3, file.getID());

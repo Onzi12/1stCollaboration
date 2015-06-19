@@ -17,45 +17,7 @@ public class UserDAO {
 		this.connection = connection;
 	}
 	
-	/**
-	 * Check the user details against the data base
-	 * @param user - The user that is trying to log in
-	 * @return boolean
-	 * @throws Exception
-	 */
-	public boolean authenticate(User user) throws SQLException {
-		String enteredPassword = user.getPassword();
-		String passwordFromDB = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = connection.prepareStatement("select * from user where username = ?");
-			stmt.setString(1, user.getUsername());
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				passwordFromDB = rs.getString("password");
-				user.setId(rs.getInt("iduser"));
-				user.setStatus(rs.getInt("status"));
-				setStatusDB(user);
-				user.setCounter(rs.getInt("counter"));
-				setCounterDB(user);
-				user.setAdmin(rs.getInt("admin"));
-				if(user.getStatus() == 2)
-					throw new SQLException("The username " + user.getUsername() + " is blocked.");
-			} else {
-				throw new SQLException("The username " + user.getUsername() + " does not exists.");
-			}
-			
-			
-			return enteredPassword.equals(passwordFromDB);		
-		}
-		finally {
-			if (rs != null)
-				rs.close();
-			if (stmt != null) 
-				stmt.close();
-		}	
-	}
+
 	
 	
 	public void setStatusDB(User user) throws SQLException{
@@ -66,13 +28,7 @@ public class UserDAO {
 		stmt.executeUpdate();
 	}
 	
-	public void setCounterDB(User user) throws SQLException{
-		PreparedStatement stmt = null;
-		stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
-		stmt.setInt(1, user.getCounter());
-		stmt.setString(2, user.getUsername());
-		stmt.executeUpdate();
-	}
+
 	
 	/**
 	 * Adds the user to the users table in the data base

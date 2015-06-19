@@ -8,6 +8,7 @@ import callback.GetFilesCallback;
 import client.Client;
 import model.Item;
 import model.ItemFile;
+import model.ItemFolder;
 import model.User;
 import boundary.FileAdd_GUI;
 import boundary.FileDelete_GUI;
@@ -60,6 +61,8 @@ public class FileAddController extends Controller {
 	
 	public void btnAddFileClicked() {
 		file = gui.getSelectedFile();
+		file.setFolder( ( (ItemFolder) (myboxControl.gui.getTree().getLastSelectedPathComponent()
+				)).getID());
 		Message msg = new Message(file, MessageType.ADD_FILE);
 		
 		try {

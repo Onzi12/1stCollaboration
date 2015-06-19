@@ -25,8 +25,8 @@ public class Server extends ObservableServer {
 	public static final String CONNECTION_FAILED= "#OS:Connection failed.";
 	public static final String CONNECTION_SUCCEEDED= "#OS:Connection succeeded.";
 	
-	/** The connection to the mysql data base */
-	private Connection connection;
+	/** The connection to the mysql database */
+	private static Connection connection;
 	private Server_GUI gui;
 
 	/**
@@ -47,7 +47,7 @@ public class Server extends ObservableServer {
 	 * Get the connection (to the DB) instance
 	 * @return Connection
 	 */
-	public Connection getConnection() {
+	public static Connection getConnection() {
 		return connection;
 	}
 	

@@ -4,31 +4,15 @@ import java.io.Serializable;
 
 import client.Client;
 
-public class Item implements Serializable {
+public abstract class Item implements Serializable {
 
 	private static final long serialVersionUID = -3661349268417620657L;
 	
 	/** The name of the item */
 	private String name;
-	
-	/** The uniqe id of the item */
+	private String path;
+	private Item parent;
 	private int id;
-	
-	private int folderID;
-	private int userId;
-
-	/**
-	 * Constructs an instance of an Item.
-	 * @param id - the uniqe id of the item.
-	 */
-	public Item(int id) {
-		this.id = id;
-	}
-	
-	/**
-	 * Constructs an instance of an Item.
-	 */
-	public Item() {}
 
 	/**
 	 * Get the name of the item.
@@ -36,6 +20,24 @@ public class Item implements Serializable {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	public void concateToPath(String item) {
+		path = path.concat(item);
+	}
+
+	public Item getParent() {
+		return parent;
+	}
+	
+	public void setParent(Item item) {
+		parent = item;
+	}
+	
+	
+	@Override
+	public String toString() { 
+	return name;
 	}
 
 	/**
@@ -46,74 +48,27 @@ public class Item implements Serializable {
 		this.name = name;
 	}
 
-	/**
-	 * Get the uniqe id of the item.
-	 * @return int
-	 */
-	public int getID() {
-		return id;
-	}
-	
-	/**
-	 * Set the uniqe id of the item
-	 * @param id
-	 */
-	public void setID(int id) {
-		this.id = id;
-	}
-	
-	/**
-	 * Get a string representation of the uniqe id.
-	 * @return String
-	 */
-	public String getStringID() {
-		return Integer.toString(getID());
-	}
-	
-	private ItemFolder getFolder() {
-		User user = Client.getInstance().getUser();
-		ItemFolder folder = (ItemFolder)(user.getFiles().get("folder" + Integer.toString(folderID)));
-		return folder;
-	}
-	
-	public int getFolderID() {
-		return folderID;
-	}
-	
-	public void setFolder(int folderID) {
-		this.folderID = folderID;
-	}
-	
+
 	/**
 	 * Get the path to the location of the item.
 	 * @return String
 	 */
 	public String getFullPath() {
-		
-		Item item = getFolder();
-		String path = "";
-		
-		if (item != null) {
-			
-			 path += item.getFullPath() + "/";
-			
-		} 
-		
-		path += getName();
-		
-		return path;
-	}
-	
-	@Override
-	public String toString() {
-		return getName();
-	}
-	
-	public int getUserId() {
-		return userId;
+		return path+"/"+name;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
 	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }

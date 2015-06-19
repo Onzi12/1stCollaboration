@@ -2,6 +2,7 @@ package common;
 
 
 import model.ItemFile;
+import controller.MyBoxController;
 import controller.NavigationManager;
 
 
@@ -10,9 +11,12 @@ public abstract class Controller{
 
 	protected NavigationManager nav;
 	protected Boundary gui;
+	public MyBoxController myboxControl;
 	
 	public Controller() {
 		nav = NavigationManager.getInstance();
+		if ( (this instanceof MyBoxController) == false )
+			myboxControl = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 		gui = initBoundary();
 		registerMoreListeners();
 		gui.display();

@@ -1,9 +1,16 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 
-public class User extends HashMap<String, Object> {
+import server.Server;
+
+public class User {
 	
 	public enum Status {
 		NOTCONNECTED(0) ,CONNECTED(1) , BLOCKED(2);
@@ -23,29 +30,40 @@ public class User extends HashMap<String, Object> {
 	private static final long serialVersionUID = 5100974740161696228L;
 	
 	
-	private HashMap<String, Item> files = new HashMap<String, Item>();
+    private String userName;
+    private String password;
+    private ItemFolder rootFolder;
+    private LinkedHashSet<Group> groups;
+    private boolean isAdmin;
+	private int id;
+	private static Connection connection;
+
+    public ItemFolder getRootFolder() {
+    		return rootFolder;
+    }
+
+    public void setRootFolder(ItemFolder root) {
+    	rootFolder = root;
+    }
+    
+    /**
+     * Constructs an instance of a User.
+     * @param userName - The username for the user (required and unique).
+     * @param password - The password for the user (required).
+     */
+    public User(String userName, String password) {
+    	this.userName = userName;
+    	this.password = password;
+	}
+
 	
-	/**
-	 * Constructs an instance of a User.
-	 * @param username - The username for the user (required and unique).
-	 * @param password - The password for the user (required).
-	 */
-	public User(String username, String password) {
-		setUsername(username);
-		setPassword(password);
-		}
-	
-	/**
-	 * Constructs an instance of a User.
-	 */
-	public User() {}
 
 	/**
 	 * Set the username for the user (required and unique).
 	 * @param username
 	 */
-	public void setUsername(String username) {
-		put("username", username);
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	/**
@@ -53,108 +71,150 @@ public class User extends HashMap<String, Object> {
 	 * @param password
 	 */
 	public void setPassword(String password) {
-		put("password", password);
+		this.password = password;
 	}
 	
-	/**
-	 * Set the unique id of the user.
-	 * @param id
-	 */
-	public void setId(int uid) {
-		put("uid", uid);
-	}
+
 	
-	
-	/**
-	 * Set the counter of the user.
-	 * @param counter
-	 */
-	public void setCounter(int counter)throws SQLException {
-		put("counter",counter);
-	}
 	
 	/**
 	 * Get the unique username of the user.
 	 * @return String
 	 */
-	public String getUsername() {
-		return (String)get("username");
+	public String getUserName() {
+		return userName;
 	}
 	
-	/**
-	 * change 
-	 */
+
 
 	/**
 	 * Get the password of the user.
 	 * @return String
 	 */
 	public String getPassword() {
-		return (String)get("password");
+		return password;
 	}
 	
 	/**
 	 * Get the unique id of the user.
-	 * @return String
+	 * @return id the user Database id
 	 */
 	public int getID() {
-		return (int)get("uid");
-	}
-		
-	public int getCounter() {
-		return (int)get("counter");
-	}
-	
-	public HashMap<String, Item> getFiles() {
-		return files;
-	}
-	
-	public void setFiles(HashMap<String, Item> files) {
-		this.files = files;
+		return id;
 	}
 	
 	/**
-	 * Get the status of the user.
-	 * @return
+	 * Set the unique id of the user.
+	 * @param id the Database userID
 	 */
-	public int getStatus() {
-		Status status = (Status)get("status");
-	    return status.getValue();
+	public void setID(int id) {
+		this.id = id;
 	}
-	
-	
-	/**
-	 * Set the status of the user.
-	 * @param status
-	 */
-//	public void setStatus(Status status)throws SQLException {
-//		put("status", status);
-//	}
-	
-	public void setStatus(int status) {
 		
-		switch (status) {
-		case 0:
-			put("status", Status.NOTCONNECTED);
-			break;
 
-		case 1:
-			put("status", Status.CONNECTED);
-			break;
+	public void setAdmin(boolean admin) {
+		this.isAdmin = admin;
+	}
+	
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+	
+	public boolean equals(Object obj) {
+		return userName == ((User)obj).userName;
+	}
+	
+	
+	/**
+	 * Check the user details against the data base
+	 * @param user - The user that is trying to log in
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public static synchronized  User authenticate(String userName,String enteredPassword) throws Exception {
+		String passwordFromDB;
+		String exception = "The userName \""+userName+"\" ";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		User user;
+		try {
+			stmt = connection.prepareStatement("select * from user where username = ?");
+			stmt.setString(1,userName);
+			rs = stmt.executeQuery();
 			
-		case 2:
-			put("status", Status.BLOCKED);
-			break;
+			// user exist in the Database?
+			if (rs.next() == false )
+				throw new SQLException(exception + "does not exists!");
+			
+			passwordFromDB = rs.getString("password");
+			
+			//get user database status
+			Status status = Status.values()[ rs.getInt("status") ];
+			
+			//user is blocked on the Database?
+			if( status == Status.BLOCKED )
+				throw new Exception(exception+ "is blocked\n please contact the administrator!"
+						+ "\n(Password was NOT checked)");			
+
+
+			//user already logged in?
+			if (status == Status.CONNECTED )
+				throw new Exception(exception+ "is already connected!" );
+			
+			//enterdPassword is wrong?
+			if( passwordFromDB.equals(enteredPassword) == false ) 
+				{	
+					int counter = rs.getInt("counter") ;
+					setCounterDB(userName,  ++counter );
+					if(counter == 2)
+						{
+						setStatusDB(userName, status);
+						throw new Exception(exception+ "is blocked\n please contact the administrator!");
+						}
+					else
+						throw new Exception(exception+ "Password is incorrect!");
+				}
+			
+
+				//At last! all checks are fine - create user
+				
+				user = new User(userName,enteredPassword);
+				user.setID( rs.getInt("iduser") );
+				user.setAdmin( rs.getInt("admin") == 1 );
+				user.setRootFolder( ItemFolder.DB;
+			return user;		
 		}
+		finally {
+			if (rs != null)
+				rs.close();
+			if (stmt != null) 
+				stmt.close();
+		}	
 	}
 
-	public void setAdmin(int admin) {
-		put("admin",admin);
-	}
+
+public static void setStatusDB(String userName, Status status) throws SQLException{
+	PreparedStatement stmt = null;
+	stmt = getConnection().prepareStatement("UPDATE user SET status=? WHERE username = ?");
+	stmt.setInt(1, status.value );
+	stmt.setString(2, userName );
+	stmt.executeUpdate();
+}
+
+private static Connection getConnection() {
+	if(connection == null ) 
+		connection = Server.getConnection();
 	
-	public int getAdmin(){
-		return (int) get("admin");
-	}
-	
-	
+	return connection;
+}
+
+public static void setCounterDB(String userName, int count) throws SQLException{
+	PreparedStatement stmt = null;
+	stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
+	stmt.setInt(1, count);
+	stmt.setString(2, userName);
+	stmt.executeUpdate();
+}
+
+
 }

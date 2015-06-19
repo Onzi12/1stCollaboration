@@ -497,7 +497,7 @@ public class MyBoxController extends Controller implements Observer {
 			
 			user.getFiles().put("file" + file.getStringID(), file);
 			
-			ItemFolder folder = (ItemFolder) user.getFiles().get("folder0");
+			ItemFolder folder = (ItemFolder) user.getFiles().get("folder"+file.getFolderID());
 			folder.addFile(file);
 			
 			showFilesOfSelectedFolder();

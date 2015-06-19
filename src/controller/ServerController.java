@@ -40,7 +40,7 @@ public class ServerController implements Observer {
 	
 	private Server_GUI gui;
 	private Server server;
-	
+	private HashSet<User> activeUsers;
 	public ServerController(final Server_GUI ui) {
 		this.gui = ui;
 		
@@ -271,7 +271,7 @@ public class ServerController implements Observer {
 					try {
 						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.updateUserFile(file);
+						fileDAO.updateuserFiles(file);
 						Message response = new Message(file, MessageType.UPDATE_FILE_LOCATION);
 						client.sendToClient(response);
 						gui.showMessage("Successfully updated file's location in the DB.");
