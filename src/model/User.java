@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.TreeSet;
 
 import server.Server;
 
@@ -29,15 +30,43 @@ public class User {
 
 	private static final long serialVersionUID = 5100974740161696228L;
 	
-	
+	private int userID;
     private String userName;
     private String password;
-    private ItemFolder rootFolder;
-    private LinkedHashSet<Group> groups;
+    private Status status;
     private boolean isAdmin;
-	private int id;
+    private int counter;
+    
+    private ItemFolder rootFolder;
+    private TreeSet<Group> groups;
+    
+	
 	private static Connection connection;
 
+	private void setGroups(TreeSet<Group> userGroups) {
+		groups = userGroups;
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	
+	public Status getStatus() {
+		return status;
+	}
+	
+	public int getStatusValue() {
+		return status.getValue();
+	}
+	
+	public int getCounter() {
+		return counter;
+	}
+	
+	public void setCounter(int counter){
+		this.counter = counter;
+	}
+	
     public ItemFolder getRootFolder() {
     		return rootFolder;
     }
@@ -46,17 +75,6 @@ public class User {
     	rootFolder = root;
     }
     
-    /**
-     * Constructs an instance of a User.
-     * @param userName - The username for the user (required and unique).
-     * @param password - The password for the user (required).
-     */
-    public User(String userName, String password) {
-    	this.userName = userName;
-    	this.password = password;
-	}
-
-	
 
 	/**
 	 * Set the username for the user (required and unique).
@@ -100,15 +118,15 @@ public class User {
 	 * @return id the user Database id
 	 */
 	public int getID() {
-		return id;
+		return userID;
 	}
 	
 	/**
 	 * Set the unique id of the user.
 	 * @param id the Database userID
 	 */
-	public void setID(int id) {
-		this.id = id;
+	public void setID(int userID) {
+		this.userID = userID;
 	}
 		
 

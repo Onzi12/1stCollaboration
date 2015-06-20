@@ -4,31 +4,28 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import server.Server;
 
 public class FolderDAO extends ItemFolder {
 
 		
-		public static ItemFolder DBgetRoot(int userID) throws SQLException {
-			FolderDAO root;
+		public static ItemFolder DBtoItemTree(int userID) throws SQLException {
+			FolderDAO root = null;
 			Connection con = Server.getConnection();
 			try(Statement stmt  = con.createStatement() ) 
 			{
-				ResultSet rs = stmt.executeQuery("SELECT folderID FROM folder WHERE userID = "+userID+" AND name = 'root'");
+				ResultSet rs = stmt.executeQuery("SELECT folderID FROM folder WHERE userID = "+userID+" AND name = '/'");
 				if(rs.next())
 					{
 					root = new FolderDAO();
 					root.setParent(null);
-					root.setName("root");
+					root.setName("/");
 					root.setId( rs.getInt("folderID") );
 					root.createContent();
 					}
 				else 
-					{
 					System.err.println("ERROR: root folder for user" +userID +" is not exist!! ");
-					return null; 
-					}
+
 			}
 			return root;
 		}
@@ -38,10 +35,10 @@ public class FolderDAO extends ItemFolder {
 			Connection con = Server.getConnection();
 			try( Statement stmt  = con.createStatement() ) 
 			{
-				ResultSet rs = stmt.executeQuery("SELECT fileId FROM userfiles WHERE folderID = "+getId());
+				ResultSet rs = stmt.executeQuery("SELECT fileID FROM userfiles WHERE folderID = "+getId());
 				while(rs.next())
 				  {
-					//try(PreparedStatement st = con.prepareStatement(")) continue tomorrow..
+					FileDAO file = FileDAO.DBtoObject(rs.getInt("fileID"));
 				  }
 			}
 			

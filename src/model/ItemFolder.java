@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import server.Server;
@@ -20,7 +22,7 @@ public class ItemFolder extends Item {
 	private static final long serialVersionUID = -1040876964303827361L;
 	private LinkedHashSet<Item> contents;
 	private DefaultMutableTreeNode treeNode;
-	
+	private static Icon icon = new ImageIcon("Folder.png");
 	
 	
 	public void addItem(Item item) {
@@ -42,6 +44,17 @@ public class ItemFolder extends Item {
 	public void setTreeNode(DefaultMutableTreeNode treeNode) {
 		this.treeNode = treeNode;
 	}
+
+
+	/**
+	 * @return the folder icon
+	 */
+	@Override
+	public Icon getIcon() {
+		return icon;
+	}
+
+
 	
 	
 }

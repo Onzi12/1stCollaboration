@@ -1,5 +1,8 @@
 package model;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 
 
 public class ItemFile extends Item {
@@ -9,8 +12,10 @@ public class ItemFile extends Item {
 	private byte[] file;
 	private String description;
 	private Privilege privilege;
-	private String type;
-	private int owner;
+	private boolean isDeleted;
+	private boolean isEdited;
+	private User owner;
+	private static Icon icon = new ImageIcon("file.png");
 	
 	public enum Privilege {
 		PRIVATE(0) ,GROUP(1) , PUBLIC(2);
@@ -26,11 +31,7 @@ public class ItemFile extends Item {
 	    }
 	}
 	
-	public ItemFile(int id) {
-		super(id);
-	}
 	
-	public ItemFile() {}
 
 	public byte[] getFile() {
 		return file;
@@ -55,20 +56,56 @@ public class ItemFile extends Item {
 		return privilege;
 	}
 
-	public String getType() {
-		return type;
-	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public int getOwner() {
+	public User getOwner() {
 		return owner;
 	}
 
-	public void setOwner(int owner) {
+	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+
+	/**
+	 * @return the isDeleted
+	 */
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	/**
+	 * @param isDeleted the isDeleted to set
+	 */
+	public void setIsDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	/**
+	 * @return the isEdited
+	 */
+	public boolean isEdited() {
+		return isEdited;
+	}
+
+	/**
+	 * @param isEdited the isEdited to set
+	 */
+	public void setIsEdited(boolean isEdited) {
+		this.isEdited = isEdited;
+	}
+
+	/**
+	 * @return the file icon
+	 */
+	@Override
+	public Icon getIcon() {
+		return icon;
+	}
+
+	/**
+	 * @param icon the icon to set
+	 */
+	public static void setIcon(ImageIcon icon) {
+		ItemFile.icon = icon;
 	}	
 	
 }

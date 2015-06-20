@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 
+import javax.swing.Icon;
+
 import client.Client;
 
 public abstract class Item implements Serializable {
@@ -13,6 +15,7 @@ public abstract class Item implements Serializable {
 	private String path;
 	private Item parent;
 	private int id;
+
 
 	/**
 	 * Get the name of the item.
@@ -60,15 +63,21 @@ public abstract class Item implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public int getID() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setID(int id) {
 		this.id = id;
 	}
+
+	/**
+	* @return the Item icon
+	*/
+	public abstract Icon getIcon();
+
 
 }

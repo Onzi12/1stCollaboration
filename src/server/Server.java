@@ -6,7 +6,11 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 
+import model.GroupDAO;
+import model.User;
+import model.UserDAO;
 import boundary.Server_GUI;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.ObservableServer;
@@ -24,11 +28,34 @@ public class Server extends ObservableServer {
 	private String password = "Braude";
 	public static final String CONNECTION_FAILED= "#OS:Connection failed.";
 	public static final String CONNECTION_SUCCEEDED= "#OS:Connection succeeded.";
+	private static HashMap<Integer,UserDAO> loggedInUsers;
+	private static HashMap<Integer,GroupDAO> allGroups;
 	
 	/** The connection to the mysql database */
 	private static Connection connection;
-	private Server_GUI gui;
+	public static Server_GUI gui;
 
+	
+	
+	
+	public static void addUser(UserDAO user) {
+		if( loggedInUsers.containsKey( user.getID()) )
+			gui.showMessage("Error: The User Was Already Logged In!");
+		else
+			loggedInUsers.put(user.getID(),user);
+	}
+
+	public static UserDAO getUserIfLoggedIn(int userID) {
+			return loggedInUsers.get(userID);
+	}
+
+	public static void removeUser(User user) {
+	if( loggedInUsers.containsKey(user.getID()) )
+		loggedInUsers.remove(user.getID() );
+	else
+		gui.showMessage("ERROR removeUser: the user was not loggedIn!");
+	}
+	
 	/**
 	 * Constructs an instance of the server.
 	 * @param port - The port number to connect on.
@@ -107,5 +134,19 @@ public class Server extends ObservableServer {
 		} catch (UnknownHostException e) {
 			return null;
 		}
+	}
+
+	/**
+	 * @return the allGroups
+	 */
+	public static HashMap<Integer,GroupDAO> getAllGroups() {
+		return allGroups;
+	}
+
+	/**
+	 * @param allGroups the allGroups to set
+	 */
+	public static void setAllGroups(HashMap<Integer,GroupDAO> allGroups) {
+		Server.allGroups = allGroups;
 	}
 }

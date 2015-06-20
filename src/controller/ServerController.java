@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -28,11 +29,9 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import server.Server;
 import boundary.Server_GUI;
-
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
-
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -40,7 +39,7 @@ public class ServerController implements Observer {
 	
 	private Server_GUI gui;
 	private Server server;
-	private HashSet<User> activeUsers;
+	
 	public ServerController(final Server_GUI ui) {
 		this.gui = ui;
 		
@@ -61,6 +60,7 @@ public class ServerController implements Observer {
 		});
 	}
 	
+
 	
 	private void initDBClicked() {
 		String confirm = "Are you sure you wish execute a full server initialization?"+

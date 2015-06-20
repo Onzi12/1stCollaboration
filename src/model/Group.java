@@ -1,21 +1,19 @@
 package model;
 
-import java.util.HashSet;
+
+import java.util.TreeSet;
 
 public class Group {
-	private String name;
-	private String id;
-	private HashSet<User> users;
 	
-	public Group(String name, String id) {
-		this.setName(name);
-		this.setId(id);
-	}
+	private int groupID;
+	private String groupName;
+	private TreeSet<User> users;
+	
 
 	/**
 	 * @return the users
 	 */
-	public HashSet<User> getUsers() {
+	public TreeSet<User> getUsers() {
 		return users;
 	}
 
@@ -40,39 +38,41 @@ public class Group {
 	/**
 	 * @param users the users to set
 	 */
-	public void setUsers(HashSet<User> users) {
+	public void setUsers(TreeSet<User> users) {
 		this.users = users;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return groupName;
 	}
 
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String groupName) {
+		this.groupName = groupName;
 	}
 	
 	public boolean equals(Object obj){
-		return name.equals(((Group)obj).name );
+		return groupName.equals(((Group)obj).groupName );
+	}
+
+	/**
+	 * @return the groupID
+	 */
+	public int getGroupID() {
+		return groupID;
+	}
+
+	/**
+	 * @param groupID the groupID to set
+	 */
+	public void setGroupID(int groupID) {
+		this.groupID = groupID;
 	}
 }
