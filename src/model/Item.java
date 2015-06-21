@@ -13,8 +13,9 @@ public abstract class Item implements Serializable {
 	/** The name of the item */
 	private String name;
 	private String path;
-	private Item parent;
+	private ItemFolder parent;
 	private int id;
+	private int userID;
 
 
 	/**
@@ -29,11 +30,11 @@ public abstract class Item implements Serializable {
 		path = path.concat(item);
 	}
 
-	public Item getParent() {
+	public ItemFolder getParent() {
 		return parent;
 	}
 	
-	public void setParent(Item item) {
+	public void setParent(ItemFolder item) {
 		parent = item;
 	}
 	
@@ -78,6 +79,21 @@ public abstract class Item implements Serializable {
 	* @return the Item icon
 	*/
 	public abstract Icon getIcon();
+
+	/**
+	 * @return the User id
+	 */
+	public int getUserID() {
+		return userID;
+	}
+
+	/**
+	 * Set the User id
+	 * @param userID
+	 */
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
 
 
 }

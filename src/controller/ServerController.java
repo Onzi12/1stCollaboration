@@ -223,6 +223,7 @@ public class ServerController implements Observer {
 					
 				case LOGIN:
 					try {
+						User.authenticate(userName, enteredPassword)
 						User user = (User)msg.getData();
 						UserDAO userDAO = new UserDAO(server.getConnection()); 
 						Boolean isConnected = userDAO.authenticate(user);

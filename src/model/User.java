@@ -13,7 +13,7 @@ import server.Server;
 
 public class User {
 	
-	public enum Status {
+	public static enum Status {
 		NOTCONNECTED(0) ,CONNECTED(1) , BLOCKED(2);
 
 	    private final int value;
@@ -36,7 +36,6 @@ public class User {
     private Status status;
     private boolean isAdmin;
     private int counter;
-    
     private ItemFolder rootFolder;
     private TreeSet<Group> groups;
     
@@ -150,64 +149,43 @@ public class User {
 	 * @throws Exception
 	 */
 	public static synchronized  User authenticate(String userName,String enteredPassword) throws Exception {
-		String passwordFromDB;
+
 		String exception = "The userName \""+userName+"\" ";
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		User user;
-		try {
-			stmt = connection.prepareStatement("select * from user where username = ?");
-			stmt.setString(1,userName);
-			rs = stmt.executeQuery();
-			
-			// user exist in the Database?
-			if (rs.next() == false )
-				throw new SQLException(exception + "does not exists!");
-			
-			passwordFromDB = rs.getString("password");
-			
-			//get user database status
-			Status status = Status.values()[ rs.getInt("status") ];
-			
-			//user is blocked on the Database?
-			if( status == Status.BLOCKED )
-				throw new Exception(exception+ "is blocked\n please contact the administrator!"
-						+ "\n(Password was NOT checked)");			
-
-
-			//user already logged in?
-			if (status == Status.CONNECTED )
-				throw new Exception(exception+ "is already connected!" );
-			
-			//enterdPassword is wrong?
-			if( passwordFromDB.equals(enteredPassword) == false ) 
-				{	
-					int counter = rs.getInt("counter") ;
-					setCounterDB(userName,  ++counter );
-					if(counter == 2)
-						{
-						setStatusDB(userName, status);
-						throw new Exception(exception+ "is blocked\n please contact the administrator!");
-						}
-					else
-						throw new Exception(exception+ "Password is incorrect!");
-				}
-			
-
-				//At last! all checks are fine - create user
-				
-				user = new User(userName,enteredPassword);
-				user.setID( rs.getInt("iduser") );
-				user.setAdmin( rs.getInt("admin") == 1 );
-				user.setRootFolder( ItemFolder.DB;
-			return user;		
-		}
-		finally {
-			if (rs != null)
-				rs.close();
-			if (stmt != null) 
-				stmt.close();
-		}	
+		UserDAO uDao = new UserDAO();
+		User user = uDao.DBtoObject(userName);
+		
+		//user exists?
+		if(user == null )
+			throw new Exception(exception+"does not exists!");
+		
+		//user is blocked on the Database?
+		if(user.getStatus() == Status.BLOCKED )
+			throw new Exception(exception+"is blocked\n please contact the administrator!");
+		
+		//user already logged in?
+		else if(user.getStatus() == Status.CONNECTED )
+			throw new Exception(exception+ "is already connected!" );
+		
+		//enterdPassword is wrong?
+		if( user.getPassword().equals(enteredPassword) == false ) 
+			{	
+				int counter = user.getCounter();
+				++counter;
+				user.setCounter(counter);
+				if(counter == 2)
+					{
+					user.setStatus(Status.BLOCKED);
+					uDao.ObjectToDB(user);
+					throw new Exception(exception+ "is blocked\n please contact the administrator!");
+					}
+				else
+					{
+					uDao.ObjectToDB(user);
+					throw new Exception(exception+ "Password is incorrect!");
+					}
+			}
+		return user;
+		
 	}
 
 
@@ -229,6 +207,14 @@ private static Connection getConnection() {
 public static void setCounterDB(String userName, int count) throws SQLException{
 	PreparedStatement stmt = null;
 	stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
+	stmt.setInt(1, count);
+	stmt.setString(2, userName);
+	stmt.executeUpdate();
+}
+
+
+}
+ATE user SET counter=? where username = ?");
 	stmt.setInt(1, count);
 	stmt.setString(2, userName);
 	stmt.executeUpdate();

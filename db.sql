@@ -23,19 +23,19 @@ DROP TABLE IF EXISTS `file`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `file` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `fileDesc` varchar(45) DEFAULT NULL,
-  `priv` int(1) NOT NULL,
-  `havedeleted` int(1) NOT NULL DEFAULT '0',
-  `isEdited` int(1) NOT NULL DEFAULT '0',
-  `ownerId` int(11) DEFAULT NULL,
-  `type` varchar(45) DEFAULT NULL,
-  `filecol` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`),
-  KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+  `fileID` int(11) NOT NULL AUTO_INCREMENT,
+  `fileName` varchar(45) NOT NULL,
+  `Description` blob,
+  `privilege` tinyint(1) NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
+  `isEdited` tinyint(1) NOT NULL DEFAULT '0',
+  `ownerID` int(11) NOT NULL,
+  PRIMARY KEY (`fileID`),
+  UNIQUE KEY `name_UNIQUE` (`fileName`),
+  KEY `id` (`fileID`),
+  KEY `ownerID_idx` (`ownerID`),
+  CONSTRAINT `ownerID` FOREIGN KEY (`ownerID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `file` (
 
 LOCK TABLES `file` WRITE;
 /*!40000 ALTER TABLE `file` DISABLE KEYS */;
-INSERT INTO `file` VALUES (3,'adir','adir',1,0,0,6,NULL,''),(6,'test','dsfsadfdsaf.dsahfjdsahjfkasd',2,0,0,1,NULL,''),(7,'fuck','dsafdsafadsfasd',2,0,0,3,NULL,''),(8,'t','t',2,0,0,1,NULL,''),(9,'12','dsafdas djksahfl hjdaskfhlads jdkahsfl',2,0,0,3,NULL,''),(10,'kjadsnfkjn','kjasdnkfjnsdf',1,0,0,9,NULL,''),(11,'sa','s',2,0,0,7,NULL,''),(12,'xS','d',2,0,0,8,NULL,''),(13,'tututu','asdf',2,0,0,1,NULL,''),(14,'togilski','',2,0,0,1,NULL,''),(15,'test2','',2,0,0,1,NULL,''),(16,'test3','',2,0,0,1,NULL,''),(17,'test4','',2,0,0,1,NULL,''),(18,'GilTest:)','dhgt',0,0,0,7,NULL,''),(19,'Test1000','',2,0,0,1,NULL,''),(20,'222222222222222','asdf2222',1,0,0,7,NULL,''),(21,'testfile','',2,0,0,1,NULL,'');
+INSERT INTO `file` VALUES (3,'HW3','This is the first file ever on myBox',1,0,0,1);
 /*!40000 ALTER TABLE `file` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,10 +56,10 @@ DROP TABLE IF EXISTS `filegroups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `filegroups` (
-  `fileId` int(11) NOT NULL,
-  `groupId` int(11) NOT NULL,
-  `isUpdateable` int(1) NOT NULL,
-  PRIMARY KEY (`fileId`,`groupId`)
+  `fileID` int(11) NOT NULL,
+  `groupID` int(11) NOT NULL,
+  PRIMARY KEY (`fileID`,`groupID`),
+  KEY `groupID_idx` (`groupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -69,6 +69,7 @@ CREATE TABLE `filegroups` (
 
 LOCK TABLES `filegroups` WRITE;
 /*!40000 ALTER TABLE `filegroups` DISABLE KEYS */;
+INSERT INTO `filegroups` VALUES (1,1);
 /*!40000 ALTER TABLE `filegroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,12 +81,13 @@ DROP TABLE IF EXISTS `folder`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `folder` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `folderId` int(11) DEFAULT '0',
-  `userId` int(11) NOT NULL,
+  `folderID` int(11) NOT NULL AUTO_INCREMENT,
+  `userID` int(11) NOT NULL,
+  `parentFolderID` int(11) DEFAULT '0',
   `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`folderID`),
+  KEY `userID_idx` (`userID`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,32 +96,33 @@ CREATE TABLE `folder` (
 
 LOCK TABLES `folder` WRITE;
 /*!40000 ALTER TABLE `folder` DISABLE KEYS */;
-INSERT INTO `folder` VALUES (1,NULL,1,'r'),(2,3,2,'g'),(3,NULL,2,'gf'),(12,0,1,'1'),(13,1,1,'Test123'),(14,0,1,'Test123'),(15,0,1,'2');
+INSERT INTO `folder` VALUES (1,1,NULL,'/');
 /*!40000 ALTER TABLE `folder` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `group`
+-- Table structure for table `groups`
 --
 
-DROP TABLE IF EXISTS `group`;
+DROP TABLE IF EXISTS `groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `groupNum` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `groupNum_UNIQUE` (`groupNum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `groups` (
+  `groupID` int(11) NOT NULL AUTO_INCREMENT,
+  `groupName` varchar(45) NOT NULL,
+  PRIMARY KEY (`groupID`),
+  UNIQUE KEY `groupName_UNIQUE` (`groupName`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `group`
+-- Dumping data for table `groups`
 --
 
-LOCK TABLES `group` WRITE;
-/*!40000 ALTER TABLE `group` DISABLE KEYS */;
-/*!40000 ALTER TABLE `group` ENABLE KEYS */;
+LOCK TABLES `groups` WRITE;
+/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+INSERT INTO `groups` VALUES (2,'Group16'),(1,'Software');
+/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -130,15 +133,15 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `iduser` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) NOT NULL,
+  `userID` int(11) NOT NULL AUTO_INCREMENT,
+  `userName` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
-  `status` int(1) NOT NULL DEFAULT '1',
-  `admin` int(1) NOT NULL DEFAULT '0',
-  `counter` int(1) DEFAULT '0',
-  PRIMARY KEY (`iduser`),
-  UNIQUE KEY `username_UNIQUE` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
+  `counter` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`userID`),
+  UNIQUE KEY `username_UNIQUE` (`userName`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,34 +150,35 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'t','t',0,1,0),(2,'d','d',0,1,0),(3,'r','r',0,0,0),(4,'p','p',0,0,0),(5,'y','y',0,0,0),(6,'e','e',0,0,0),(7,'a','a',0,1,0),(8,'b','b',0,1,0),(9,'c','c',0,1,0),(10,'dd','dd',0,0,0);
+INSERT INTO `user` VALUES (1,'t','t',0,1,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `userfile`
+-- Table structure for table `userfiles`
 --
 
-DROP TABLE IF EXISTS `userfile`;
+DROP TABLE IF EXISTS `userfiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `userfile` (
-  `userId` int(11) NOT NULL,
-  `folderId` int(11) DEFAULT NULL,
-  `fileId` int(11) NOT NULL,
-  `canUpdate` int(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`userId`,`fileId`)
+CREATE TABLE `userfiles` (
+  `userID` int(11) NOT NULL,
+  `folderID` int(11) NOT NULL,
+  `fileID` int(11) NOT NULL,
+  PRIMARY KEY (`userID`,`folderID`,`fileID`),
+  KEY `folderID_idx` (`folderID`),
+  KEY `fileID_idx` (`fileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `userfile`
+-- Dumping data for table `userfiles`
 --
 
-LOCK TABLES `userfile` WRITE;
-/*!40000 ALTER TABLE `userfile` DISABLE KEYS */;
-INSERT INTO `userfile` VALUES (1,0,2,1),(1,NULL,13,1),(1,NULL,14,1),(1,0,15,1),(1,1,16,1),(1,1,17,1),(1,0,19,1),(1,0,21,1),(7,0,18,1),(7,0,20,1),(8,0,12,1);
-/*!40000 ALTER TABLE `userfile` ENABLE KEYS */;
+LOCK TABLES `userfiles` WRITE;
+/*!40000 ALTER TABLE `userfiles` DISABLE KEYS */;
+INSERT INTO `userfiles` VALUES (1,0,3),(1,0,29);
+/*!40000 ALTER TABLE `userfiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -185,13 +189,13 @@ DROP TABLE IF EXISTS `usergroups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usergroups` (
-  `userId` int(11) NOT NULL,
-  `groupId` int(11) NOT NULL,
-  PRIMARY KEY (`userId`,`groupId`),
-  KEY `userid_idx` (`userId`),
-  KEY `groupid_idx` (`groupId`),
-  CONSTRAINT `groupId` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `userId` FOREIGN KEY (`userId`) REFERENCES `user` (`iduser`) ON DELETE CASCADE ON UPDATE CASCADE
+  `userID` int(11) NOT NULL,
+  `groupID` int(11) NOT NULL,
+  PRIMARY KEY (`userID`,`groupID`),
+  KEY `userid_idx` (`userID`),
+  KEY `groupid_idx` (`groupID`),
+  CONSTRAINT `groupID` FOREIGN KEY (`groupID`) REFERENCES `groups` (`groupID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -201,36 +205,8 @@ CREATE TABLE `usergroups` (
 
 LOCK TABLES `usergroups` WRITE;
 /*!40000 ALTER TABLE `usergroups` DISABLE KEYS */;
+INSERT INTO `usergroups` VALUES (1,1);
 /*!40000 ALTER TABLE `usergroups` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `firstname` varchar(45) NOT NULL,
-  `lastname` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username_UNIQUE` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `users`
---
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'t','t','t','t','t'),(2,'r','r','r','r','r'),(3,'g','g','g','g','g');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -242,4 +218,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-17 21:49:41
+-- Dump completed on 2015-06-21  4:10:09
