@@ -1,7 +1,9 @@
 package common;
 
 public enum MessageType {
-	
+	GET_ALL_USER_IN_GROUP,
+	GET_ALL_USER_NOT_IN_GROUP,
+	GET_RESTORE_FILES,
 	ERROR_MESSAGE, 
 	LOGIN, 
 	UPDATE_FILE_LOCATION, 
@@ -16,5 +18,6 @@ public enum MessageType {
 	UPLOAD_FILE, 
 	FILE_EDIT,
 	READ,
-	CREATE_NEW_FOLDER
+	CREATE_NEW_FOLDER, 
+	DOWNLOAD_FILE
 }

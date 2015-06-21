@@ -4,6 +4,7 @@ package controller;
 import java.io.IOException;
 
 import model.User;
+import boundary.AppFrame;
 import boundary.Login_GUI;
 import callback.LoginCallback;
 import client.Client;
@@ -92,4 +93,9 @@ public class LoginController extends Controller {
 		return new Login_GUI(this);
 	}
 	
+	
+	@Override
+	public void updateBoundary() {
+		AppFrame.getInstance().setSize(326, 400);
+	}
 }

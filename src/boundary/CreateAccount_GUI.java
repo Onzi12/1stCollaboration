@@ -70,13 +70,13 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		add(btnCreateAccount);
 		
 		JLabel lblAlreadyInMybox = new JLabel("Already in MyBox?");
-		lblAlreadyInMybox.setBounds(85, 168, 105, 14);
+		lblAlreadyInMybox.setBounds(62, 181, 152, 14);
 		lblAlreadyInMybox.setForeground(Color.WHITE);
 		lblAlreadyInMybox.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblAlreadyInMybox);
 		
 		btnShowSignIn = new JButton("Sign In");
-		btnShowSignIn.setBounds(85, 188, 100, 23);
+		btnShowSignIn.setBounds(85, 207, 100, 23);
 		btnShowSignIn.setBackground(Color.WHITE);
 		add(btnShowSignIn);
 	}
@@ -88,11 +88,6 @@ public class CreateAccount_GUI extends JPanelBoundary{
 	public String getPasswordText() {
 		return new String(fieldNewPassword.getPassword());
 	}
-	
-
-
-
-
 
 	@Override
 	public void registerListeners() {

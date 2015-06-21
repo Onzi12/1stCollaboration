@@ -9,7 +9,6 @@ public class ItemFile extends Item {
 	private byte[] file;
 	private String description;
 	private Privilege privilege;
-	private String type;
 	private int owner;
 	
 	public enum Privilege {
@@ -53,14 +52,6 @@ public class ItemFile extends Item {
 	
 	public Privilege getPrivilege(){
 		return privilege;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public int getOwner() {

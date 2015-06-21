@@ -37,7 +37,7 @@ public class Login_GUI extends JPanelBoundary {
 	@Override
 	public void draw() {
 		
-		AppFrame.getInstance().setSize(326, 419);
+		AppFrame.getInstance().setSize(326, 400);
 		setBackground(SystemColor.textHighlight);
 		setLayout(null);
 		
@@ -104,8 +104,6 @@ public class Login_GUI extends JPanelBoundary {
 	public String getPasswordText() {
 		return new String(fieldPassword.getPassword());
 	}
-
-
 
 	@Override
 	public void registerListeners() {

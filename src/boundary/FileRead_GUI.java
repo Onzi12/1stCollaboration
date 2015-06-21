@@ -35,6 +35,7 @@ public class FileRead_GUI extends JDialogBoundary {
 	private JTextArea taDescription;
 	private JLabel lblPrivilege;
 	private JComboBox<String> cbPrivilege;
+	private JButton btnDownload;
 	
 	public FileRead_GUI(Controller controller) {
 		super(controller);
@@ -116,6 +117,10 @@ public class FileRead_GUI extends JDialogBoundary {
 		
 		addButtons(buttonPanel);
 		
+		btnDownload = new JButton("Download");
+		btnDownload.setBounds(424, 5, 89, 23);
+		buttonPanel.add(btnDownload);
+		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.BLUE);
 		separator.setBounds(10, 45, 522, 11);
@@ -183,6 +188,15 @@ public class FileRead_GUI extends JDialogBoundary {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				control.btnCancelClicked();
+			}
+		});
+		
+		btnDownload.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnDownloadClicked();
+				
 			}
 		});
 		

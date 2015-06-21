@@ -1,6 +1,7 @@
 package boundary;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.EventObject;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,17 +17,22 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
 import model.ItemFile;
-
+import model.ItemFolder;
 import common.Controller;
 import common.JPanelBoundary;
-
 import controller.MyBoxController;
 import custom_gui.ImageRenderer;
 import custom_gui.MyBoxTree;
@@ -43,7 +50,6 @@ public class MyBox_GUI extends JPanelBoundary {
 	private JButton btnGroups;
 	private MyBoxTree tree;
 	private JTable table;
-//	private FolderTreeCellEditor editor;
 
 	/**
 	 * Create the frame.
@@ -121,8 +127,15 @@ public class MyBox_GUI extends JPanelBoundary {
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);    
         tree.setEditable(true);
-//        editor = new FolderTreeCellEditor(tree, renderer);
-//        tree.setCellEditor(editor);
+        tree.setCellEditor(new DefaultTreeCellEditor(tree, renderer) {
+        	
+        	@Override
+        	public boolean isCellEditable(EventObject event) {
+        		ItemFolder folder = (ItemFolder)((DefaultMutableTreeNode)tree.getLastSelectedPathComponent()).getUserObject();
+        		return super.isCellEditable(event) && (folder.getName().equals("/"));
+        	}
+        	
+        });
         
 		JScrollPane scrollBox = new JScrollPane(tree);
 		scrollBox.setBorder(BorderFactory.createEmptyBorder());
@@ -241,27 +254,24 @@ public class MyBox_GUI extends JPanelBoundary {
 			}
 		});
 		
-//		editor.addCellEditorListener(new CellEditorListener() {
-//			
-//			@Override
-//			public void editingStopped(ChangeEvent e) {
-//				
-//				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-//								
-////				System.out.println(selectedNode);
-////				
-//				tree.clearSelection();
-//				tree.setEditable(false);
-////				
-////				ItemFolder newFolder = (ItemFolder)tree.getCellEditor().getCellEditorValue();
-//				
-//				control.finishedEditingNewFolderName(selectedNode);
-//				
-//			}
-//			
-//			@Override
-//			public void editingCanceled(ChangeEvent e) {}
-//		});
+		tree.getCellEditor().addCellEditorListener(new CellEditorListener() {
+			
+			@Override
+			public void editingStopped(ChangeEvent e) {
+				
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)getTree().getLastSelectedPathComponent();
+				ItemFolder folder = (ItemFolder)node.getUserObject();
+				folder.setName((String)getTree().getCellEditor().getCellEditorValue());
+				control.finishedEditingFolderName(folder);
+				
+			}
+			
+			@Override
+			public void editingCanceled(ChangeEvent e) {}
+			
+
+
+		});
 		
 	}
 	

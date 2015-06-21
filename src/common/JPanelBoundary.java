@@ -4,6 +4,7 @@ package common;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import controller.CreateAccountController;
 import controller.NavigationManager;
 
 @SuppressWarnings("serial")
@@ -26,9 +27,9 @@ public abstract class JPanelBoundary extends JPanel implements Boundary{
 	
 	
 	public void display() {
-//		if(controller instanceof CreateAccountController )  //add more instanceof checks
-//			NavigationManager.getInstance().pushController(controller);
-//		else
+		if(controller instanceof CreateAccountController )  //add more instanceof checks
+			NavigationManager.getInstance().pushController(controller);
+		else
 			NavigationManager.getInstance().replaceController(controller);
 	}
 	

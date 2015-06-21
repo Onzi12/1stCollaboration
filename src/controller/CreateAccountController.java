@@ -6,6 +6,7 @@ import java.io.IOException;
 import model.User;
 import boundary.CreateAccount_GUI;
 import callback.LoginCallback;
+import callback.SignUpCallback;
 import client.Client;
 import common.Boundary;
 import common.Controller;
@@ -34,19 +35,16 @@ public class CreateAccountController extends Controller {
 			try {
 				User user = new User(gui.getUsernameText(), gui.getPasswordText());
 				Message msg = new Message(user, MessageType.CREATE_ACCOUNT);
-				Client.getInstance().sendMessage(msg, new LoginCallback() {
+				Client.getInstance().sendMessage(msg, new SignUpCallback() {
 					
 					@Override
-					public void done(User user, MyBoxException exception) {
-						
+					protected void userSignedIn(User user, MyBoxException exception) {
 						if (exception == null) {
 							handleUserSignIn(user);
 						} else {
 							getGui().showMessage(exception.getMessage());
 						}
-						
 					}
-					
 				});
 			} catch (IOException e) {
 				gui.showMessage("Failed to connect!");
@@ -77,11 +75,12 @@ public class CreateAccountController extends Controller {
 //			nav.getFrame().setSize(742, 579);
 //			MyBox_GUI myBox = new MyBox_GUI();
 //			MyBoxController controller = new MyBoxController(myBox, user);
-			Client.getInstance().setUser(user);
-			new MyBoxController(user);
+//			Client.getInstance().setUser(user);
+//			new MyBoxController(user);
 //			Client.getInstance().addObserver(controller);
 //			nav.replaceController(controller);
 			
+			NavigationManager.getInstance().popController();
 			
 		} /* else?? */
 	}
@@ -94,4 +93,6 @@ public class CreateAccountController extends Controller {
 	public void btnShowSignInClicked() {
 		NavigationManager.getInstance().popController();
 	}
+	
+
 }

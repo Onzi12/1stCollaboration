@@ -58,8 +58,11 @@ public class FileUpdateController extends Controller{
 	        try {
 			    
 	        	if (file != null) {
-	        		
-					file.setName(gui.getFilenameText());
+	        		String suffix = file.getName();
+	        		suffix = suffix.substring(suffix.lastIndexOf('.'));
+	        		System.out.println(gui.getFilenameText()+suffix);
+					file.setName(gui.getFilenameText()+suffix);
+					
 					file.setDescription(gui.getDescription());
 					file.setPrivilege(gui.getPrivilege());
 					file.setOwner(Client.getInstance().getUser().getID());
@@ -155,8 +158,7 @@ public class FileUpdateController extends Controller{
             	
 				byte[] bFile = ByteArray.convertFileToByteArray(f);
 				file.setFile(bFile);
-				String extension = f.getName().substring(f.getName().lastIndexOf('.'));
-				file.setType(extension);
+				file.setName(f.getName());
 			} catch (Exception e) {}		    		    
 
             

@@ -1,6 +1,10 @@
 package boundary;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import model.ItemFolder;
 
 
 public class FileTreeModel extends DefaultTreeModel {
@@ -11,6 +15,16 @@ public class FileTreeModel extends DefaultTreeModel {
 		super(root);
 		
 	}
+	
+	public void valueForPathChanged(TreePath path, Object newValue) {
+		
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
+		ItemFolder folder = (ItemFolder)node.getUserObject();
+		folder.setName((String)newValue);
+		nodeChanged(node);
+		
+	}
+	
 	
 	
 }

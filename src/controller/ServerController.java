@@ -17,6 +17,7 @@ import java.util.Observer;
 
 import javax.swing.JOptionPane;
 
+import model.Group;
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
@@ -28,11 +29,9 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import server.Server;
 import boundary.Server_GUI;
-
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
-
 import dao.FileDAO;
 import dao.UserDAO;
 
@@ -187,7 +186,7 @@ public class ServerController implements Observer {
 					try {
 						UserDAO userDAO = new UserDAO(server.getConnection());
 						user.setId(userDAO.signUp(user));
-						Message response = new Message(user, MessageType.LOGIN); 
+						Message response = new Message(user, MessageType.CREATE_ACCOUNT); 
 						client.sendToClient(response);
 						gui.showMessage(user.getUsername() + " signed up to MyBox.");
 						gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
@@ -288,6 +287,23 @@ public class ServerController implements Observer {
 					}
 					break;
 					
+				case GET_RESTORE_FILES:
+					try {
+						User user = (User)msg.getData();
+						System.out.println(user.getID());
+						FileDAO fileDAO = new FileDAO(server.getConnection());
+						
+						HashMap<String, Item> res = fileDAO.getAllRestoreFiles(user);
+						Message response = new Message(res, MessageType.GET_RESTORE_FILES);
+						client.sendToClient(response);
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+						gui.showMessage("Failed to retrieve data from DB.");
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					break;
+					
 				case GET_ADD_FILES:
 					try {
 						User user = (User)msg.getData();
@@ -331,6 +347,44 @@ public class ServerController implements Observer {
 						gui.showMessage("Successfully add file to the DB.");
 					} catch (SQLException e) {
 						gui.showMessage("Failed to add file to DB: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to add file to DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					break;	
+					
+				case GET_ALL_USER_NOT_IN_GROUP:
+					try {
+						User user = (User)msg.getData();
+						System.out.println(user.getID());
+						UserDAO userDAO = new UserDAO(server.getConnection());
+						HashMap<String, Group> res = userDAO.getAllUserNotInGroup(user);
+						Message response = new Message(res, MessageType.GET_ALL_USER_NOT_IN_GROUP);
+						client.sendToClient(response);
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+						gui.showMessage("Failed to retrieve data from DB.");
+					} catch (IOException e) {
+						gui.showMessage("Failed to send response to client.");
+					}
+					break;	
+					
+				case GET_ALL_USER_IN_GROUP:
+					try {
+						User user = (User)msg.getData();
+						System.out.println(user.getID());
+						UserDAO userDAO = new UserDAO(server.getConnection());
+						HashMap<String, Group> res = userDAO.getAllUserInGroup(user);
+						Message response = new Message(res, MessageType.GET_ALL_USER_IN_GROUP);
+						client.sendToClient(response);
+					} catch (SQLException e) {
+						System.out.println(e.getMessage());
+						gui.showMessage("Failed to retrieve data from DB.");
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					}
@@ -407,7 +461,7 @@ public class ServerController implements Observer {
 				        
 						String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 
-						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName() + file.getType());
+						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName());
 				 
 						
 						FileDAO fileDAO = new FileDAO(server.getConnection());
@@ -457,15 +511,16 @@ public class ServerController implements Observer {
 					}
 					break;
 				case CHANGE_FOLDER_NAME:
-	/*			try{
+				try{
 	  					FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFolder folder = (ItemFolder)msg.getData();
 						fileDAO.changeFolderName(folder);
-						
+						Message response = new Message(folder, MessageType.CHANGE_FOLDER_NAME);
+						client.sendToClient(response);
 						} catch (SQLException e) {
-						gui.showMessage("Failed to edit file in the DB: " + e.getMessage());
+						gui.showMessage("Failed to edit folders name in the DB: " + e.getMessage());
 						try {
-							Message response = new Message("Failed to edit file in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							Message response = new Message("Failed to edit folders name in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
 							client.sendToClient(response);
 						} catch (IOException e1) {
 							gui.showMessage("Failed to send response to client.");
@@ -473,7 +528,7 @@ public class ServerController implements Observer {
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					}
-					*/
+					
 				case CREATE_NEW_FOLDER:
 				{
 					try
@@ -498,7 +553,25 @@ public class ServerController implements Observer {
 						gui.showMessage("Failed to send response to client.");
 					}
 				}
-					
+				
+				case DOWNLOAD_FILE:
+				{
+					ItemFile iFile = (ItemFile)msg.getData();
+					File pFile = new File(System.getProperty("user.home") + "\\desktop\\MyBox\\" + iFile.getName());
+					try {
+						iFile.setFile(ByteArray.convertFileToByteArray(pFile));
+						Message response = new Message(iFile,MessageType.DOWNLOAD_FILE);
+						client.sendToClient(response);
+					} catch (Exception e) {
+						gui.showMessage("Failed to Download file to client: " + e.getMessage());
+						try {
+							Message response = new Message("Failed to Download file" + e.getMessage(), MessageType.ERROR_MESSAGE);
+							client.sendToClient(response);
+						} catch (IOException e1) {
+							gui.showMessage("Failed to send response to client.");
+						}
+					}
+				}
 				default:
 					break;
 				}
@@ -566,9 +639,8 @@ public class ServerController implements Observer {
 			System.out.println("file is not null"); 
 			String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 			System.out.println(myBoxPath);
-			System.out.println(itemFile.getType());
 			System.out.println(itemFile.getName());
-			File file = new File (myBoxPath+itemFile.getName()+itemFile.getType());
+			File file = new File (myBoxPath+itemFile.getName());
 			System.out.println("ss");
 			
 			if (!file.delete())
