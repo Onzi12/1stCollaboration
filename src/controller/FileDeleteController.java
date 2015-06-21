@@ -24,7 +24,7 @@ public class FileDeleteController extends Controller{
 		files = Client.getInstance().getUser().getFiles();
 		for (Item x : files.values())
 			if ( x instanceof ItemFile)
-				if (((ItemFile) x).getOwner() == Client.getInstance().getUser().getID())
+				if (((ItemFile) x).getOwner() == Client.getInstance().getUser())
 					gui.addListValue((ItemFile)x);
 	}
 		

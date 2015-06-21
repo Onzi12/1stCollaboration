@@ -1,24 +1,18 @@
-package model;
+package dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import model.Group;
 import server.Server;
 
 public class GroupDAO extends DAO<Group> {
 
-	public static TreeSet<Group> getUserGroups(int id) {
-		
-		return null;
-	}
 
 	
 
@@ -124,4 +118,27 @@ public class GroupDAO extends DAO<Group> {
 		} catch (SQLException e) { e.printStackTrace(); }
 		return group;
 	}
+	
+	
+	/*FIX TOMORROW BLATTTTTTTT*/
+	public Set<Group> getUserGroups(int userID) {
+		Connection con = Server.getConnection();
+		HashSet<Group> set = null;
+
+		try(Statement stmt = con.createStatement() ) {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM userGroups WHERE userID = "+userID);
+			set = new HashSet<Group>();
+			while( rs.next() )
+				{
+				Group group = new Group();
+				group.setGroupID(rs.getInt(1));
+				group.setName(rs.getString(2));
+				set.add(group);
+				}
+			} catch(SQLException e){ e.printStackTrace(); }
+		
+		return set;
+	}
+	
+	
 }

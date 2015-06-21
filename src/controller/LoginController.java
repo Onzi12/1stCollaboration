@@ -45,7 +45,9 @@ public class LoginController extends Controller {
 
 		if (initClient()) {
 			try {
-				User user = new User(gui.getUsernameText(), gui.getPasswordText());
+				User user = new User();
+				user.setUserName(gui.getUsernameText());
+				user.setPassword(gui.getPasswordText());
 				Message msg = new Message(user, MessageType.LOGIN);
 				Client.getInstance().sendMessage(msg, new LoginCallback() {
 					

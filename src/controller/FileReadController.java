@@ -1,19 +1,36 @@
 package controller;
 
 
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+
 import model.ItemFile;
 import boundary.FileRead_GUI;
-
+import callback.FileDownloadCallback;
+import client.Client;
 import common.Boundary;
+import common.ByteArray;
 import common.Controller;
+import common.Message;
+import common.MessageType;
+import common.MyBoxException;
 
 public class FileReadController extends Controller {
 
-	public FileReadController(ItemFile file) {
+	public FileRead_GUI gui;
+	public ItemFile file;
 	
-		FileRead_GUI g = (FileRead_GUI)gui;
-		g.setFilename(file.getName());
-		g.setLocation(file.getFullPath());
+	public FileReadController(ItemFile file) {
+		this.file = file;
+		gui = (FileRead_GUI)super.gui;
+		System.out.println(file.getName());
+		System.out.println(file.getFullPath() + " is full path");
+		gui.setLocation(file.getFullPath());
+		gui.setFilename(file.getName());
+		
+
 	}
 	
 	public void btnCancelClicked() {
@@ -24,4 +41,31 @@ public class FileReadController extends Controller {
 	protected Boundary initBoundary() {
 		return new FileRead_GUI(this);
 	}
+
+	public void btnDownloadClicked() {
+		Message msg = new Message(file, MessageType.DOWNLOAD_FILE);
+		
+		try {
+			Client.getInstance().sendMessage(msg, new FileDownloadCallback() {
+				
+				@Override
+				protected void done(ItemFile file, MyBoxException exception) {
+
+					byte[] bFile = file.getFile();
+					String path = System.getProperty("user.home") + "\\desktop";
+					JFileChooser filechooser = new JFileChooser(path);
+					int returnVal = filechooser.showSaveDialog(gui);
+			        if (returnVal == JFileChooser.APPROVE_OPTION)
+						try {
+							ByteArray.writeByteArrayToFile(bFile, path + file.getName());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}				
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

@@ -4,6 +4,7 @@ package controller;
 import java.io.IOException;
 
 import model.User;
+import model.User.Status;
 import boundary.CreateAccount_GUI;
 import callback.LoginCallback;
 import client.Client;
@@ -32,7 +33,13 @@ public class CreateAccountController extends Controller {
 		
 		if (initClient()) {
 			try {
-				User user = new User(gui.getUsernameText(), gui.getPasswordText());
+				
+				User user = new User();
+				user.setUserName(gui.getUsernameText()); 
+				user.setPassword(gui.getPasswordText());
+				user.setAdmin(false);
+				user.setCounter(0);
+				user.setStatus(Status.NOTCONNECTED);
 				Message msg = new Message(user, MessageType.CREATE_ACCOUNT);
 				Client.getInstance().sendMessage(msg, new LoginCallback() {
 					

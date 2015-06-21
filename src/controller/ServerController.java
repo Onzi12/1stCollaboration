@@ -22,6 +22,7 @@ import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
 import model.User;
+import model.User.Status;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.OriginatorMessage;
 
@@ -184,87 +185,42 @@ public class ServerController implements Observer {
 				case CREATE_ACCOUNT: 
 				{
 					User user = (User)msg.getData();
-					try {
-						UserDAO userDAO = new UserDAO(server.getConnection());
-						user.setId(userDAO.signUp(user));
-						Message response = new Message(user, MessageType.LOGIN); 
-						client.sendToClient(response);
-						gui.showMessage(user.getUsername() + " signed up to MyBox.");
-						gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
-					} catch (SQLException e) {
-						String message = "The username " + user.getUsername() + " already exists.";
+					UserDAO uDao = new UserDAO();
+					if(uDao.DBtoObject(user.getUserName() ) != null )
+						{
+						String message = "The userName '" + user.getUserName() + "' already exists.";
 						gui.showMessage(message);
-						try {
-							Message response = new Message(message, MessageType.ERROR_MESSAGE); 
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client: " + e.getMessage());
+						Message response = new Message(message, MessageType.ERROR_MESSAGE); 
+						client.sendToClient(response);
+						return;
 						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client: " + e.getMessage());
-					}
+					
+					uDao.ObjectToDB(user);
+					Message response = new Message(user, MessageType.CREATE_ACCOUNT); 
+					client.sendToClient(response);
+					gui.showMessage(user.getUserName() + " signed up to MyBox.");
 				}
 					break;
 				case LOGOUT:
 				{
-					try{
-						User user = (User)msg.getData();
-						System.out.println(user.getStatus());
-						user.setStatus(0);
-						System.out.println(user.getStatus());
-						UserDAO userDAO = new UserDAO(server.getConnection());
-						userDAO.setStatusDB(user);
-					}catch (SQLException e) {
-						gui.showMessage(e.getMessage());
-					}
-					gui.showMessage(client.getInfo("username") + " logged out.");
+					User user = (User)msg.getData();
+					user.setStatus(Status.NOTCONNECTED);
+					new UserDAO().ObjectToDB(user);
+					gui.showMessage(user.getUserName() + " logged out.");
 				}
 					break;
 					
 				case LOGIN:
-					try {
-						User.authenticate(userName, enteredPassword)
+					{
 						User user = (User)msg.getData();
-						UserDAO userDAO = new UserDAO(server.getConnection()); 
-						Boolean isConnected = userDAO.authenticate(user);
-						client.setInfo("username", user.getUsername());
-						if (isConnected && user.getStatus() != 1) {
-							user.setCounter(0);
-							userDAO.setCounterDB(user);
-							user.setStatus(1);
-							userDAO.setStatusDB(user);
-							Message response = new Message(user, MessageType.LOGIN); 
-							client.sendToClient(response);
-							gui.showMessage(user.getUsername() + " logged in successfully. (authentication succeeded)");
-						} else if (isConnected && user.getStatus() == 1){
-							gui.showMessage(user.getUsername() + " is already logged in.");
-							Message response = new Message(user.getUsername() + " is already logged in.", MessageType.ERROR_MESSAGE); 
-							client.sendToClient(response);
-						} else {
-								Message response;
-							if(user.getCounter() == 2) {
-								user.setStatus(2);
-								userDAO.setStatusDB(user);
-								response = new Message("Password is incorrect.the user " + user.getUsername() +" is blocked", MessageType.ERROR_MESSAGE);
-							} else { 
-								System.out.println("fdg");
-								user.setCounter(user.getCounter()+1);
-								userDAO.setCounterDB(user);
-								response = new Message("Password is incorrect.", MessageType.ERROR_MESSAGE); 
-							}
-							client.sendToClient(response);
-							gui.showMessage(user.getUsername() + " authentication failed.");
-						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client: " + e.getMessage());
-					} catch (SQLException e) {
-						gui.showMessage(e.getMessage());
-						try {
-							Message response = new Message(e.getMessage(), MessageType.ERROR_MESSAGE); 
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client: " + e.getMessage());
-						}
+						try{
+						user = User.authenticate(user.getUserName(), user.getPassword());
+						} catch(Exception e) 
+							{
+							client.sendToClient(new Message(e.getMessage(), MessageType.ERROR_MESSAGE));
+												}
+						Message response = new Message(user, MessageType.LOGIN);
+						client.sendToClient(response);	
 					}
 					break;
 					
@@ -307,31 +263,27 @@ public class ServerController implements Observer {
 					break;
 					
 				case GET_FILES:
-					try {
+				{
 						User user = (User)msg.getData();
-						System.out.println(user.getID());
-						FileDAO fileDAO = new FileDAO(server.getConnection());
+						
 						HashMap<String, Item> res = fileDAO.getAllFiles(user);
 						Message response = new Message(res, MessageType.GET_FILES);
 						client.sendToClient(response);
-					} catch (SQLException e) {
-						System.out.println(e.getMessage());
+
 						gui.showMessage("Failed to retrieve data from DB.");
-					} catch (IOException e) {
+
 						gui.showMessage("Failed to send response to client.");
 					}
 					break;
-					
+				}
 				case ADD_FILE:
 					try {
-						FileDAO fileDAO = new FileDAO(server.getConnection());
 						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.addFile(file);		
+						
 						Message response = new Message(file, MessageType.ADD_FILE);
 						client.sendToClient(response);
+						
 						gui.showMessage("Successfully add file to the DB.");
-					} catch (SQLException e) {
-						gui.showMessage("Failed to add file to DB: " + e.getMessage());
 					} catch (IOException e) {
 						gui.showMessage("Failed to send response to client.");
 					}

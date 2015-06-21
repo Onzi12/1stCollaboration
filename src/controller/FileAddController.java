@@ -3,15 +3,17 @@ package controller;
 import java.io.IOException;
 import java.util.HashMap;
 
-import callback.AddFileCallback;
-import callback.GetFilesCallback;
-import client.Client;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
-import model.User;
 import boundary.FileAdd_GUI;
-import boundary.FileDelete_GUI;
+import boundary.MyBox_GUI;
+import callback.AddFileCallback;
+import callback.GetFilesCallback;
+import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -39,7 +41,9 @@ public class FileAddController extends Controller {
 							if ( x instanceof ItemFile )
 									gui.addListValue((ItemFile)x);
 					}
-					else exception.getStackTrace();
+					else {
+						gui.showMessage(exception.getMessage());
+					}
 				}
 				@Override
 				protected MessageType getMessageType() {
@@ -60,9 +64,13 @@ public class FileAddController extends Controller {
 
 	
 	public void btnAddFileClicked() {
+		
 		file = gui.getSelectedFile();
-		file.setFolder( ( (ItemFolder) (myboxControl.gui.getTree().getLastSelectedPathComponent()
-				)).getID());
+		file.setID(Client.getInstance().getUser().getID());
+		MyBoxController c = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)((MyBox_GUI)c.getGui()).getTree().getLastSelectedPathComponent();
+		file.setParent((ItemFolder) node.getUserObject());
+		
 		Message msg = new Message(file, MessageType.ADD_FILE);
 		
 		try {
@@ -77,6 +85,8 @@ public class FileAddController extends Controller {
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			gui.close();
 		}
 		
 	}

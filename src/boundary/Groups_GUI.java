@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -14,6 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
 
+import model.Group;
+
 import common.Controller;
 import common.JDialogBoundary;
 
@@ -21,8 +24,9 @@ import controller.GroupsController;
 
 public class Groups_GUI extends JDialogBoundary{
 
-	private JList listMyGroups,list;
-	private JButton btnJoin,btnLeave,btnSendRequests,btnClose;;
+	private JList<Group> listMyGroups,listOtherGroups;
+	private JButton btnJoin,btnLeave,btnSendRequests,btnClose;
+	private DefaultListModel<Group> listMyGroupsModel,listOtherGroupsModel;
 	/**
 	 * 
 	 */
@@ -61,7 +65,10 @@ public class Groups_GUI extends JDialogBoundary{
 		scrollPane.setBounds(10, 88, 182, 233);
 		panel.add(scrollPane);
 		
-		listMyGroups = new JList();
+		listMyGroups = new JList<Group>();
+		listMyGroupsModel = new DefaultListModel<Group>();
+		listMyGroups.setModel(listMyGroupsModel);
+		
 		scrollPane.setViewportView(listMyGroups);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -69,8 +76,11 @@ public class Groups_GUI extends JDialogBoundary{
 		scrollPane_1.setBounds(316, 88, 182, 233);
 		panel.add(scrollPane_1);
 		
-		list = new JList();
-		scrollPane_1.setViewportView(list);
+		listOtherGroups = new JList<Group>();
+		listOtherGroupsModel = new DefaultListModel<Group>();
+		listOtherGroups.setModel(listOtherGroupsModel);
+		
+		scrollPane_1.setViewportView(listOtherGroups);
 		
 		btnJoin = new JButton("<< Join");
 		btnJoin.setBounds(202, 129, 104, 23);
@@ -103,8 +113,6 @@ public class Groups_GUI extends JDialogBoundary{
 		btnSendRequests = new JButton("Send Requests");
 		btnSendRequests.setBounds(273, 11, 130, 23);
 		panel_1.add(btnSendRequests);
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -148,5 +156,21 @@ public class Groups_GUI extends JDialogBoundary{
 			}
 		});
 		
+	}
+	
+	public void addMyGroupElement(Group group){
+		listMyGroupsModel.addElement(group);
+	}
+	
+	public void addOtherGroupElement(Group group){
+		listOtherGroupsModel.addElement(group);
+	}
+	
+	public Group getSelectedMyGroup(){
+		return listMyGroupsModel.getElementAt(listMyGroups.getSelectedIndex());
+	}
+	
+	public Group getSelectedOtherGroup(){
+		return listOtherGroupsModel.getElementAt(listOtherGroups.getSelectedIndex());
 	}
 }

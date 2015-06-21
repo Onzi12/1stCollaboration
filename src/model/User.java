@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
+import dao.UserDAO;
 import server.Server;
 
 public class User {
@@ -145,7 +146,7 @@ public class User {
 	/**
 	 * Check the user details against the data base
 	 * @param user - The user that is trying to log in
-	 * @return boolean
+	 * @return User the object of the registered user
 	 * @throws Exception
 	 */
 	public static synchronized  User authenticate(String userName,String enteredPassword) throws Exception {
@@ -188,37 +189,10 @@ public class User {
 		
 	}
 
+	public int getIsAdminValue() {
+		return isAdmin() ? 1 : 0;
+	}
 
-public static void setStatusDB(String userName, Status status) throws SQLException{
-	PreparedStatement stmt = null;
-	stmt = getConnection().prepareStatement("UPDATE user SET status=? WHERE username = ?");
-	stmt.setInt(1, status.value );
-	stmt.setString(2, userName );
-	stmt.executeUpdate();
-}
-
-private static Connection getConnection() {
-	if(connection == null ) 
-		connection = Server.getConnection();
-	
-	return connection;
-}
-
-public static void setCounterDB(String userName, int count) throws SQLException{
-	PreparedStatement stmt = null;
-	stmt = connection.prepareStatement("UPDATE user SET counter=? where username = ?");
-	stmt.setInt(1, count);
-	stmt.setString(2, userName);
-	stmt.executeUpdate();
-}
-
-
-}
-ATE user SET counter=? where username = ?");
-	stmt.setInt(1, count);
-	stmt.setString(2, userName);
-	stmt.executeUpdate();
-}
 
 
 }

@@ -1,4 +1,4 @@
-package model;
+package dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
+import model.ItemFolder;
 import server.Server;
 
 public class FolderDAO extends DAO<ItemFolder> {
@@ -145,6 +146,33 @@ public class FolderDAO extends DAO<ItemFolder> {
 			e.printStackTrace(); 
 		}
 		
+	}
+	
+	public Set<ItemFolder> getUserFolders(int id) {
+		Connection con = Server.getConnection();
+		HashSet<ItemFolder> set = null;
+
+		try( Statement stmt = con.createStatement() ) {
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM folder WHERE userID = " + id);
+			set = new HashSet<ItemFolder>();
+			
+			while( rs.next() ) {
+				
+				ItemFolder folder = new ItemFolder();
+				folder.setID( rs.getInt("folderID") );
+				folder.setUserID( rs.getInt("userID") );
+				folder.setName( rs.getString("name") );
+				folder.setParent( DBtoObject( rs.getInt("parentFolderID") ) );
+				set.add( folder );
+				
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace(); 
+		}
+		
+		return set;
 	}
 
 		

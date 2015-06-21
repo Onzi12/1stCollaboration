@@ -8,9 +8,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import model.GroupDAO;
+import dao.GroupDAO;
+import dao.UserDAO;
 import model.User;
-import model.UserDAO;
 import boundary.Server_GUI;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.ObservableServer;
