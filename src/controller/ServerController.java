@@ -280,6 +280,19 @@ public class ServerController implements Observer {
 					gui.showMessage("Moved file to another folder.");
 				}
 				break;
+				case CREATE_NEW_GROUP:
+				{
+					Group group = (Group)msg.getData();
+					GroupDAO groupDAO = new GroupDAO();
+					try{
+						groupDAO.createNewGroup(group);
+						Message response = new Message(group,MessageType.CREATE_NEW_GROUP);
+						sendToClient(client, response);
+					}catch(SQLException e){
+						gui.showMessage("Failed to add new group to the DB ");	
+					}
+				}
+				break;
 				case GET_RESTORE_FILES:
 				{
 					User user = (User)msg.getData();
@@ -417,7 +430,6 @@ public class ServerController implements Observer {
 				}
 				break;
 				case REMOVE_FOLDER:{
-					
 					ItemFolder folder = (ItemFolder)msg.getData();
 					FolderDAO folderDAO = new FolderDAO();
 					folderDAO.deleteFromDB(folder);

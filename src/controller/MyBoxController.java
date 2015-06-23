@@ -56,11 +56,6 @@ public class MyBoxController extends Controller implements Observer {
 			return (ItemFolder)node.getUserObject();
 		return null;
 	}
-	
-//	public void setCurrentFolder(TreePath path) {
-//		MyBoxTree tree = gui.getTree();
-//		//tree.sets
-//	}
 
 	private class MyBoxMouseListener extends MouseAdapter {
 
@@ -357,7 +352,9 @@ public class MyBoxController extends Controller implements Observer {
 					protected void done(ItemFolder f, MyBoxException exception) {
 						
 						if (exception == null) {
-							folder.setID(f.getID());
+							
+							updateView();
+
 						} else {
 						    gui.getTree().removeObject();
 							getGui().showMessage(exception.getMessage());
@@ -475,7 +472,7 @@ public class MyBoxController extends Controller implements Observer {
 		    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
 		    ItemFolder folder = (ItemFolder)node.getUserObject();
 			folder.removeItem(file);
-
+			updateView();
 			showFilesOfSelectedFolder();	
 		}else {
 			getGui().showMessage(exception.getMessage());			
@@ -548,29 +545,6 @@ public class MyBoxController extends Controller implements Observer {
 		updateBoundary();
 	}
 	
-	private void setJtreeCurrentFolder(DefaultMutableTreeNode prev) {
-		DefaultMutableTreeNode node = null;
-		int i=0;
-		@SuppressWarnings("unchecked")
-		Enumeration<DefaultMutableTreeNode> e = gui.getTree().getRoot().breadthFirstEnumeration();
-		while (e.hasMoreElements()) {
-			System.out.println(i++);
-			node = (DefaultMutableTreeNode)e.nextElement();
-			ItemFolder f = (ItemFolder)node.getUserObject();
-			if ( prev.getUserObject() == node.getUserObject() ) {
-				System.err.println("FOUND YOU BITCH");
-				TreePath path = new TreePath(node.getPath());
-				gui.getTree().expandPath(path);
-				gui.getTree().scrollPathToVisible(path);
-				showFilesOfSelectedFolder();
-				break;
-				
-			}
-		}
-	}
-		
-	
-
 	@Override
 	public void update(Observable o, Object arg) {
 		
@@ -641,7 +615,8 @@ public class MyBoxController extends Controller implements Observer {
 		ItemFolder folder = ((ItemFolder) node.getUserObject());
 		final ItemFolder pfolder = ((ItemFolder) parentNode.getUserObject());
 		//System.out.println(folder.getContents().size());
-		if (folder.getContents().size() == 0){	
+		if (folder.getContents() == null || folder.getContents().size() == 0)
+		{	
 				Message msg = new Message(folder, MessageType.REMOVE_FOLDER);
 				try {
 					Client.getInstance().sendMessage(msg, new RemoveFolderCallback() {

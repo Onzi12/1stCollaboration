@@ -42,7 +42,8 @@ public class GroupDAO implements DAO<Group> {
 		return set;
 	}
 	
-	
+	/**  
+	 */	
 	public void updateUserGroups(Request req)
 	 {
 		 Connection con = Server.getConnection(); 
@@ -59,6 +60,13 @@ public class GroupDAO implements DAO<Group> {
 		}
 	 }
 	 
+	public void createNewGroup(Group group) throws SQLException
+	{
+		Connection con = Server.getConnection();
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("insert into groups (groupName) VALUES (" + group.getName() +")");
+		
+	}
 	public void updateUserGroupsRejection(Request req)
 	 {
 		 Connection con = Server.getConnection(); 

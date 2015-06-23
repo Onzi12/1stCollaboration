@@ -106,8 +106,8 @@ public class MyBox_GUI extends JPanelBoundary {
 		
 		btnNewFolder = new JButton("+");
 		btnNewFolder.setToolTipText("Create a new folder in the current folder");
-		btnNewFolder.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnNewFolder.setBounds(12, 154, 43, 25);
+		btnNewFolder.setFont(new Font("Tahoma", Font.BOLD, 9));
+		btnNewFolder.setBounds(10, 154, 45, 25);
 		add(btnNewFolder);
 		
 		btnGroups = new JButton("Groups");

@@ -34,7 +34,7 @@ public class ItemFolder extends Item {
 		if( contents.remove(item) == false )
 			System.err.println("ERROR removeItem: the item was not in the folder!");
 	}
-
+	
 	
 	public boolean equals(Object obj) {
 		if(obj instanceof ItemFolder)

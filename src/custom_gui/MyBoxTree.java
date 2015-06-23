@@ -79,10 +79,6 @@ public class MyBoxTree extends JTree {
 		
 	}
 	
-	public TreePath currentSelectedPath() {
-		return getSelectionPath();
-	}
-	
 	public void showFolder(ItemFolder folder) {
 		DefaultMutableTreeNode node = findNode(folder);
         if( node != null ) {
