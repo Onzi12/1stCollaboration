@@ -1,19 +1,25 @@
 package model;
 
 
+import java.io.Serializable;
+import java.util.Set;
 import java.util.TreeSet;
 
-public class Group {
+public class Group implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -688004859034712745L;
 	private int groupID;
 	private String groupName;
-	private TreeSet<User> users;
+	private Set<User> users;
 	
 
 	/**
 	 * @return the users
 	 */
-	public TreeSet<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
@@ -42,7 +48,9 @@ public class Group {
 		this.users = users;
 	}
 
-
+	public int hashCode(){
+		return groupID;
+	}
 
 	/**
 	 * @return the name
@@ -59,7 +67,13 @@ public class Group {
 	}
 	
 	public boolean equals(Object obj){
-		return groupName.equals(((Group)obj).groupName );
+		if(obj instanceof Group)
+			{
+			Group g = (Group)obj;
+			return groupID  == g.groupID ;
+			}
+		
+		return false;
 	}
 
 	/**
@@ -74,5 +88,9 @@ public class Group {
 	 */
 	public void setGroupID(int groupID) {
 		this.groupID = groupID;
+	}
+	
+	public String toString(){
+		return groupName;
 	}
 }

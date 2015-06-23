@@ -14,19 +14,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import model.Group;
-
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.GroupsController;
 
 public class Groups_GUI extends JDialogBoundary{
 
-	private JList<Group> listMyGroups,listOtherGroups;
+
+	public JList<Group> listMyGroups,listOtherGroups;
 	private JButton btnJoin,btnLeave,btnSendRequests,btnClose;
-	private DefaultListModel<Group> listMyGroupsModel,listOtherGroupsModel;
+	public DefaultListModel<Group> listMyGroupsModel,listOtherGroupsModel;
 	/**
 	 * 
 	 */
@@ -68,7 +69,6 @@ public class Groups_GUI extends JDialogBoundary{
 		listMyGroups = new JList<Group>();
 		listMyGroupsModel = new DefaultListModel<Group>();
 		listMyGroups.setModel(listMyGroupsModel);
-		
 		scrollPane.setViewportView(listMyGroups);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -78,8 +78,7 @@ public class Groups_GUI extends JDialogBoundary{
 		
 		listOtherGroups = new JList<Group>();
 		listOtherGroupsModel = new DefaultListModel<Group>();
-		listOtherGroups.setModel(listOtherGroupsModel);
-		
+		listOtherGroups.setModel(listOtherGroupsModel);		
 		scrollPane_1.setViewportView(listOtherGroups);
 		
 		btnJoin = new JButton("<< Join");
@@ -167,10 +166,14 @@ public class Groups_GUI extends JDialogBoundary{
 	}
 	
 	public Group getSelectedMyGroup(){
+		if(listMyGroups.getSelectedIndex() < 0 )
+			return null;
 		return listMyGroupsModel.getElementAt(listMyGroups.getSelectedIndex());
 	}
 	
 	public Group getSelectedOtherGroup(){
+		if(listOtherGroups.getSelectedIndex() < 0 )
+			return null;
 		return listOtherGroupsModel.getElementAt(listOtherGroups.getSelectedIndex());
 	}
 }

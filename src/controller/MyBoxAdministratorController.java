@@ -7,12 +7,11 @@ import common.Boundary;
 
 public class MyBoxAdministratorController extends MyBoxController {
 	
-	private User user;
+
 	MyBoxAdministrator_GUI gui;
 	
 	public MyBoxAdministratorController(User user) {
-		super(user);
-		this.user = user;
+
 		gui = (MyBoxAdministrator_GUI)super.gui;
 		
 	}
@@ -23,7 +22,7 @@ public class MyBoxAdministratorController extends MyBoxController {
 	}
 
 	public void btnManageFileGroupsClicked() {
-		new ManageFileGroupsController();
+		new AdminFileGroupsSelectController();
 		
 	}
 

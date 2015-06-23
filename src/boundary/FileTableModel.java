@@ -6,18 +6,19 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import model.Item;
 import model.ItemFile;
 
 class FileTableModel extends AbstractTableModel {
 	
-	private static final long serialVersionUID = 1L;
+	protected static final long serialVersionUID = 1L;
 	public static final int OBJECT_COL = -1;
-	private static final int FILENAME_COL = 0;
-	private static final int LOCATION_COL = 1;
+	protected static final int FILENAME_COL = 0;
+	protected static final int PRIVILEGE_COL = 1;
+	protected static final int STATE_COL = 2;
+	protected static final int OWNER_COL = 3;
 
-	private String[] columnNames = {"Filename", "Location"};
-	private ArrayList<ItemFile> files;
+	protected String[] columnNames = {"Filename", "Privilege", "State"};
+	protected ArrayList<ItemFile> files;
 
 	public FileTableModel(ArrayList<ItemFile> files) {
 		this.files = files;
@@ -41,13 +42,15 @@ class FileTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int row, int col) {
 
-		Item file = files.get(row);
+		ItemFile file = files.get(row);
 
 		switch (col) {
 		case FILENAME_COL:
 			return file.getName();
-		case LOCATION_COL:
-			return file.getFullPath();
+		case PRIVILEGE_COL:
+			return file.getPrivilege();
+		case STATE_COL:
+			return file.getState();
 		case OBJECT_COL:
 			return file;
 		}

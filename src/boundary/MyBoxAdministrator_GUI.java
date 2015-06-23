@@ -23,6 +23,7 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 	private static final long serialVersionUID = 1L;
 	private JButton btnManageGroupRequests;
 	private JButton btnManageFileGroups;
+	private JButton btnCreateGroup;
 
 
 	public MyBoxAdministrator_GUI(Controller controller) {
@@ -36,7 +37,7 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 		
 		JPanel panelAdminButtons = new JPanel();
 		panelAdminButtons.setBackground(Color.WHITE);
-		panelAdminButtons.setBounds(261, 113, 450, 68);
+		panelAdminButtons.setBounds(0, 64, 718, 137);
 		add(panelAdminButtons);
 		panelAdminButtons.setLayout(null);
 		
@@ -46,13 +47,18 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		btnManageFileGroups.setBounds(100, 11, 173, 30);
+		btnManageFileGroups.setBounds(103, 57, 173, 30);
 		panelAdminButtons.add(btnManageFileGroups);
 		
 		btnManageGroupRequests = new JButton("Group Rquests");
 		btnManageGroupRequests.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnManageGroupRequests.setBounds(283, 11, 143, 30);
+		btnManageGroupRequests.setBounds(555, 57, 133, 30);
 		panelAdminButtons.add(btnManageGroupRequests);
+		
+		btnCreateGroup = new JButton("Create Group");
+		btnCreateGroup.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnCreateGroup.setBounds(416, 57, 129, 31);
+		panelAdminButtons.add(btnCreateGroup);
 	}
 			
 	
@@ -78,5 +84,4 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 			}
 		});
 	}
-
 }

@@ -12,7 +12,6 @@ public abstract class AddFileCallback extends Callback<ItemFile>{
 	@Override
 	protected void messageReceived(ItemFile file, MyBoxException exception) {
 		done(file,exception);
-		
 	}
 
 	@Override

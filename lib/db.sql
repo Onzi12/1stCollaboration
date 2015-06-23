@@ -35,7 +35,7 @@ CREATE TABLE `file` (
   KEY `id` (`fileID`),
   KEY `ownerID_idx` (`ownerID`),
   CONSTRAINT `ownerID` FOREIGN KEY (`ownerID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `file` (
 
 LOCK TABLES `file` WRITE;
 /*!40000 ALTER TABLE `file` DISABLE KEYS */;
-INSERT INTO `file` VALUES (3,'HW3','This is the first file ever on myBox',1,0,0,1);
+INSERT INTO `file` VALUES (1,'pic2.doc',NULL,0,0,1,16),(2,'bank.doc',NULL,1,0,0,17),(3,'secret.doc',NULL,2,0,0,18),(4,'pic.jpeg',NULL,0,2,0,19),(5,'db.sql',NULL,0,1,0,16);
 /*!40000 ALTER TABLE `file` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,6 +58,7 @@ DROP TABLE IF EXISTS `filegroups`;
 CREATE TABLE `filegroups` (
   `fileID` int(11) NOT NULL,
   `groupID` int(11) NOT NULL,
+  `writeAccess` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fileID`,`groupID`),
   KEY `groupID_idx` (`groupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -69,7 +70,7 @@ CREATE TABLE `filegroups` (
 
 LOCK TABLES `filegroups` WRITE;
 /*!40000 ALTER TABLE `filegroups` DISABLE KEYS */;
-INSERT INTO `filegroups` VALUES (1,1);
+INSERT INTO `filegroups` VALUES (2,2,1);
 /*!40000 ALTER TABLE `filegroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +88,7 @@ CREATE TABLE `folder` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`folderID`),
   KEY `userID_idx` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,8 +97,32 @@ CREATE TABLE `folder` (
 
 LOCK TABLES `folder` WRITE;
 /*!40000 ALTER TABLE `folder` DISABLE KEYS */;
-INSERT INTO `folder` VALUES (1,1,NULL,'/');
+INSERT INTO `folder` VALUES (1,16,0,'/'),(2,16,1,'new'),(3,17,0,'/'),(4,18,0,'/'),(5,19,0,'/'),(6,17,3,'new'),(7,18,4,'new');
 /*!40000 ALTER TABLE `folder` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `grouprequests`
+--
+
+DROP TABLE IF EXISTS `grouprequests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `grouprequests` (
+  `userID` int(11) NOT NULL,
+  `groupID` int(11) NOT NULL,
+  `type` int(1) NOT NULL,
+  PRIMARY KEY (`userID`,`groupID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `grouprequests`
+--
+
+LOCK TABLES `grouprequests` WRITE;
+/*!40000 ALTER TABLE `grouprequests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `grouprequests` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -112,7 +137,7 @@ CREATE TABLE `groups` (
   `groupName` varchar(45) NOT NULL,
   PRIMARY KEY (`groupID`),
   UNIQUE KEY `groupName_UNIQUE` (`groupName`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +146,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (2,'Group16'),(1,'Software');
+INSERT INTO `groups` VALUES (3,'engineer'),(2,'mechanics'),(1,'software');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +166,7 @@ CREATE TABLE `user` (
   `counter` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username_UNIQUE` (`userName`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +175,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'t','t',0,1,0);
+INSERT INTO `user` VALUES (16,'admin','0000',0,1,0),(17,'user','1234',0,0,0),(18,'working','c3',1,0,0),(19,'blocked','7d',2,0,3);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,7 +202,7 @@ CREATE TABLE `userfiles` (
 
 LOCK TABLES `userfiles` WRITE;
 /*!40000 ALTER TABLE `userfiles` DISABLE KEYS */;
-INSERT INTO `userfiles` VALUES (1,0,3),(1,0,29);
+INSERT INTO `userfiles` VALUES (16,1,1),(16,2,5),(17,3,1),(17,3,2),(18,4,3),(19,5,4),(17,6,5),(18,7,4);
 /*!40000 ALTER TABLE `userfiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -194,8 +219,7 @@ CREATE TABLE `usergroups` (
   PRIMARY KEY (`userID`,`groupID`),
   KEY `userid_idx` (`userID`),
   KEY `groupid_idx` (`groupID`),
-  CONSTRAINT `groupID` FOREIGN KEY (`groupID`) REFERENCES `groups` (`groupID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `groupID` FOREIGN KEY (`groupID`) REFERENCES `groups` (`groupID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -205,7 +229,7 @@ CREATE TABLE `usergroups` (
 
 LOCK TABLES `usergroups` WRITE;
 /*!40000 ALTER TABLE `usergroups` DISABLE KEYS */;
-INSERT INTO `usergroups` VALUES (1,1);
+INSERT INTO `usergroups` VALUES (16,1),(16,3),(18,2),(19,1),(19,2),(19,3);
 /*!40000 ALTER TABLE `usergroups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -218,4 +242,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-21  4:10:09
+-- Dump completed on 2015-06-23  7:32:50

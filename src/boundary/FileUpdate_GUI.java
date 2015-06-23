@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,6 +23,7 @@ import model.ItemFile;
 import model.ItemFile.Privilege;
 import common.Controller;
 import common.JDialogBoundary;
+import controller.FileEditController;
 import controller.FileUpdateController;
 
 import javax.swing.JComboBox;
@@ -47,7 +50,15 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	@Override
 	public void draw(ItemFile file) {
 		setTitle("Update File");
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() { //window listener that initiates the isEdited flag in DB if window is closed
+			
+			@Override
+			public void windowClosing(WindowEvent e){
+						FileUpdateController control = (FileUpdateController) controller;
+						control.close();
+			}
+		});
 		if (file != null)
 			drawSelectedRow();
 		else 
@@ -203,7 +214,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		contentsPanel.add(cbPrivilege);
 		
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBounds(20, 218, 555, 36);
+		buttonPanel.setBounds(10, 218, 565, 36);
 		getContentPane().add(buttonPanel);
 		buttonPanel.setBackground(Color.WHITE);
 		buttonPanel.setLayout(null);
@@ -215,7 +226,9 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		btnSave = new JButton("Save");
 		btnSave.setBounds(396, 11, 65, 23);
 		buttonPanel.add(btnSave);
+		
 	}
+	
 	
 	@Override
 	public void registerListeners() {
@@ -250,6 +263,7 @@ public class FileUpdate_GUI extends JDialogBoundary{
 				control.btnSaveLocationClicked();
 			}
 		});
+		
 	}
 
 	public void setFilename(String string) {
@@ -286,9 +300,8 @@ public class FileUpdate_GUI extends JDialogBoundary{
 	}
 	
 	@Override
-	public void draw() {
+	public void draw() {			//empty implemented message
 		// TODO Auto-generated method stub
 		
 	}
-
 }

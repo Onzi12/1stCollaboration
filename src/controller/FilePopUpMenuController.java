@@ -2,14 +2,20 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
+import callback.CanEditFileCallback;
+import client.Client;
+import common.Message;
+import common.MessageType;
+import common.MyBoxException;
 import model.ItemFile;
 import boundary.FilePopUpMenu_GUI;
 import boundary.MyBox_GUI;
 
 public class FilePopUpMenuController {
 	
-	private ItemFile file;
+	private final ItemFile file;
 	private MyBoxController myboxController;
 	
 	public FilePopUpMenuController(MyBoxController myboxController, FilePopUpMenu_GUI gui, ItemFile file) {
@@ -70,8 +76,25 @@ public class FilePopUpMenuController {
 	}
 	public void btnUpdateClicked() {
 
-		new FileUpdateController(file);
-		((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
+		try {
+			Message msg = new Message(file.getID(), MessageType.CAN_EDIT_FILE);
+			Client.getInstance().sendMessage(msg, new CanEditFileCallback() {
+				
+				@Override
+				public void canEditFile(ItemFile file, MyBoxException exception) {
+					if (exception == null) {
+						file.setIsEdited(true);
+						new FileUpdateController(file);
+					} else {
+						((MyBox_GUI)myboxController.getGui()).showMessage(exception.getMessage());
+					}
+					((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	public void btnDeleteFileClicked() {
@@ -82,8 +105,26 @@ public class FilePopUpMenuController {
 	}
 
 	public void btnEditClicked() {
-		 new FileEditController(file);
-		 ((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
+		
+		try {
+			Message msg = new Message(file.getID(), MessageType.CAN_EDIT_FILE);
+			Client.getInstance().sendMessage(msg, new CanEditFileCallback() {
+				
+				@Override
+				public void canEditFile(ItemFile fileDB, MyBoxException exception) {
+					if (exception == null) {
+						file.setIsEdited(true);
+						 new FileEditController(file);
+					} else {
+						((MyBox_GUI)myboxController.getGui()).showMessage(exception.getMessage());
+					}
+					 ((MyBox_GUI)myboxController.getGui()).getTable().clearSelection();
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void btnReadClicked() {

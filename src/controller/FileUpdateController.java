@@ -1,16 +1,20 @@
 package controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 import javax.swing.JFileChooser;
 
 import model.ItemFile;
 import model.ItemFile.Privilege;
+import model.ItemFile.State;
 import model.ItemFolder;
-import boundary.FileTreeModel;
 import boundary.FileUpdate_GUI;
+import callback.FinishedEditingFileCallback;
 import callback.UploadFileCallback;
 import client.Client;
+
 import common.Boundary;
 import common.ByteArray;
 import common.Controller;
@@ -33,18 +37,19 @@ public class FileUpdateController extends Controller{
 			this.file = new ItemFile();
 			MyBoxController myBoxController = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 			ItemFolder rootFolder = (ItemFolder)myBoxController.gui.getTree().getRoot().getUserObject();
-			this.file.setFolder(rootFolder.getID());
+			this.file.setParentID(rootFolder.getID());
 			gui.setSaveLocationText(rootFolder.getFullPath());
 			gui.setPrivilege(Privilege.PUBLIC);
 			gui.setDescription("");
 			gui.setFilename("");
 			gui.setLocation("");
+			isSelectedFile = false;
 		} else {
 			isSelectedFile = true;
-			gui.setDescription(file.getDescription());
-			gui.setPrivilege(file.getPrivilege());
+//			gui.setDescription(file.getDescription());
+//			gui.setPrivilege(file.getPrivilege());
 			gui.setFilename(file.getName());
-			gui.setLocation(file.getFullPath());
+//			gui.setLocation(file.getFullPath());
 		}
 
 	}
@@ -55,83 +60,65 @@ public class FileUpdateController extends Controller{
 		
 		if (isSelectedFile == false) {
 			
+			file.setName(gui.getFilenameText()+file.getName());
+			file.setDescription(gui.getDescription());
+			file.setPrivilege(gui.getPrivilege());
+			file.setOwner(Client.getInstance().getUser());
+			//file.setUserID(Client.getInstance().getUser().getID()); //On 
+			file.setIsEdited(false);
+			file.setState(State.NORMAL);
+
+		} 
+		
+		if (file != null) {
 	        try {
-			    
-	        	if (file != null) {
-	        		
-					file.setName(gui.getFilenameText());
-					file.setDescription(gui.getDescription());
-					file.setPrivilege(gui.getPrivilege());
-					file.setOwner(Client.getInstance().getUser().getID());
-					file.setUserId(file.getOwner());
+			    HashMap<String, Object> data = new HashMap<String, Object>();
+			    data.put("file", file);
+			    data.put("isUpdate", isSelectedFile);
+				Message msg = new Message(data, MessageType.UPLOAD_FILE);
+				Client.getInstance().sendMessage(msg, new UploadFileCallback() {
 					
-					Message msg = new Message(file, MessageType.UPLOAD_FILE);
-					Client.getInstance().sendMessage(msg, new UploadFileCallback() {
+					@Override
+					protected void done(ItemFile file, MyBoxException exception) {		
 						
-						@Override
-						protected void done(ItemFile file, MyBoxException exception) {						
-							MyBoxController controller = (MyBoxController)NavigationManager.getInstance().getCurrentController();
-							controller.handleUploadedFileCallback(file, exception);
-						}
+						handleUpdateCallback(file, exception);
 						
-					});
-	        		
-	        	} 
-		 
+					}
+					
+				});
+	  
 	        }catch(Exception e){
 	            e.printStackTrace();
 	        }
-			
 		}
+
 		
-		
-		
-//		try {
-//			Message msg = new Message(f, MessageType.UPLOAD_FILE);
-//			Client.getInstance().sendMessage(msg);
-//			
-////			Client.getInstance().sendToServer(f);
-//		} catch (IOException e1) {
-//			gui.showMessage("Exception: " + e1.getMessage());
-//		}
-		
-//		if (file == null) {
-//			
-//			ItemFile newFile = new ItemFile();
-//			newFile.setName(gui.getFilenameText());
-////			newFile.setLocation(gui.getLocationText());
-//			
-//			try {
-//				Message msg = new Message(newFile, MessageType.ADD_FILE);
-//				Client.getInstance().sendMessage(msg);
-//			} catch (IOException e1) {
-//				gui.showMessage("Exception: " + e1.getMessage());
-//			}
-//			
-//		} else {
-//			
-//			ItemFile newFile = new ItemFile(file.getID());
-//			newFile.setName(gui.getFilenameText());
-//			newFile.setFile(file.getFile());
-//			
-////			newFile.setLocation(gui.getLocationText());
-//			System.out.println("dahkfdajlshfljakdshfkjads");
-//			try {
-//				Message msg = new Message(f, MessageType.UPLOAD_FILE);
-//				Client.getInstance().sendMessage(msg);
-//				
-//				Client.getInstance().sendToServer(f);
-//			} catch (IOException e1) {
-//				gui.showMessage("Exception: " + e1.getMessage());
-//			}
-//			
-//		}
-		
-		gui.close();
+		close();
 	}
 	
 	public void btnCancelClicked() {
+		close();
+	}
+	
+	public void close() {
 		gui.close();
+		
+		try {
+			Message setEditable = new Message(file, MessageType.FINISHED_EDITING_FILE);
+			Client.getInstance().sendMessage(setEditable, new FinishedEditingFileCallback() {
+				
+				@Override
+				public void finishedEditingFile(MyBoxException exception) {
+					if (exception == null) {
+						
+					} else {
+						gui.showMessage(exception.getMessage());
+					}
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -139,9 +126,19 @@ public class FileUpdateController extends Controller{
 		return new FileUpdate_GUI(this,file);
 	}
 
+	private void handleUpdateCallback(ItemFile file, MyBoxException exception) {
+		
+		MyBoxController controller = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+		if ( isSelectedFile == false ) {
+			controller.handleUploadedFileCallback(file, exception);
+		} else {
+			controller.handleUpdateFileCallback(file, exception);
+		}
+		
+	}
 
 	public void btnPathClicked() {
-
+		
 		String userhome = System.getProperty("user.home") + "\\desktop";
 		JFileChooser filechooser = new JFileChooser(userhome);
 		filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -152,12 +149,21 @@ public class FileUpdateController extends Controller{
             gui.setLocation(f.getAbsolutePath());
             
             try {
-            	
 				byte[] bFile = ByteArray.convertFileToByteArray(f);
 				file.setFile(bFile);
-				String extension = f.getName().substring(f.getName().lastIndexOf('.'));
-				file.setType(extension);
-			} catch (Exception e) {}		    		    
+				if (isSelectedFile == false) {
+					file.setName(f.getName().substring(f.getName().lastIndexOf(".")));
+				}
+				else {
+					String s = file.getName();
+					s = s.substring(0, s.indexOf("."));
+					file.setName(s);
+					file.setName(file.getName() + f.getName().substring(f.getName().lastIndexOf(".")));
+				}
+
+			} catch (Exception e) {
+				e.getStackTrace();
+			}		    		    
 
             
         } else {
@@ -171,14 +177,14 @@ public class FileUpdateController extends Controller{
 		new VirtualLocationChooserController(this, file);
 	}
 
-	@Override //On: Leave this blank , this is fine 
+	@Override 
 	protected Boundary initBoundary() {
 		return null;
 	}
 
 	public void setVirtualSaveLocation(ItemFolder folder) {
 		gui.setSaveLocationText(folder.getFullPath());
-		file.setFolder(folder.getID());
+		file.setParentID(folder.getID());
 	}
-	
+
 }

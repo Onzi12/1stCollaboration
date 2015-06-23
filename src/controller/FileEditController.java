@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 
 import callback.EditFileCallback;
+import callback.FinishedEditingFileCallback;
 import client.Client;
 import boundary.FileEdit_GUI;
 import model.ItemFile;
@@ -16,15 +17,19 @@ public class FileEditController extends Controller{
 	
 	private ItemFile file;
 	private FileEdit_GUI gui;
+	
 	public FileEditController(ItemFile file) {
 		super(file);
-		System.out.println("fileid : " + file.getID());
-		this.file = new ItemFile(file.getID());
-		this.file.setFolder(file.getFolderID());
+		this.file = file;
 		gui = (FileEdit_GUI)super.gui;
+		if (file.getOwner().getID() != Client.getInstance().getUser().getID())
+			gui.setBtnManageGroupsAccess(false);
+		System.out.println("file owner "+file.getOwner().getID());
+		System.out.println("current user: "+ Client.getInstance().getUser().getID());
 		gui.setDescriptionText(file.getDescription());
 		gui.setFilename(file.getName());
-		gui.setPrivilege(file.getPrivilege());
+		gui.setPrivilege(file.getPrivilege().getValue());
+		System.out.println("teh privilege is :"+file.getPrivilege().getValue());
 	}
 	
 	@Override
@@ -38,8 +43,29 @@ public class FileEditController extends Controller{
 	}
 
 	public void btnCancelClicked() {
+		close();
+		
+	}
+	
+	public void close() {
 		gui.close();
 		
+		try {
+			Message setEditable = new Message(file, MessageType.FINISHED_EDITING_FILE);
+			Client.getInstance().sendMessage(setEditable, new FinishedEditingFileCallback() {
+				
+				@Override
+				public void finishedEditingFile(MyBoxException exception) {
+					if (exception == null) {
+						
+					} else {
+						gui.showMessage(exception.getMessage());
+					}
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void btnSaveClicked() {
@@ -51,6 +77,7 @@ public class FileEditController extends Controller{
 				System.out.println(file.getName());
 				System.out.println(file.getDescription());
 				file.setPrivilege(gui.getPrivilege());
+				file.setUserID(Client.getInstance().getUser().getID());
 				
 				System.out.println("send fileid : " + file.getID());
 
@@ -72,7 +99,12 @@ public class FileEditController extends Controller{
 			e.printStackTrace();
 		}
 		
-		gui.close();
+		close();
+	}
+
+	public void btnManageGroupsAccessClicked() {
+		new FileGroupsSelectController(file);
+		
 	}
 
 }

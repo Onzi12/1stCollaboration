@@ -15,6 +15,7 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 	public JDialogBoundary(Controller controller)
 	{
 		super(AppFrame.getInstance());
+		setResizable(false);
 		this.controller = controller;
 		draw();	
 		registerListeners();
@@ -23,6 +24,7 @@ public abstract class JDialogBoundary extends JDialog implements Boundary{
 	public JDialogBoundary(Controller controller,ItemFile file)
 	{
 		super(AppFrame.getInstance());
+		setResizable(false);
 		this.controller = controller;
 		draw(file);	
 		registerListeners();

@@ -1,13 +1,14 @@
 package controller;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 
-import model.Item;
 import model.ItemFile;
 import boundary.FileDelete_GUI;
 import callback.FileDeleteCallback;
+import callback.GetDeleteFilePhyisicalCallback;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -16,17 +17,30 @@ import common.MyBoxException;
 
 public class FileDeleteController extends Controller{
 
-	private FileDelete_GUI gui;
-	private HashMap<String,Item> files;
+	protected FileDelete_GUI gui;
+	protected HashSet<ItemFile> files;
 	
 	public FileDeleteController(){
 		gui = (FileDelete_GUI)super.gui;
-		files = Client.getInstance().getUser().getFiles();
-		for (Item x : files.values())
-			if ( x instanceof ItemFile)
-				if (((ItemFile) x).getOwner() == Client.getInstance().getUser())
-					gui.addListValue((ItemFile)x);
-	}
+		
+		Message msg = new Message(Client.getInstance().getUser(), MessageType.GET_DELETE_FILE_PHYSICAL);
+		try {
+			Client.getInstance().sendMessage(msg, new GetDeleteFilePhyisicalCallback() {
+				
+				@Override
+				protected void done(HashSet<ItemFile> files, MyBoxException exception) {
+					setFiles(files);
+					for (ItemFile x : files)
+						gui.addListValue(x);
+					}
+			});
+		} catch (IOException e) {
+			gui.showMessage(e.getMessage());
+
+		}
+
+		}
+	
 		
 	@Override
 	protected Boundary initBoundary() {
@@ -56,6 +70,16 @@ public class FileDeleteController extends Controller{
 		} finally { 
 			gui.close();
 		}
+	}
+
+
+	public HashSet<ItemFile> getFiles() {
+		return files;
+	}
+
+
+	public void setFiles(HashSet<ItemFile> files) {
+		this.files = files;
 	}
 
 }

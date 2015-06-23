@@ -1,32 +1,34 @@
 package boundary;
 
-import common.Controller;
-import common.JDialogBoundary;
-
-import javax.swing.JPanel;
-
 import java.awt.Color;
-
-import javax.swing.JLabel;
-
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JSeparator;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.ListSelectionModel;
+
+import model.ItemFile;
+
+import common.Controller;
+import common.JDialogBoundary;
 
 import controller.FileRestoreController;
-import java.awt.Rectangle;
 
 public class FileRestore_GUI extends JDialogBoundary {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTable tableFiles;
+	private JList<ItemFile> listFiles;
+	private DefaultListModel<ItemFile> listModel;
 	private JButton btnClose;
 	private JButton btnRestore;
 
@@ -61,9 +63,13 @@ public class FileRestore_GUI extends JDialogBoundary {
 		scrollPane.setBounds(10, 61, 464, 232);
 		panel.add(scrollPane);
 		
-		tableFiles = new JTable();
-		tableFiles.setCellSelectionEnabled(true);
-		scrollPane.setViewportView(tableFiles);
+		listModel = new DefaultListModel<ItemFile>();
+		
+		listFiles = new JList<ItemFile>();
+		listFiles.setModel(listModel);
+		listFiles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		scrollPane.setViewportView(listFiles);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
@@ -103,5 +109,13 @@ public class FileRestore_GUI extends JDialogBoundary {
 				
 			}
 		});
+	}
+	
+	public void addListValue(ItemFile file) {
+		listModel.addElement(file);
+	}
+	
+	public ItemFile getSelectedFile() {
+		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}
 }

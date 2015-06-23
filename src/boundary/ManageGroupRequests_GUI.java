@@ -1,5 +1,8 @@
 package boundary;
 import java.awt.Color;
+
+import custom_gui.RequestTableModel;
+
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
@@ -14,9 +17,11 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
+import model.ItemFile;
+import model.Request;
 import common.Controller;
 import common.JDialogBoundary;
-
+import common.MessageType;
 import controller.ManageGroupRequestsController;
 
 @SuppressWarnings("serial")
@@ -108,5 +113,17 @@ public class ManageGroupRequests_GUI extends JDialogBoundary {
 				
 			}
 		});
+	}
+	
+	public JTable getTable() {
+		return table;
+	}
+	
+	public void setTableModel(RequestTableModel model) {
+		table.setModel(model);
+	}
+	
+	public Request getSelectedRequest() {
+		return (Request) table.getModel().getValueAt(table.getSelectedRow(), RequestTableModel.OBJECT_COL);
 	}
 }

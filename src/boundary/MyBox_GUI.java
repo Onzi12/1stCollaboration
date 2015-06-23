@@ -1,7 +1,6 @@
 package boundary;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.EventObject;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,22 +15,21 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
+
 import common.Controller;
 import common.JPanelBoundary;
+
 import controller.MyBoxController;
 import custom_gui.ImageRenderer;
 import custom_gui.MyBoxTree;
@@ -50,6 +47,7 @@ public class MyBox_GUI extends JPanelBoundary {
 	private JButton btnGroups;
 	private MyBoxTree tree;
 	private JTable table;
+	private JButton btnRemoveFolder;
 
 	/**
 	 * Create the frame.
@@ -103,19 +101,19 @@ public class MyBox_GUI extends JPanelBoundary {
 		btnLogout = new JButton("LogOut");
 		//btnLogout.setToolTipText("Log out...");
 		btnLogout.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnLogout.setBounds(567, 78, 120, 31);
+		btnLogout.setBounds(568, 78, 120, 31);
 		add(btnLogout);
 		
-		btnNewFolder = new JButton("New Folder");
+		btnNewFolder = new JButton("+");
 		btnNewFolder.setToolTipText("Create a new folder in the current folder");
-		btnNewFolder.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewFolder.setBounds(12, 122, 123, 31);
+		btnNewFolder.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNewFolder.setBounds(12, 154, 43, 25);
 		add(btnNewFolder);
 		
 		btnGroups = new JButton("Groups");
 		btnGroups.setToolTipText("Join Or Leave Groups");
 		btnGroups.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnGroups.setBounds(149, 122, 107, 31);
+		btnGroups.setBounds(289, 120, 107, 31);
 		add(btnGroups);
 		
 		FileTreeCellRenderer renderer = new FileTreeCellRenderer();
@@ -127,15 +125,6 @@ public class MyBox_GUI extends JPanelBoundary {
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);    
         tree.setEditable(true);
-        tree.setCellEditor(new DefaultTreeCellEditor(tree, renderer) {
-        	
-        	@Override
-        	public boolean isCellEditable(EventObject event) {
-        		ItemFolder folder = (ItemFolder)((DefaultMutableTreeNode)tree.getLastSelectedPathComponent()).getUserObject();
-        		return super.isCellEditable(event) && (folder.getName().equals("/"));
-        	}
-        	
-        });
         
 		JScrollPane scrollBox = new JScrollPane(tree);
 		scrollBox.setBorder(BorderFactory.createEmptyBorder());
@@ -150,6 +139,11 @@ public class MyBox_GUI extends JPanelBoundary {
 		scrollPane.setBounds(188, 190, 500, 331);
 		scrollPane.getViewport().setBackground(Color.WHITE);
 		add(scrollPane);
+		
+		btnRemoveFolder = new JButton("-");
+		btnRemoveFolder.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnRemoveFolder.setBounds(65, 154, 43, 25);
+		add(btnRemoveFolder);
 	}
 	
 	
@@ -248,9 +242,22 @@ public class MyBox_GUI extends JPanelBoundary {
 		});
 		
 		tree.addMouseListener(new MouseAdapter() {
+	
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				control.clickedOnTreeNode();
+			public void mouseReleased(MouseEvent e) {
+				if (!e.isConsumed()) {
+					control.clickedOnTreeNode();
+					e.consume();
+				}
+			}
+		});
+		
+		btnRemoveFolder.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnRemoveFolderClicked();
+				
 			}
 		});
 		
@@ -269,8 +276,6 @@ public class MyBox_GUI extends JPanelBoundary {
 			@Override
 			public void editingCanceled(ChangeEvent e) {}
 			
-
-
 		});
 		
 	}
@@ -279,5 +284,12 @@ public class MyBox_GUI extends JPanelBoundary {
 		return (MyBoxController) controller;
 	}
 	
+	public void disableBtnNewFolder() {
+		btnNewFolder.setEnabled(false);
+	}
+	
+	public void enableBtnNewFolder() {
+		btnNewFolder.setEnabled(true);
+	}
 }
 

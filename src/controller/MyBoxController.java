@@ -1,12 +1,14 @@
-package controller;
+ package controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -21,9 +23,12 @@ import boundary.FilePopUpMenu_GUI;
 import boundary.FileTreeModel;
 import boundary.FileTreeModelListenter;
 import boundary.MyBox_GUI;
+import callback.CanEditFileCallback;
+import callback.ChangeFolderNameCallback;
 import callback.CreateNewFolderCallback;
 import callback.FileDeleteCallback;
 import callback.GetFilesCallback;
+import callback.RemoveFolderCallback;
 import callback.UpdateFileLocationCallback;
 import client.Client;
 
@@ -33,19 +38,29 @@ import common.Message;
 import common.MessageType;
 import common.MyBoxException;
 
-public class MyBoxController extends Controller {
+public class MyBoxController extends Controller implements Observer {
 
-	private User user;
 	MyBox_GUI gui;
 	
-	public MyBoxController(User user) {
+	public MyBoxController() {
 
-		this.user = user;
+		// listen to broadcast messages.
+		Client.getInstance().addObserver(this); 
 		this.gui = (MyBox_GUI)super.gui;
 
 	}
 
-
+	public ItemFolder getCurrentFolder() {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+		if (node != null) 
+			return (ItemFolder)node.getUserObject();
+		return null;
+	}
+	
+//	public void setCurrentFolder(TreePath path) {
+//		MyBoxTree tree = gui.getTree();
+//		//tree.sets
+//	}
 
 	private class MyBoxMouseListener extends MouseAdapter {
 
@@ -60,7 +75,7 @@ public class MyBoxController extends Controller {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (!e.isPopupTrigger() && e.getClickCount() == 2 && !e.isConsumed()) { /*Gil, what are all this checks?*/
+			if (!e.isPopupTrigger() && e.getClickCount() == 2 && !e.isConsumed()) { 
 				int row = gui.getTable().rowAtPoint(e.getPoint());
 		        if (row < 0)
 		            return;
@@ -111,25 +126,38 @@ public class MyBoxController extends Controller {
 		
 	}
 	
+	/**
+	 * Show the files in the selected folder.
+	 */
 	private void showFilesOfSelectedFolder() {
 		
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent(); 
 		if (selectedNode != null) {
 			
-			if (selectedNode.getUserObject() instanceof ItemFolder) {
-				ItemFolder folder = (ItemFolder)selectedNode.getUserObject();
-				
-				ArrayList<Item> files = new ArrayList<Item>();
-				
-				for (Item item : folder.getFiles().values()) {
-					if (item instanceof ItemFile) {
-						files.add(item);
+			if (selectedNode.getUserObject() != null) {
+				if (selectedNode.getUserObject() instanceof ItemFolder) {
+					ItemFolder folder = (ItemFolder)selectedNode.getUserObject();
+					
+					if (folder != null) {
+						
+						ArrayList<Item> files = new ArrayList<Item>();
+						Set<Item> items = folder.getContents(); 
+						if (items != null) {
+							
+							for (Item item : items) {
+								if (item instanceof ItemFile) {
+									files.add(item);
+								}
+							}
+							
+							
+						}
+						gui.refreshTable(files);
 					}
-				}
-				
-				gui.refreshTable(files);
-			}
 
+				}
+			}
+			
 		}
 	}
 	
@@ -144,7 +172,7 @@ public class MyBoxController extends Controller {
 		Client client = Client.getInstance();
 		
 		try {
-			Message logout = new Message(user, MessageType.LOGOUT);
+			Message logout = new Message(Client.getInstance().getUser(), MessageType.LOGOUT);
 			client.sendMessage(logout, null);
 		} catch (IOException e) {
 			System.out.println("ERROR " + e.getMessage());
@@ -171,9 +199,27 @@ public class MyBoxController extends Controller {
 			new FileUpdateController(null);  //no File is pressed == createNewFile
 												   
 		 else {
-			ItemFile file = (ItemFile)gui.tableGetFile(row);				
-			new FileUpdateController(file);  
-			gui.getTable().clearSelection();
+			final ItemFile file = (ItemFile)gui.tableGetFile(row);				
+
+			try {
+				Message canUpdateFile = new Message(file.getID(), MessageType.CAN_EDIT_FILE);
+				Client.getInstance().sendMessage(canUpdateFile, new CanEditFileCallback() {
+					
+					@Override
+					public void canEditFile(ItemFile fileDB, MyBoxException exception) {
+						
+						if (exception == null) {
+							file.setIsEdited(true);
+							new FileUpdateController(file);  
+						} else {
+							gui.showMessage(exception.getMessage());
+						}
+						gui.getTable().clearSelection();
+					}
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 		}
 	}
@@ -182,35 +228,32 @@ public class MyBoxController extends Controller {
 
 	@Override
 	public void updateBoundary() {
-		
+
 		try {
 			Message getFiles = new Message(Client.getInstance().getUser(), MessageType.GET_FILES);
 			Client.getInstance().sendMessage(getFiles, new GetFilesCallback() {
 				
 				@Override
-				protected void done(HashMap<String, Item> items, MyBoxException exception) {
-					
+				protected void done(ItemFolder folder, MyBoxException exception) {
 					if (exception == null) {
-						initViewWithItemsFromDB(items);
+						Client.getInstance().getUser().setRootFolder(folder);
+						ItemFolder f = getCurrentFolder(); // the current selected folder
+						initViewWithItemsFromDB();
+						if (f != null) {
+							gui.getTree().showFolder(f);
+				    		showFilesOfSelectedFolder();
+						}							
 					} else {
 						getGui().showMessage(exception.getMessage());
 					}
-					
 				}
-				
-			});
+			}); 
 		} catch (IOException e) {}
 		
 	}
 	
-	public void handleUploadedFileCallback(ItemFile file, MyBoxException exception) {
-		
+	public void handleUpdateFileCallback(ItemFile file, MyBoxException exception) {
 		if (exception == null) {
-					
-			user.getFiles().put("file" + file.getStringID(), file);
-				
-			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
-			folder.addFile(file);
 			
 			showFilesOfSelectedFolder();
 			
@@ -219,26 +262,26 @@ public class MyBoxController extends Controller {
 		}
 	}
 	
-	private void initViewWithItemsFromDB(HashMap<String, Item> items) {
+	public void handleUploadedFileCallback(ItemFile file, MyBoxException exception) {
 		
-		for (Item item : items.values()) {
-			ItemFolder directory = (ItemFolder) items.get("folder" + Integer.toString(item.getFolderID()));
-			if (directory != null) {
-				directory.addFile(item);
-			}
+		if (exception == null) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+			ItemFolder f = (ItemFolder)node.getUserObject();
+			f.addItem(file);
+			showFilesOfSelectedFolder();
 			
-			if (item.getName().equals("/")) {
-				ItemFolder rootFolder = (ItemFolder)item;
-				rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
-				gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
-			}
-			
+		} else {
+			getGui().showMessage(exception.getMessage());
 		}
-		
-		user.setFiles(items);
+	}
+	
+	private void initViewWithItemsFromDB() {
 
 		// update the tree 
-		gui.getTree().processTreeHierarchy((ItemFolder)gui.getTree().getRoot().getUserObject());
+		ItemFolder rootFolder = Client.getInstance().getUser().getRootFolder();
+		rootFolder.setTreeNode(new DefaultMutableTreeNode(rootFolder));
+		gui.getTree().setModel(new FileTreeModel(rootFolder.getTreeNode()));
+		gui.getTree().processTreeHierarchy(rootFolder);
 		
 		// expand the root folder
 		TreePath path = new TreePath(gui.getTree().getRoot());
@@ -268,7 +311,7 @@ public class MyBoxController extends Controller {
 	 * Create new Tree node and make it editable.
 	 */
 	public void btnNewFolderClicked() {
-		
+		gui.disableBtnNewFolder();
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
 	    
 	    if (parentNode == null) {
@@ -279,8 +322,9 @@ public class MyBoxController extends Controller {
 	    					
 	    	ItemFolder parentFolder = (ItemFolder)parentNode.getUserObject();
 	    	ItemFolder newFolder = new ItemFolder();
-	    	newFolder.setFolder(parentFolder.getID());
-	    	newFolder.setUserId(user.getID());
+	    	newFolder.setID(0);
+	    	newFolder.setParentID(parentFolder.getID());
+	    	newFolder.setUserID(Client.getInstance().getUser().getID());
 	    	
 	    	DefaultMutableTreeNode newTreeNode = gui.getTree().addObject(parentNode, newFolder, true);
 			newFolder.setTreeNode(newTreeNode);
@@ -289,6 +333,7 @@ public class MyBoxController extends Controller {
 
 			if (path != null) {
 				gui.getTree().startEditingAtPath(path);
+				showFilesOfSelectedFolder();
 			}
 	    }
 
@@ -298,9 +343,10 @@ public class MyBoxController extends Controller {
 	 * Called after user finishes entering new folder's name.
 	 * @param folder
 	 */
-	public void finishedEditingFolderName(ItemFolder folder) {
+	public void finishedEditingFolderName(final ItemFolder folder) {
 		System.out.println(folder);
 
+		// create new folder
 		if (folder.getID() == 0) {
 			
 			try {
@@ -308,29 +354,31 @@ public class MyBoxController extends Controller {
 				Client.getInstance().sendMessage(msg, new CreateNewFolderCallback() {
 					
 					@Override
-					protected void done(ItemFolder folder, MyBoxException exception) {
+					protected void done(ItemFolder f, MyBoxException exception) {
 						
 						if (exception == null) {
-							ItemFolder parentFolder = (ItemFolder)user.getFiles().get("folder" + Integer.toString(folder.getFolderID()));
-							parentFolder.addFile(folder);
-							
-							user.getFiles().put("folder" + folder.getStringID(), folder);
-							
-						    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
-
-						    node.setUserObject(folder); 
+							folder.setID(f.getID());
 						} else {
 						    gui.getTree().removeObject();
 							getGui().showMessage(exception.getMessage());
 						}
-
+						gui.enableBtnNewFolder();
 					}
 				});
 			} catch (IOException e) {}
 			
-		} else {
-			
-			System.out.println("changed folder's name.");
+		} else { // rename folder
+						
+			try {
+				Message msg = new Message(folder, MessageType.CHANGE_FOLDER_NAME);
+				Client.getInstance().sendMessage(msg, new ChangeFolderNameCallback() {
+					
+					@Override
+					protected void done(ItemFolder folder, MyBoxException exception) {
+						System.out.println("Renamed folder to " + folder.getName());
+					}
+				});
+			} catch (IOException e) {}
 			
 		}
 
@@ -362,14 +410,10 @@ public class MyBoxController extends Controller {
 	public void handleEditFileCallback(ItemFile file, MyBoxException exception) {
 	
 		if (exception == null) {
-			
-			user.getFiles().put("file" + file.getStringID(), file);
-				
-			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
-			folder.addFile(file);
-			
+//			Client.getInstance().getUser().getFiles().put("file" + file.getStringID(), file);	
+//			ItemFolder folder = (ItemFolder) Client.getInstance().getUser().getFiles().get("folder" + Integer.toString(file.getFolderID()));
+//			folder.addFile(file);
 			showFilesOfSelectedFolder();
-			
 		} else {
 			getGui().showMessage(exception.getMessage());
 		}
@@ -385,17 +429,22 @@ public class MyBoxController extends Controller {
 
 		if (file != null) {
 			
-			ItemFolder oldFolder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
+		    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+		    ItemFolder oldFolder = (ItemFolder)node.getUserObject();
 
 			if (folder.getID() != oldFolder.getID()) {
 				
-				oldFolder.removeFile(file);
-				
-				file.setFolder(folder.getID());
-				folder.addFile(file);
-				
+				oldFolder.removeItem(file);
+				folder.addItem(file);
+				file.setParentID(folder.getID());
+								
+				HashMap<String, Object> data = new HashMap<String, Object>();
+				data.put("oldParentID", oldFolder.getID());
+				data.put("file", file);
+				data.put("userID", Client.getInstance().getUser().getID());
+
 				try {
-					Message msg = new Message(file, MessageType.UPDATE_FILE_LOCATION);
+					Message msg = new Message(data, MessageType.UPDATE_FILE_LOCATION);
 					Client.getInstance().sendMessage(msg, new UpdateFileLocationCallback() {
 						
 						@Override
@@ -420,11 +469,14 @@ public class MyBoxController extends Controller {
 
 	public void handleDeleteFileCallback(ItemFile file, MyBoxException exception) {
 		
+		System.out.println("handleDeleteFileCallback");
 		if (exception == null){
-			ItemFolder folder = (ItemFolder) user.getFiles().get("folder" + Integer.toString(file.getFolderID()));
-			folder.removeFile(file);
-			user.getFiles().remove("file"+file.getStringID());
-			showFilesOfSelectedFolder();								//TODO : FIX AUTO REFRESH MAIN TABLE
+			System.out.println("file exists");		
+		    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+		    ItemFolder folder = (ItemFolder)node.getUserObject();
+			folder.removeItem(file);
+
+			showFilesOfSelectedFolder();	
 		}else {
 			getGui().showMessage(exception.getMessage());			
 		}
@@ -432,9 +484,14 @@ public class MyBoxController extends Controller {
 	}
 
 	public void FileDeleteVirtualControl(ItemFile file) {
-		Message msg = new Message(file, MessageType.DELETE_FILE_VIRTUAL);
-		System.out.println("file delete virtual control file  " + file.getName());
 		try{
+		    DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+		    ItemFolder folder = (ItemFolder)node.getUserObject();
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("file", file);
+			data.put("userID", Client.getInstance().getUser().getID());
+			data.put("parentID", folder.getID());
+			Message msg = new Message(data, MessageType.DELETE_FILE_VIRTUAL);
 			Client.getInstance().sendMessage(msg, new FileDeleteCallback() {
 				
 				@Override
@@ -459,19 +516,150 @@ public class MyBoxController extends Controller {
 	public void handleAddFileCallback(ItemFile file, MyBoxException exception) {
 		if (exception == null){
 			
-			user.getFiles().put("file" + file.getStringID(), file);
+
+//			Client.getInstance().getUser().getFiles().add(file);
+//			
+//			DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
+//			
+//			ItemFolder folder = (ItemFolder) node.getUserObject();
+//			
+//			folder.addItem(file);
+//						
+//			showFilesOfSelectedFolder();
+			//updateBoundary();
+			updateView();
 			
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent();
-			
-			ItemFolder folder = (ItemFolder) node.getUserObject();
-			
-			folder.addFile(file);
-			
-			showFilesOfSelectedFolder();
 		} else {
 			getGui().showMessage(exception.getMessage());
 		}
 		
 	}
+	
+	public void handleRestoreFileCallback(MyBoxException exception) {
+		if (exception == null){
+			updateView();
+		} else {
+			getGui().showMessage(exception.getMessage());
+		}
+		
+	}
+	
+	public void updateView() {
+		updateBoundary();
+	}
+	
+	private void setJtreeCurrentFolder(DefaultMutableTreeNode prev) {
+		DefaultMutableTreeNode node = null;
+		int i=0;
+		@SuppressWarnings("unchecked")
+		Enumeration<DefaultMutableTreeNode> e = gui.getTree().getRoot().breadthFirstEnumeration();
+		while (e.hasMoreElements()) {
+			System.out.println(i++);
+			node = (DefaultMutableTreeNode)e.nextElement();
+			ItemFolder f = (ItemFolder)node.getUserObject();
+			if ( prev.getUserObject() == node.getUserObject() ) {
+				System.err.println("FOUND YOU BITCH");
+				TreePath path = new TreePath(node.getPath());
+				gui.getTree().expandPath(path);
+				gui.getTree().scrollPathToVisible(path);
+				showFilesOfSelectedFolder();
+				break;
+				
+			}
+		}
+	}
+		
+	
 
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		if (arg instanceof Message) {
+
+			Message msg = (Message) arg;
+			MessageType type = msg.getType();
+			
+			switch (type) {
+			
+			case BROADCAST_FILE_STATE_CHANGE:
+			{
+				
+				System.out.println("BROADCAST_FILE_STATE_CHANGE");
+
+				@SuppressWarnings("unchecked")
+				Set<User> users = (Set<User>)msg.getData();
+				if ( users.contains(Client.getInstance().getUser()) ) {
+					updateView();
+				}
+				
+			}
+				break;
+
+			case ERROR_MESSAGE:
+				
+				String str = (String)msg.getData();
+				if (str.equals(Client.CONNECTION_EXCEPTION)) {
+					getGui().showMessage("Please try to connect again later.");
+					logout();
+				}
+				
+				break;
+				
+			default:
+				break;
+			}
+		}
+		
+	}
+
+	public void setJtreeCurrentFolder(ItemFolder folder) {
+		
+		DefaultMutableTreeNode node = null;
+		@SuppressWarnings("unchecked")
+		int i=0;
+		Enumeration<DefaultMutableTreeNode> e = gui.getTree().getRoot().breadthFirstEnumeration();
+		while (e.hasMoreElements()) {
+			System.out.println(i++);
+			node = (DefaultMutableTreeNode)e.nextElement();
+			ItemFolder f = (ItemFolder)node.getUserObject();
+			if ( f.getID() == folder.getID() ) {
+				
+				TreePath path = new TreePath(node.getPath());
+				gui.getTree().expandPath(path);
+				gui.getTree().scrollPathToVisible(path);
+				showFilesOfSelectedFolder();
+				break;
+				
+			}
+		}
+	}
+
+	public void btnRemoveFolderClicked() {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui.getTree().getLastSelectedPathComponent();
+		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
+		
+		ItemFolder folder = ((ItemFolder) node.getUserObject());
+		final ItemFolder pfolder = ((ItemFolder) parentNode.getUserObject());
+		//System.out.println(folder.getContents().size());
+		if (folder.getContents().size() == 0){	
+				Message msg = new Message(folder, MessageType.REMOVE_FOLDER);
+				try {
+					Client.getInstance().sendMessage(msg, new RemoveFolderCallback() {
+						
+						@Override
+						protected void done(ItemFolder folder, MyBoxException exception) {
+							 if (exception == null){
+								 gui.getTree().removeObject();
+								 pfolder.removeItem(folder);
+							 } else exception.printStackTrace();
+						}
+					});
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}else {
+			gui.showMessage("Folder must be empty to be Removed");
+		}
+		
+	}
 }

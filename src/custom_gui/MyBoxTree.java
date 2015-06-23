@@ -1,10 +1,11 @@
 package custom_gui;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Set;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import model.Item;
@@ -25,7 +26,7 @@ public class MyBoxTree extends JTree {
 		DefaultMutableTreeNode parentNode = null;
 	    TreePath parentPath = getSelectionPath();
 	    DefaultMutableTreeNode rootNode = getRoot();
-
+	    
 	    if (parentPath == null) {
 	        //There is no selection. Default to the root node.
 	        parentNode = rootNode;
@@ -65,17 +66,55 @@ public class MyBoxTree extends JTree {
 
 		DefaultMutableTreeNode parent = folder.getTreeNode();
 		
-		for (Item item : folder.getFiles().values()) {
-			
+		Set<Item> items = folder.getContents();
+		for ( Item item : items ) {
 			if (item instanceof ItemFolder) {
 				
 				ItemFolder f = (ItemFolder)item;
 				f.setTreeNode(addObject(parent, f, false)); 
 				processTreeHierarchy(f);
+				
 			}
-			
 		}
 		
 	}
+	
+	public TreePath currentSelectedPath() {
+		return getSelectionPath();
+	}
+	
+	public void showFolder(ItemFolder folder) {
+		DefaultMutableTreeNode node = findNode(folder);
+        if( node != null ) {
+            TreePath path = new TreePath(node.getPath());
+            setSelectionPath(path);
+            scrollPathToVisible(path);
+        }
+	}
+	
+    private final DefaultMutableTreeNode findNode(ItemFolder searchFolder) {
+
+        ArrayList<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
+        DefaultMutableTreeNode foundNode = null;
+
+        for(int index = 0; index < searchNodes.size(); index++) {    
+        	ItemFolder folder = (ItemFolder)searchNodes.get(index).getUserObject();
+            if(folder.equals(searchFolder)) {
+                foundNode = searchNodes.get(index);
+                break;
+            }
+        }
+
+        return foundNode;
+    }   
+
+    private final ArrayList<DefaultMutableTreeNode> getSearchNodes(DefaultMutableTreeNode root) {
+    	ArrayList<DefaultMutableTreeNode> searchNodes = new ArrayList<DefaultMutableTreeNode>();
+        Enumeration<?> e = root.preorderEnumeration();
+        while(e.hasMoreElements()) {
+            searchNodes.add((DefaultMutableTreeNode)e.nextElement());
+        }
+        return searchNodes;
+    }
 	
 }

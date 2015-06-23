@@ -1,34 +1,30 @@
 package boundary;
 
-import model.ItemFile;
-import model.ItemFile.Privilege;
-import common.Controller;
-import common.JDialogBoundary;
-
-import javax.swing.JPanel;
-
 import java.awt.Color;
-
-import javax.swing.JLabel;
-
 import java.awt.Font;
-
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JTextArea;
-import javax.swing.JComboBox;
-
+import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+
+import model.ItemFile.Privilege;
+
+import common.Controller;
+import common.JDialogBoundary;
 
 import controller.FileEditController;
-
-import java.awt.Rectangle;
 
 public class FileEdit_GUI extends JDialogBoundary{
 	
@@ -42,6 +38,7 @@ public class FileEdit_GUI extends JDialogBoundary{
 	private JComboBox<Privilege> cbPrivilege;
 	private JButton btnCancel;
 	private JButton btnSave;
+	private JButton btnManageGroupsAccess;
 	
 	public FileEdit_GUI(Controller controller) {
 		super(controller);
@@ -49,6 +46,8 @@ public class FileEdit_GUI extends JDialogBoundary{
 
 	@Override
 	public void draw() { 
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		
 		getContentPane().setBackground(Color.WHITE);
 		setBounds(new Rectangle(150, 200, 570, 250));
 		getContentPane().setLayout(null);
@@ -99,9 +98,10 @@ public class FileEdit_GUI extends JDialogBoundary{
 		cbPrivilege.setEditable(true);
 		cbPrivilege.setBackground(SystemColor.controlHighlight);
 		cbPrivilege.setBounds(90, 133, 85, 24);
-		cbPrivilege.addItem(Privilege.PUBLIC);
-		cbPrivilege.addItem(Privilege.GROUP);
 		cbPrivilege.addItem(Privilege.PRIVATE);
+		cbPrivilege.addItem(Privilege.GROUP);
+		cbPrivilege.addItem(Privilege.PUBLIC);
+	
 		panel.add(cbPrivilege);
 		
 		JPanel panel_1 = new JPanel();
@@ -117,6 +117,24 @@ public class FileEdit_GUI extends JDialogBoundary{
 		btnSave = new JButton("Save");
 		btnSave.setBounds(351, 0, 89, 23);
 		panel_1.add(btnSave);	
+		
+		btnManageGroupsAccess = new JButton("Manage Groups Access");
+		btnManageGroupsAccess.setBounds(10, 0, 183, 23);
+		setBtnManageGroupsAccess(true);
+		panel_1.add(btnManageGroupsAccess);
+		
+		addWindowListener(new WindowAdapter() { //window listener that initiates the isEdited flag in DB if window is closed
+			
+			@Override
+			public void windowClosing(WindowEvent e){
+						FileEditController control = (FileEditController) controller;
+						control.close();
+			}
+		});
+	}
+
+	public void setBtnManageGroupsAccess(boolean arg) {
+		btnManageGroupsAccess.setEnabled(arg);
 	}
 
 	@Override
@@ -138,6 +156,15 @@ public class FileEdit_GUI extends JDialogBoundary{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				control.btnSaveClicked();
+				
+			}
+		});
+		
+		btnManageGroupsAccess.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnManageGroupsAccessClicked();
 				
 			}
 		});
@@ -163,9 +190,10 @@ public class FileEdit_GUI extends JDialogBoundary{
 		return (Privilege)cbPrivilege.getSelectedItem();
 	}
 
-	public void setPrivilege(Privilege p) {
-		this.cbPrivilege.setSelectedIndex(p.getValue());
+	public void setPrivilege(int i) {
+		this.cbPrivilege.setSelectedIndex(i);
 	}
 
+	
 	
 }

@@ -1,19 +1,17 @@
 package callback;
 
-import java.util.HashMap;
-
-import model.Item;
+import model.ItemFolder;
 
 import common.MessageType;
 import common.MyBoxException;
 
-public abstract class GetFilesCallback extends Callback<HashMap<String, Item>> {
+public abstract class GetFilesCallback extends Callback<ItemFolder> {
 
-	protected abstract void done(HashMap<String, Item> items, MyBoxException exception);
+	protected abstract void done(ItemFolder folder, MyBoxException exception);
 	
 	@Override
-	protected void messageReceived(HashMap<String, Item> items, MyBoxException exception) {
-		done(items, exception);
+	protected void messageReceived(ItemFolder folder, MyBoxException exception) {
+		done(folder, exception);
 	}
 
 	@Override

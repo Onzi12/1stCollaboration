@@ -115,7 +115,10 @@ public class FileRead_GUI extends JDialogBoundary {
 		buttonPanel.setBounds(10, 186, 616, 33);
 		contents.add(buttonPanel);
 		
-		addButtons(buttonPanel);
+		buttonPanel.setLayout(null);
+		btnClose = new JButton("Close");
+		btnClose.setBounds(523, 5, 88, 23);
+		buttonPanel.add(btnClose);
 		
 		btnDownload = new JButton("Download");
 		btnDownload.setBounds(424, 5, 89, 23);
@@ -154,12 +157,10 @@ public class FileRead_GUI extends JDialogBoundary {
 		return tfLocation.getText();
 	}
 	
-	public void addButtons(JPanel buttonPanel) {
-		buttonPanel.setLayout(null);
-		btnClose = new JButton("Close");
-		btnClose.setBounds(523, 5, 88, 23);
-		buttonPanel.add(btnClose);
+	public void setDescription(String des) {
+		this.taDescription.setText(des);
 	}
+
 
 	public int getCbPrivilegeIndex() {
 		return cbPrivilege.getSelectedIndex();

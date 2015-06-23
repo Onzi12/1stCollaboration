@@ -6,8 +6,9 @@ import java.io.IOException;
 import model.User;
 import model.User.Status;
 import boundary.CreateAccount_GUI;
-import callback.LoginCallback;
+import callback.Callback;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -41,19 +42,21 @@ public class CreateAccountController extends Controller {
 				user.setCounter(0);
 				user.setStatus(Status.NOTCONNECTED);
 				Message msg = new Message(user, MessageType.CREATE_ACCOUNT);
-				Client.getInstance().sendMessage(msg, new LoginCallback() {
-					
+				Client.getInstance().sendMessage(msg, new Callback<Void>() {
+
 					@Override
-					public void done(User user, MyBoxException exception) {
-						
+					protected void messageReceived(Void obj, MyBoxException exception) {
 						if (exception == null) {
-							handleUserSignIn(user);
+							NavigationManager.getInstance().popController();
 						} else {
 							getGui().showMessage(exception.getMessage());
 						}
-						
 					}
-					
+
+					@Override
+					protected MessageType getMessageType() {
+						return MessageType.CREATE_ACCOUNT;
+					}
 				});
 			} catch (IOException e) {
 				gui.showMessage("Failed to connect!");
@@ -72,25 +75,6 @@ public class CreateAccountController extends Controller {
 			return false;
 		}
 		return true;
-	}
-	
-
-	
-	private void handleUserSignIn(User user) {
-		if (user != null) {
-
-			//here user has logged in successfully					
-			//show MyBox Window
-//			nav.getFrame().setSize(742, 579);
-//			MyBox_GUI myBox = new MyBox_GUI();
-//			MyBoxController controller = new MyBoxController(myBox, user);
-			Client.getInstance().setUser(user);
-			new MyBoxController(user);
-//			Client.getInstance().addObserver(controller);
-//			nav.replaceController(controller);
-			
-			
-		} /* else?? */
 	}
 
 	@Override

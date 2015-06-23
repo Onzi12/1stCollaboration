@@ -4,17 +4,22 @@ import java.io.Serializable;
 
 import javax.swing.Icon;
 
-import client.Client;
-
 public abstract class Item implements Serializable {
 
-	private static final long serialVersionUID = -3661349268417620657L;
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7984889302443602233L;
 	/** The name of the item */
 	private String name;
-	private String path;
-	private ItemFolder parent;
+	/** String representation of the item's path */
+	private String path="";
+	/** The id of the parent item (ItemFolder) of this item */
+	private int parentID;
+	/** The id of the item */
 	private int id;
+	/** The id of the client that has the item */
 	private int userID;
 
 
@@ -25,23 +30,36 @@ public abstract class Item implements Serializable {
 	public String getName() {
 		return name;
 	}
-	
+	 public String getPath() {
+		 return path;
+	 }
 	public void concateToPath(String item) {
 		path = path.concat(item);
 	}
 
-	public ItemFolder getParent() {
-		return parent;
+	/**
+	 * Get the parent id of the item.
+	 * @return integer
+	 */
+	public int getParentID() {
+		return parentID;
 	}
 	
-	public void setParent(ItemFolder item) {
-		parent = item;
+	public int hashCode() {
+		return id;
+	}
+	/**
+	 * Set the id of the parent of this item.
+	 * @param itemID
+	 */
+	public void setParentID(int itemID) {
+		parentID = itemID;
 	}
 	
 	
 	@Override
 	public String toString() { 
-	return name;
+		return name;
 	}
 
 	/**
@@ -57,8 +75,10 @@ public abstract class Item implements Serializable {
 	 * Get the path to the location of the item.
 	 * @return String
 	 */
-	public String getFullPath() {
-		return path+"/"+name;
+	public abstract String getFullPath();
+	
+	public void setPath(String path){
+		this.path = path;
 	}
 
 	/**

@@ -13,14 +13,15 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
 import model.ItemFile;
+
 import common.Controller;
 import common.JDialogBoundary;
+
 import controller.FileAddController;
 
 

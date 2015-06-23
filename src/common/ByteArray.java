@@ -3,6 +3,7 @@ package common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ByteArray {
 
@@ -29,7 +30,7 @@ public class ByteArray {
 	 * @param path
 	 * @throws Exception
 	 */
-	public static void writeByteArrayToFile(byte[] bFile, String path) throws Exception {
+	public static void writeByteArrayToFile(byte[] bFile, String path) throws IOException {
 		
 	    FileOutputStream fileOuputStream = new FileOutputStream(path); 
 	    fileOuputStream.write(bFile);

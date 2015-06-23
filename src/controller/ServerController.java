@@ -15,11 +15,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import model.Item;
+import model.Group;
 import model.ItemFile;
+import model.Request;
+import model.ItemFile.State;
 import model.ItemFolder;
 import model.User;
 import model.User.Status;
@@ -33,7 +36,10 @@ import boundary.Server_GUI;
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
+import common.MessageWithUser;
 import dao.FileDAO;
+import dao.FolderDAO;
+import dao.GroupDAO;
 import dao.UserDAO;
 
 public class ServerController implements Observer {
@@ -69,7 +75,7 @@ public class ServerController implements Observer {
 		int rs = JOptionPane.showConfirmDialog(gui, confirm,"Init Database",JOptionPane.YES_NO_OPTION);
 		if (rs != JOptionPane.YES_OPTION)
 			return;
-        String script = "db.sql";
+        String script = "src/db.sql";
         String url = gui.getURL().trim();
         String user = gui.getUser().trim();
         String pass = gui.getPassword().trim();
@@ -123,10 +129,14 @@ public class ServerController implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		handleNotificationFromServer(arg);
+		try {
+			handleNotificationFromServer(arg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	private void handleNotificationFromServer(Object arg) {
+	private void handleNotificationFromServer(Object arg) throws Exception {
 		if (arg instanceof String) {
 			
 			String str = (String)arg;
@@ -182,7 +192,7 @@ public class ServerController implements Observer {
 				System.out.println(type);
 				
 				switch (type) {
-				case CREATE_ACCOUNT: 
+				case CREATE_ACCOUNT: 	
 				{
 					User user = (User)msg.getData();
 					UserDAO uDao = new UserDAO();
@@ -191,17 +201,42 @@ public class ServerController implements Observer {
 						String message = "The userName '" + user.getUserName() + "' already exists.";
 						gui.showMessage(message);
 						Message response = new Message(message, MessageType.ERROR_MESSAGE); 
-						client.sendToClient(response);
+						sendToClient(client,response);
 						return;
 						}
-					
 					uDao.ObjectToDB(user);
-					Message response = new Message(user, MessageType.CREATE_ACCOUNT); 
-					client.sendToClient(response);
+					new FolderDAO().createRootInDB(user); // create root folder for the new user.
+					Message response = new Message(null, MessageType.CREATE_ACCOUNT); 
+					sendToClient(client,response);
 					gui.showMessage(user.getUserName() + " signed up to MyBox.");
+
+				
 				}
-					break;
-				case LOGOUT:
+				break;
+				case GET_GROUP_REQUESTS:
+				{
+					GroupDAO groupDAO = new GroupDAO();
+					Message response = new Message(groupDAO.allRequestsFromDB(), MessageType.GET_GROUP_REQUESTS);
+					sendToClient(client,response);
+				}
+				break;
+				case REQUEST_ANSWER_ACCEPT:
+				{
+					Request req = (Request)msg.getData();
+					GroupDAO gDao = new GroupDAO();
+					gDao.updateUserGroups(req);
+
+				}
+				break;
+				case REQUEST_ANSWER_REJECT:
+				{
+					Request req = (Request)msg.getData();
+					GroupDAO gDao = new GroupDAO();
+					gDao.updateUserGroupsRejection(req);
+
+				}
+				break;
+				case LOGOUT: //Work
 				{
 					User user = (User)msg.getData();
 					user.setStatus(Status.NOTCONNECTED);
@@ -211,247 +246,358 @@ public class ServerController implements Observer {
 					break;
 					
 				case LOGIN:
-					{
-						User user = (User)msg.getData();
-						try{
-						user = User.authenticate(user.getUserName(), user.getPassword());
-						} catch(Exception e) 
-							{
-							client.sendToClient(new Message(e.getMessage(), MessageType.ERROR_MESSAGE));
-												}
-						Message response = new Message(user, MessageType.LOGIN);
-						client.sendToClient(response);	
-					}
-					break;
-					
-				case UPDATE_FILE_LOCATION:
-					try {
-						FileDAO fileDAO = new FileDAO(server.getConnection());
-						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.updateuserFiles(file);
-						Message response = new Message(file, MessageType.UPDATE_FILE_LOCATION);
-						client.sendToClient(response);
-						gui.showMessage("Successfully updated file's location in the DB.");
-					} catch (SQLException e) {
-						gui.showMessage("Failed to update file's location in DB.");
-						try {
-							Message response = new Message("Failed to update file's location in DB.", MessageType.ERROR_MESSAGE);
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client.");
-						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
-					}
-					break;
-					
-				case GET_ADD_FILES:
-					try {
-						User user = (User)msg.getData();
-						System.out.println(user.getID());
-						FileDAO fileDAO = new FileDAO(server.getConnection());
-						
-						HashMap<String, Item> res = fileDAO.getAllAddFiles(user);
-						Message response = new Message(res, MessageType.GET_ADD_FILES);
-						client.sendToClient(response);
-					} catch (SQLException e) {
-						System.out.println(e.getMessage());
-						gui.showMessage("Failed to retrieve data from DB.");
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
-					}
-					break;
-					
-				case GET_FILES:
 				{
 						User user = (User)msg.getData();
-						
-						HashMap<String, Item> res = fileDAO.getAllFiles(user);
-						Message response = new Message(res, MessageType.GET_FILES);
-						client.sendToClient(response);
-
-						gui.showMessage("Failed to retrieve data from DB.");
-
-						gui.showMessage("Failed to send response to client.");
-					}
-					break;
+						GroupDAO groupDAO = new GroupDAO();
+						try{
+							user = User.authenticate(user.getUserName(), user.getPassword());
+							user.setGroups(groupDAO.getUserGroups(user.getID()));
+						} catch(Exception e) 
+							{
+							sendToClient(client,new Message(e.getMessage(), MessageType.ERROR_MESSAGE));
+							return;
+							}
+						gui.showMessage(user.getUserName() + " logged in.");
+						client.setInfo("username", user);
+						Message response = new Message(user, MessageType.LOGIN);
+						sendToClient(client,response);
 				}
-				case ADD_FILE:
-					try {
-						ItemFile file = (ItemFile)msg.getData();
-						
-						Message response = new Message(file, MessageType.ADD_FILE);
-						client.sendToClient(response);
-						
-						gui.showMessage("Successfully add file to the DB.");
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
-					}
-					break;	
+					break;
+				
 					
-				case DELETE_FILE_PHYSICAL:
-					try {
-						FileDAO fileDAO = new FileDAO(server.getConnection());
-						ItemFile file = (ItemFile)msg.getData();
-						if(!deleteLocalFile(file)){throw new SQLException("the delete f");}
-						fileDAO.deletePhysicalFile(file);
-						Message response = new Message(file, MessageType.DELETE_FILE_PHYSICAL);
-						client.sendToClient(response);
-						gui.showMessage("Successfully deleted file from the DB.");
-					} catch (SQLException e) {
-						gui.showMessage("Failed to delete file from DB: " + e.getMessage());
+				case UPDATE_FILE_LOCATION:
+				{
+					FileDAO fileDAO = new FileDAO();
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> data = (HashMap<String, Object>)msg.getData();
+					ItemFile file = (ItemFile)data.get("file");
+					int oldParentID = (int)data.get("oldParentID");
+					int userID = (int)data.get("userID");
+					file.setUserID(userID);
+					fileDAO.updateFileLocationInDB(file, oldParentID);
+					Message response = new Message(null, MessageType.UPDATE_FILE_LOCATION);
+					sendToClient(client, response);
+					gui.showMessage("Moved file to another folder.");
+				}
+				break;
+				case GET_RESTORE_FILES:
+				{
+					User user = (User)msg.getData();
+					FileDAO fileDAO = new FileDAO();
+					Set<ItemFile> res = fileDAO.getUserRestoreFile(user.getID());
+					Message response = new Message(res, MessageType.GET_RESTORE_FILES);
+					sendToClient(client, response);
+				}
+				break;
+				
+				case RESTORE_FILE:
+				{
+					ItemFile file = (ItemFile)msg.getData();
+					FileDAO fileDAO = new FileDAO();
+					fileDAO.userRestoreFile(file.getID());
+					Message response = new Message(null, MessageType.RESTORE_FILE);
+					sendToClient(client, response);
+				}
+				break;
+				
+				case GET_ADD_FILES:
+				{
+					ItemFolder folder = (ItemFolder)msg.getData();
+					if (folder == null) System.out.println("folder is null");
+					FileDAO fileDAO = new FileDAO();
+					HashSet<ItemFile> res = (HashSet<ItemFile>)fileDAO.getAddUserFiles(folder.getUserID(),folder.getID());
+					Message response = new Message(res, MessageType.GET_ADD_FILES);
+					sendToClient(client, response);
+				}
+					break;
+					
+				case GET_GROUP_FILE_PRIV:
+				{
+					GroupDAO groupDAO = new GroupDAO();
+					HashMap <String,Integer> res = groupDAO.getGroupsFilePrivelege();
+					Message response = new Message(res, MessageType.GET_GROUP_FILE_PRIV);
+					sendToClient(client, response);
+				}
+				break;
+				
+				case GET_USER_GROUPS:
+				{
+					User user = (User)msg.getData();
+					Set<Group> groups = new GroupDAO().getUserGroups(user.getID());
+					Message response = new Message(groups, MessageType.GET_USER_GROUPS);
+					sendToClient(client, response);
+				}
+					break;
+				case SEND_NEW_GROUP_REQUESTS: {
+
+					new GroupDAO().addUserGroupRequestsToDB(msg);
+					Message response = new Message(null, MessageType.SEND_NEW_GROUP_REQUESTS);
+					sendToClient(client, response);
+				}
+					break;
+					
+				case GET_ALL_OTHER_GROUPS: {
+					
+					User user = (User)msg.getData();
+					GroupDAO gDao = new GroupDAO();
+					Set<Group> all = gDao.getAllfromDB();
+					Set<Group> userGroups = gDao.getUserGroups(user.getID());
+					all.removeAll(userGroups);
+					Message response = new Message(all , MessageType.GET_ALL_OTHER_GROUPS);
+					sendToClient(client, response);
+				}	
+					break;
+				
+				case UPDATE_FILE_GROUPS_ACCESS:
+				{
+					@SuppressWarnings("unchecked")
+					HashMap<String,Integer> groupAccess = (HashMap<String , Integer>)msg.getData();
+					GroupDAO groupDAO = new GroupDAO();
+					 System.out.println( groupAccess.get("access") + " " + groupAccess.get("fileId") + " " + groupAccess.get("groupId"));
+						
+					groupDAO.updateGroupAccess(groupAccess);
+					Message response = new Message(null, MessageType.UPDATE_FILE_GROUPS_ACCESS);
+					sendToClient(client, response);
+					
+
+				}
+				break;
+				
+				case GET_FILES:
+				{	
+					User user = (User)msg.getData();
+
 						try {
-							Message response = new Message("Failed to delete file from DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client.");
+							new FolderDAO().DBtoTree(user);
+						} catch (SQLException e) {
+							gui.showMessage(e.getMessage());
+							Message response = new Message("Failed to retrieve files.", MessageType.ERROR_MESSAGE);
+							sendToClient(client,response);
 						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
+
+						Message response = new Message(user.getRootFolder(), MessageType.GET_FILES);
+						sendToClient(client,response);
+
+				}
+					break;
+				case GET_FILE_GROUPS_ACCESS:{
+					ItemFile file = (ItemFile)msg.getData();
+					GroupDAO groupdao = new GroupDAO();
+					HashMap<Integer,Integer> res = groupdao.getGroupPrivilege(file.getOwner().getID(), file.getID());
+					Message response = new Message(res, MessageType.GET_FILE_GROUPS_ACCESS);
+					sendToClient(client,response);
+				}
+					break;
+				
+				case ADD_FILE:
+				{
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> data = (HashMap<String, Object>)msg.getData();
+					ItemFile file = (ItemFile)data.get("file");
+					int parentID = ((Integer)data.get("parentID")).intValue();
+					int userID = ((Integer)data.get("userID")).intValue();
+					FileDAO fileDAO = new FileDAO();
+					try{
+						fileDAO.insertToUserFiles(file, parentID, userID);
+						Message response = new Message(file, MessageType.ADD_FILE);
+						sendToClient(client,response);
+					}catch(SQLException e){
+						gui.showMessage("Failed to Download file to client: ");	
+					}
+				}
+					break;	
+				
+				case GET_DELETE_FILE_PHYSICAL:
+				{
+					User user = (User)msg.getData(); 
+					FileDAO fileDAO = new FileDAO();
+					HashSet<ItemFile> res = (HashSet<ItemFile>)fileDAO.getDeletePhysicalFiles(user.getID());
+					Message response = new Message(res, MessageType.GET_DELETE_FILE_PHYSICAL);
+					sendToClient(client, response);
+				}
+				break;
+				case REMOVE_FOLDER:{
+					
+					ItemFolder folder = (ItemFolder)msg.getData();
+					FolderDAO folderDAO = new FolderDAO();
+					folderDAO.deleteFromDB(folder);
+					Message response = new Message(folder, MessageType.REMOVE_FOLDER);
+					sendToClient(client,response);
+				}
+				break;
+				case DELETE_FILE_PHYSICAL:{
+					FileDAO fileDAO = new FileDAO();
+					ItemFile file = (ItemFile)msg.getData(); 
+					fileDAO.deletePhysicalFile(file);
+					Message response = new Message(file, MessageType.GET_DELETE_FILE_PHYSICAL);
+					sendToClient(client, response);
 					}
 					break;
 					
 				case DELETE_FILE_VIRTUAL:
-					try{
-						FileDAO fileDAO = new FileDAO(server.getConnection());
-						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.deleteVirtualFile(file);
-						Message response = new Message(file, MessageType.DELETE_FILE_VIRTUAL);
-						client.sendToClient(response);
-						gui.showMessage("Successfully deleted file from the DB.");
-					} catch (SQLException e) {
-						gui.showMessage("Failed to delete file from DB: " + e.getMessage());
-						try {
-							Message response = new Message("Failed to delete file from DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client.");
-						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
-					}
-					break;
+				{
+					FileDAO fileDAO = new FileDAO();
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> data = (HashMap<String, Object>)msg.getData();
+					ItemFile file = (ItemFile)data.get("file");
+					int userID = (int)data.get("userID");
+					int parentID = (int)data.get("parentID");
+					file.setUserID(userID);
+					fileDAO.deleteFromUserFiles(file, parentID);
 					
-					
-				case READ:
-				/*	try{
-						FileDAO fileDAO = new FileDAO(server.getConnection());
-						ItemFile file = (ItemFile)msg.getData();
-						fileDAO.
-					}catch (SQLException e) {
-							gui.showMessage("Failed to upload file to DB: " + e.getMessage());
-							try {
-								Message response = new Message("Failed to upload file to DB: " + e.getMessage(), MessageType.UPLOAD_FILE);
-								client.sendToClient(response);
-							} catch (IOException e1) {
-								gui.showMessage("Failed to send response to client.");
-							}
-					}catch(IOException e) {
-						gui.showMessage("Failed to send response to client.");
+					if (userID == file.getOwner().getID()) {
+						file.setState(State.ABANDONED);
+						fileDAO.ObjectToDB(file);
 					}
-					break;
-					*/
-					break;
-				case UPLOAD_FILE:
+					Message response = new Message(file, MessageType.DELETE_FILE_VIRTUAL);
+					sendToClient(client, response);
+										
+//					UserDAO uDao = new UserDAO();
+//					Set<User> users = uDao.getActiveFileUsers(file);
+//					
+//					Message broadcastMessage = new Message(users, MessageType.BROADCAST_FILE_STATE_CHANGE);
+//					server.sendToAllClients(broadcastMessage);
 
-			        try {
-						ItemFile file = (ItemFile)msg.getData();
-				        byte[] bFile = file.getFile();
-				        
-						String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
-
-						ByteArray.writeByteArrayToFile(bFile, myBoxPath + file.getName() + file.getType());
-				 
-						
-						FileDAO fileDAO = new FileDAO(server.getConnection());
-						fileDAO.uploadFile(file);
-												
-						Message response = new Message(file, MessageType.UPLOAD_FILE);
-						client.sendToClient(response);
-						
-					    System.out.println("Successfully uploaded file to the DB.");
-					    
-			        } catch (SQLException e) {
-						gui.showMessage("Failed to upload file to DB: " + e.getMessage());
-						try {
-							Message response = new Message("Failed to upload file to DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client.");
-						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
-					} catch (Exception e) {}
+					
+				}
 					break;
+				case GET_ALL_FILES:
+				{
+					FileDAO fDAO = new FileDAO();
+					Set<ItemFile> set = fDAO.getAllfromDB();
+					Message response = new Message(set, MessageType.GET_ALL_FILES);
+					sendToClient(client,response);
+				}
+				break;
+				
+				case GET_ALL_GROUPS:
+				{
+					GroupDAO gDAO = new GroupDAO();
+					Set<Group> set = gDAO.getAllfromDB();
+					Message response = new Message(set, MessageType.GET_ALL_GROUPS);
+					sendToClient(client,response);
+				}
+				break;
+				
+				case UPLOAD_FILE: 
+				{
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> data = (HashMap<String, Object>)msg.getData();
+					ItemFile file1 = (ItemFile)data.get("file");
+					boolean isUpdate = (boolean)data.get("isUpdate");
+					byte[] bFile = file1.getFile();
+					String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
+					ByteArray.writeByteArrayToFile(bFile, myBoxPath + file1.getName());
+					FileDAO fDao = new FileDAO();
+					fDao.ObjectToDB(file1);
+					if (isUpdate == false) 
+						fDao.addToUserFilesDB(file1);
+					Message response = new Message(file1, MessageType.UPLOAD_FILE);
+					sendToClient(client,response);
+				    gui.showMessage("Successfully uploaded file to the DB.");
+				}
+					break;
+				
+
 					
 				case FILE_EDIT:
-					
+				{
 			        try {
 				   
-						FileDAO fileDAO = new FileDAO(server.getConnection());
+						FileDAO fileDAO = new FileDAO();
 						ItemFile file = (ItemFile)msg.getData();
-						
-						fileDAO.setFileDB(file);
+						file.setIsEdited(false);
+						fileDAO.ObjectToDB(file);
 						
 						Message response = new Message(file, MessageType.FILE_EDIT);
 						client.sendToClient(response);
 						
 						gui.showMessage("Successfully edited file in the DB.");
-					} catch (SQLException e) {
-						gui.showMessage("Failed to edit file in the DB: " + e.getMessage());
-						try {
-							Message response = new Message("Failed to edit file in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client.");
-						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
-					}
-					break;
-				case CHANGE_FOLDER_NAME:
-	/*			try{
-	  					FileDAO fileDAO = new FileDAO(server.getConnection());
-						ItemFolder folder = (ItemFolder)msg.getData();
-						fileDAO.changeFolderName(folder);
 						
-						} catch (SQLException e) {
+					} catch (Exception e) {
 						gui.showMessage("Failed to edit file in the DB: " + e.getMessage());
-						try {
-							Message response = new Message("Failed to edit file in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
-							client.sendToClient(response);
-						} catch (IOException e1) {
-							gui.showMessage("Failed to send response to client.");
-						}
-					} catch (IOException e) {
-						gui.showMessage("Failed to send response to client.");
+
 					}
-					*/
+				}
+					break;
+					
+				case CHANGE_FOLDER_NAME:
+				{
+					FolderDAO folderDAO = new FolderDAO();
+					ItemFolder folder = (ItemFolder)msg.getData();
+					folderDAO.ObjectToDB(folder);
+					Message response = new Message(folder, MessageType.CHANGE_FOLDER_NAME);
+					sendToClient(client, response);
+				}
+					break;
 				case CREATE_NEW_FOLDER:
 				{
 					try
 					{
-						FileDAO fileDAO = new FileDAO(server.getConnection());
+						FolderDAO folderDAO = new FolderDAO();
 						ItemFolder folder = (ItemFolder)msg.getData();
-						int id = fileDAO.addFolder(folder);
-						folder.setID(id);
-						Message response = new Message(folder, MessageType.CREATE_NEW_FOLDER);
-						client.sendToClient(response);
+						folderDAO.checkInsert(folder);
+						folderDAO.ObjectToDB(folder);
 						
-						gui.showMessage("Successfully inserted folder in the DB.");
+						Message response = new Message(folder, MessageType.CREATE_NEW_FOLDER);
+						sendToClient(client, response);
+						
 					} catch (SQLException e) {
 						gui.showMessage("Failed to insert folder to the DB: " + e.getMessage());
+						Message response = new Message("Failed to insert folder in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+						sendToClient(client, response);
+					}
+				}
+				break;	
+				
+				case DOWNLOAD_FILE:
+				{
+					ItemFile iFile = (ItemFile)msg.getData();
+					File pFile = new File(System.getProperty("user.home") + "\\desktop\\MyBox\\" + iFile.getName());
+					try {
+						iFile.setFile(ByteArray.convertFileToByteArray(pFile));
+						Message response = new Message(iFile,MessageType.DOWNLOAD_FILE);
+						client.sendToClient(response);
+					} catch (Exception e) {
+						gui.showMessage("Failed to Download file to client: " + e.getMessage());
 						try {
-							Message response = new Message("Failed to insert folder in the DB: " + e.getMessage(), MessageType.ERROR_MESSAGE);
+							Message response = new Message("Failed to Download file" + e.getMessage(), MessageType.ERROR_MESSAGE);
 							client.sendToClient(response);
 						} catch (IOException e1) {
 							gui.showMessage("Failed to send response to client.");
 						}
-					} catch (IOException e1) {
-						gui.showMessage("Failed to send response to client.");
 					}
 				}
+				break;
+				
+				case CAN_EDIT_FILE:
+				{
+					FileDAO fDao = new FileDAO();
+					int fileID = (int)msg.getData();
+					ItemFile fileDB = fDao.DBtoObject(fileID);
+					if (fileDB.isEdited() == false) {
+						fileDB.setIsEdited(true);
+						fDao.ObjectToDB(fileDB);
+						Message response = new Message(fileDB, MessageType.CAN_EDIT_FILE);
+						sendToClient(client, response);
+					} else {
+						Message response = new Message(fileDB.getName() + "is currently being edited by another user.", MessageType.ERROR_MESSAGE);
+						sendToClient(client, response);
+					}
+				}
+					break;
 					
+				case FINISHED_EDITING_FILE:
+				{
+					FileDAO fDao = new FileDAO();
+					ItemFile file = (ItemFile)msg.getData();
+					file.setIsEdited(false);
+					fDao.ObjectToDB(file);
+					Message response = new Message(null, MessageType.FINISHED_EDITING_FILE);
+					sendToClient(client, response);
+				}
+					break;
+				
 				default:
 					break;
 				}
@@ -462,6 +608,17 @@ public class ServerController implements Observer {
 	}
 	
 	
+	private void sendToClient(ConnectionToClient client, Message message) {
+		try{
+			client.sendToClient(message);
+		}catch (IOException e) {
+			gui.showMessage("Failed to send response to client.");
+		}
+		
+	}
+
+
+
 	private void btnStartClicked() {
 		int port;
 		String url;
@@ -518,10 +675,7 @@ public class ServerController implements Observer {
 		try{
 			System.out.println("file is not null"); 
 			String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
-			System.out.println(myBoxPath);
-			System.out.println(itemFile.getType());
-			System.out.println(itemFile.getName());
-			File file = new File (myBoxPath+itemFile.getName()+itemFile.getType());
+			File file = new File (myBoxPath+itemFile.getName());
 			System.out.println("ss");
 			
 			if (!file.delete())

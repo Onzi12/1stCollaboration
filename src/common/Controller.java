@@ -15,8 +15,8 @@ public abstract class Controller{
 	
 	public Controller() {
 		nav = NavigationManager.getInstance();
-		if ( (this instanceof MyBoxController) == false )
-			myboxControl = (MyBoxController)NavigationManager.getInstance().getCurrentController();
+//		if ( (this instanceof MyBoxController) == false && (this instanceof LoginController) == false)
+//			myboxControl = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 		gui = initBoundary();
 		registerMoreListeners();
 		gui.display();

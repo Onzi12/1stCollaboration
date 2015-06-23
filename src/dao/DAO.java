@@ -2,12 +2,12 @@ package dao;
 
 import java.util.Set;
 
-public abstract class DAO<T> {
+public interface DAO<T> {
 
-	 public abstract T DBtoObject(int id);
-	 public abstract void ObjectToDB(T obj);
-	 public abstract T DBtoObject(String name);
-	 public abstract Set<T> getAllfromDB();
-	 public abstract void putAlltoDB(Set<T> list);
-	 public abstract void deleteFromDB(T obj);
+	 public T DBtoObject(int id);
+	 public void ObjectToDB(T obj);
+	 public T DBtoObject(String name);
+	 public Set<T> getAllfromDB();
+	 public void putAlltoDB(Set<T> list);
+	 public void deleteFromDB(T obj);
 }

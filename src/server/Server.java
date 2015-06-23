@@ -6,15 +6,11 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
 
-import dao.GroupDAO;
-import dao.UserDAO;
-import model.User;
-import boundary.Server_GUI;
 import ocsf.server.ConnectionToClient;
 import ocsf.server.ObservableServer;
 import ocsf.server.OriginatorMessage;
+import boundary.Server_GUI;
 
 /**
 * This class overrides some of the methods in the ObservableServer 
@@ -28,8 +24,9 @@ public class Server extends ObservableServer {
 	private String password = "Braude";
 	public static final String CONNECTION_FAILED= "#OS:Connection failed.";
 	public static final String CONNECTION_SUCCEEDED= "#OS:Connection succeeded.";
-	private static HashMap<Integer,UserDAO> loggedInUsers;
-	private static HashMap<Integer,GroupDAO> allGroups;
+	// On: don't delete yet please	
+//	private static HashMap<Integer,User> loggedInUsers;
+//	private static HashMap<Integer,Group> allGroups;
 	
 	/** The connection to the mysql database */
 	private static Connection connection;
@@ -37,24 +34,24 @@ public class Server extends ObservableServer {
 
 	
 	
-	
-	public static void addUser(UserDAO user) {
-		if( loggedInUsers.containsKey( user.getID()) )
-			gui.showMessage("Error: The User Was Already Logged In!");
-		else
-			loggedInUsers.put(user.getID(),user);
-	}
-
-	public static UserDAO getUserIfLoggedIn(int userID) {
-			return loggedInUsers.get(userID);
-	}
-
-	public static void removeUser(User user) {
-	if( loggedInUsers.containsKey(user.getID()) )
-		loggedInUsers.remove(user.getID() );
-	else
-		gui.showMessage("ERROR removeUser: the user was not loggedIn!");
-	}
+// On: don't delete yet please	
+//	public static void addUser(User user) {
+//		if( loggedInUsers.containsKey( user.getID()) )
+//			gui.showMessage("Error: The User Was Already Logged In!");
+//		else
+//			loggedInUsers.put(user.getID(),user);
+//	}
+//
+//	public static User getUserIfLoggedIn(int userID) {
+//			return loggedInUsers.get(userID);
+//	}
+//
+//	public static void removeUser(User user) {
+//	if( loggedInUsers.containsKey(user.getID()) )
+//		loggedInUsers.remove(user.getID() );
+//	else
+//		gui.showMessage("ERROR removeUser: the user was not loggedIn!");
+//	}
 	
 	/**
 	 * Constructs an instance of the server.
@@ -135,18 +132,19 @@ public class Server extends ObservableServer {
 			return null;
 		}
 	}
+	
 
-	/**
-	 * @return the allGroups
-	 */
-	public static HashMap<Integer,GroupDAO> getAllGroups() {
-		return allGroups;
-	}
+//	/**
+//	 * @return the allGroups
+//	 */
+//	public static HashMap<Integer,GroupDAO> getAllGroups() {
+//		return allGroups;
+//	}
 
-	/**
-	 * @param allGroups the allGroups to set
-	 */
-	public static void setAllGroups(HashMap<Integer,GroupDAO> allGroups) {
-		Server.allGroups = allGroups;
-	}
+//	/**
+//	 * @param allGroups the allGroups to set
+//	 */
+//	public static void setAllGroups(HashMap<Integer,GroupDAO> allGroups) {
+//		Server.allGroups = allGroups;
+//	}
 }

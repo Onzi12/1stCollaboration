@@ -7,10 +7,12 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
+import model.Item;
 import model.ItemFolder;
+import model.User;
 import server.Server;
 
-public class FolderDAO extends DAO<ItemFolder> {
+public class FolderDAO implements DAO<ItemFolder> {
 
 	@Override
 	public ItemFolder DBtoObject(int id) {
@@ -28,7 +30,7 @@ public class FolderDAO extends DAO<ItemFolder> {
 				folder.setID( rs.getInt("folderID") );
 				folder.setName( rs.getString("name") );
 				folder.setUserID( rs.getInt("userID") );
-				folder.setParent( DBtoObject(rs.getInt("parentFolderID")) );
+				folder.setParentID( rs.getInt("parentFolderID") );
 				
 			}
 			
@@ -38,21 +40,31 @@ public class FolderDAO extends DAO<ItemFolder> {
 		
 		return folder;
 	}
-
+	public void checkInsert(ItemFolder folder) throws SQLException
+	{
+		Connection con = Server.getConnection();
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM folder where userID = " + folder.getUserID() +
+										" AND parentFolderID = " + folder.getParentID() + 
+										" AND name = '" + folder.getName() + "'");
+		if (rs.next()){			
+			throw new SQLException("There is a folder with the same name");
+		}
+	}
+	
 	@Override
 	public void ObjectToDB(ItemFolder folder) {
 		
 		Connection con = Server.getConnection();
 		try( Statement stmt = con.createStatement() ) {
-			
 			int update = stmt.executeUpdate("UPDATE folder SET userID = " + folder.getUserID() +
-											", parentFolderID = " + folder.getParent().getID() + 
+											", parentFolderID = " + folder.getParentID() + 
 											", name = '" + folder.getName() + 
 											"' WHERE folderID = " + folder.getID());
 
 			if(update == 0) {
 				stmt.executeUpdate("INSERT INTO folder (userID, parentFolderID, name) VALUES(" + folder.getUserID() + ", " 
-																							+ folder.getParent().getID()  + ", '" 
+																							+ folder.getParentID()  + ", '" 
 																							+ folder.getName() + "')" ,
 																							Statement.RETURN_GENERATED_KEYS);
 				
@@ -84,7 +96,7 @@ public class FolderDAO extends DAO<ItemFolder> {
 				folder.setID( rs.getInt("folderID") );
 				folder.setName( rs.getString("name") );
 				folder.setUserID( rs.getInt("userID") );
-				folder.setParent( DBtoObject(rs.getInt("parentFolderID")) );
+				folder.setParentID( rs.getInt("parentFolderID") );
 				
 			}
 			
@@ -111,7 +123,7 @@ public class FolderDAO extends DAO<ItemFolder> {
 				folder.setID( rs.getInt("folderID") );
 				folder.setUserID( rs.getInt("userID") );
 				folder.setName( rs.getString("name") );
-				folder.setParent( DBtoObject( rs.getInt("parentFolderID") ) );
+				folder.setParentID( rs.getInt("parentFolderID") );
 				set.add( folder );
 				
 			}
@@ -135,20 +147,19 @@ public class FolderDAO extends DAO<ItemFolder> {
 	}
 
 	@Override
-	public void deleteFromDB(ItemFolder folder) {
+	public void deleteFromDB(ItemFolder folder){
 		
 		Connection con = Server.getConnection();
 		try( Statement stmt = con.createStatement() ) {
 			
 			stmt.executeUpdate("DELETE FROM folder WHERE folderID = " + folder.getID() );
-			
 		} catch (SQLException e) {
-			e.printStackTrace(); 
+			e.printStackTrace();
 		}
 		
 	}
 	
-	public Set<ItemFolder> getUserFolders(int id) {
+	public HashSet<ItemFolder> getUserFolders(int id) {
 		Connection con = Server.getConnection();
 		HashSet<ItemFolder> set = null;
 
@@ -163,7 +174,7 @@ public class FolderDAO extends DAO<ItemFolder> {
 				folder.setID( rs.getInt("folderID") );
 				folder.setUserID( rs.getInt("userID") );
 				folder.setName( rs.getString("name") );
-				folder.setParent( DBtoObject( rs.getInt("parentFolderID") ) );
+				folder.setParentID( rs.getInt("parentFolderID") );
 				set.add( folder );
 				
 			}
@@ -174,8 +185,85 @@ public class FolderDAO extends DAO<ItemFolder> {
 		
 		return set;
 	}
-
+	
+	/**
+	 * Create and insert to DB, root folder for the user.
+	 * @param userID
+	 */
+	public void createRootInDB(User user) {
 		
+		ItemFolder rootFolder = new ItemFolder();
+		rootFolder.setName("/");
+		rootFolder.setParentID(0);
+		rootFolder.setUserID(user.getID());
+		ObjectToDB(rootFolder);
+	}
+	
+	
+
+	public void createFolderContents(ItemFolder fol){
+		Set<Item> files = new FileDAO().getFolderFiles(fol);
+		Set<Item> subFolders = new FolderDAO().getFolderSubFolders(fol);
+		for(Item f : files) {
+			f.setPath(fol.getFullPath()+f.getName());
+		}
+		for(Item sub : subFolders ) {
+			ItemFolder s = (ItemFolder)sub;
+			//DefaultMutableTreeNode node = new DefaultMutableTreeNode(s);
+			//node.setParent(fol.getTreeNode());
+			//fol.getTreeNode().add(node);
+			//s.setTreeNode(node);
+			s.setPath(fol.getFullPath()+s.getName());
+			createFolderContents(s);
+		}
+
+		files.addAll(subFolders);
+		fol.setContents(files);
+	}
+
+	
+	private Set<Item> getFolderSubFolders(ItemFolder fol) {
+		Connection con = Server.getConnection();
+		HashSet<Item> set = new HashSet<>();
+		try( Statement stmt  = con.createStatement() ) 
+		{
+			ResultSet rs = stmt.executeQuery("SELECT folderID FROM folder WHERE parentFolderID = "+ fol.getID());
+			while(rs.next())
+			  {
+				Item sub = new FolderDAO().DBtoObject(rs.getInt(1));
+				set.add(sub);
+			  }
+		} catch (SQLException e) { e.printStackTrace(); }
+		
+		return set;
+	}
+
+	public void DBtoTree(User user) throws SQLException {		
+		ItemFolder root = getRootFolderFromDB( user.getID() );
+		//root.setTreeNode(new DefaultMutableTreeNode(root) );
+		root.setPath("");
+		createFolderContents(root);
+		user.setRootFolder(root);
+		
+	}
+	
+	private ItemFolder getRootFolderFromDB(int userID) throws SQLException {
+		
+		ItemFolder root = null;
+		Connection con = Server.getConnection();
+		try( Statement stmt  = con.createStatement() ) {
+			ResultSet rs = stmt.executeQuery("SELECT folderID FROM folder WHERE userID = " + userID + " AND name = '/'");
+			if( rs.next() ) 
+				root = new FolderDAO().DBtoObject( rs.getInt(1) );
+			else 
+				System.err.println("ERROR: root folder for user: " +userID +" is not exist!! ");
+
+		}
+		return root;
+	}
+
+
+
 //		public static ItemFolder DBtoItemTree(int userID) throws SQLException {
 //			FolderDAO root = null;
 //			Connection con = Server.getConnection();

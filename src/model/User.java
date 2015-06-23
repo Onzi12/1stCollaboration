@@ -1,19 +1,17 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.TreeSet;
-
+import java.io.Serializable;
+import java.util.Set;
 import dao.UserDAO;
-import server.Server;
 
-public class User {
+public class User implements Serializable {
 	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8687482046790563981L;
+
 	public static enum Status {
 		NOTCONNECTED(0) ,CONNECTED(1) , BLOCKED(2);
 
@@ -27,9 +25,7 @@ public class User {
 	        return value;
 	    }
 	}
-	
 
-	private static final long serialVersionUID = 5100974740161696228L;
 	
 	private int userID;
     private String userName;
@@ -38,15 +34,21 @@ public class User {
     private boolean isAdmin;
     private int counter;
     private ItemFolder rootFolder;
-    private TreeSet<Group> groups;
-    
+    private Set<Group> groups;
+    private Set<ItemFile> files;
 	
-	private static Connection connection;
 
-	private void setGroups(TreeSet<Group> userGroups) {
+	public void setGroups(Set<Group> userGroups) {
 		groups = userGroups;
 	}
 	
+	public Set<Group> getGroups() {
+		return groups;
+	}
+	
+	public int hashCode(){
+		return userID;
+	}
 	public void setStatus(Status status) {
 		this.status = status;
 	}
@@ -77,7 +79,7 @@ public class User {
     
 
 	/**
-	 * Set the username for the user (required and unique).
+	 * Set the userName for the user (Unique).
 	 * @param username
 	 */
 	public void setUserName(String userName) {
@@ -85,7 +87,7 @@ public class User {
 	}
 	
 	/**
-	 * Set the password for the user (required).
+	 * Set the password for the user.
 	 * @param password
 	 */
 	public void setPassword(String password) {
@@ -96,8 +98,8 @@ public class User {
 	
 	
 	/**
-	 * Get the unique username of the user.
-	 * @return String
+	 * Get the unique userName of the user.
+	 * @return the user userName 
 	 */
 	public String getUserName() {
 		return userName;
@@ -107,7 +109,7 @@ public class User {
 
 	/**
 	 * Get the password of the user.
-	 * @return String
+	 * @return the user password
 	 */
 	public String getPassword() {
 		return password;
@@ -115,7 +117,7 @@ public class User {
 	
 	/**
 	 * Get the unique id of the user.
-	 * @return id the user Database id
+	 * @return the user Database id
 	 */
 	public int getID() {
 		return userID;
@@ -123,26 +125,39 @@ public class User {
 	
 	/**
 	 * Set the unique id of the user.
-	 * @param id the Database userID
+	 * @param userID the user Database id
 	 */
 	public void setID(int userID) {
 		this.userID = userID;
 	}
 		
 
+	/**
+	 * Set the isAdmin value of the user
+	 * @param admin 
+	 */
 	public void setAdmin(boolean admin) {
 		this.isAdmin = admin;
 	}
 	
+	/**
+	 * Check if user is admin
+	 * @return true - if user is admin <br>
+	 * 		   false - user is not an admin
+	 */
 	public boolean isAdmin() {
 		return isAdmin;
 	}
 	
+	
 	public boolean equals(Object obj) {
-		return userName == ((User)obj).userName;
+		
+		 User user = (User)obj;
+		 return user.getID() == getID();
+		
 	}
 	
-	
+
 	/**
 	 * Check the user details against the data base
 	 * @param user - The user that is trying to log in
@@ -173,7 +188,7 @@ public class User {
 				int counter = user.getCounter();
 				++counter;
 				user.setCounter(counter);
-				if(counter == 2)
+				if(counter == 3)
 					{
 					user.setStatus(Status.BLOCKED);
 					uDao.ObjectToDB(user);
@@ -185,6 +200,9 @@ public class User {
 					throw new Exception(exception+ "Password is incorrect!");
 					}
 			}
+		user.setCounter(0);
+		user.setStatus(Status.CONNECTED);
+		uDao.ObjectToDB(user);
 		return user;
 		
 	}
@@ -193,6 +211,18 @@ public class User {
 		return isAdmin() ? 1 : 0;
 	}
 
+	/**
+	 * @return the files
+	 */
+	public Set<ItemFile> getFiles() {
+		return files;
+	}
 
+	/**
+	 * @param files the files to set
+	 */
+	public void setFiles(Set<ItemFile> files) {
+		this.files = files;
+	}
 
 }

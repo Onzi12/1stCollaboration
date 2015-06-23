@@ -4,12 +4,12 @@ package controller;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
 
 import model.ItemFile;
 import boundary.FileRead_GUI;
 import callback.FileDownloadCallback;
 import client.Client;
+
 import common.Boundary;
 import common.ByteArray;
 import common.Controller;
@@ -25,12 +25,10 @@ public class FileReadController extends Controller {
 	public FileReadController(ItemFile file) {
 		this.file = file;
 		gui = (FileRead_GUI)super.gui;
-		System.out.println(file.getName());
-		System.out.println(file.getFullPath() + " is full path");
+//		file.setParentID(((ItemFolder) node.getUserObject()).getID());
 		gui.setLocation(file.getFullPath());
 		gui.setFilename(file.getName());
-		
-
+		gui.setDescription(file.getDescription());
 	}
 	
 	public void btnCancelClicked() {
@@ -52,7 +50,7 @@ public class FileReadController extends Controller {
 				protected void done(ItemFile file, MyBoxException exception) {
 
 					byte[] bFile = file.getFile();
-					String path = System.getProperty("user.home") + "\\desktop";
+					String path = System.getProperty("user.home") + "\\desktop\\";
 					JFileChooser filechooser = new JFileChooser(path);
 					int returnVal = filechooser.showSaveDialog(gui);
 			        if (returnVal == JFileChooser.APPROVE_OPTION)

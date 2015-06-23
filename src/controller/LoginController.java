@@ -4,6 +4,7 @@ package controller;
 import java.io.IOException;
 
 import model.User;
+import boundary.AppFrame;
 import boundary.Login_GUI;
 import callback.LoginCallback;
 import client.Client;
@@ -17,18 +18,13 @@ public class LoginController extends Controller {
 
 		
 	private void handleUserSignIn(User user) {
-		if (user != null) {
-			//here user has logged in successfully					
-			//show MyBox Window
+
 			Client.getInstance().setUser(user);
-			if (user.getAdmin() == 1)
+			if (user.isAdmin() == true )
 				new MyBoxAdministratorController(user);
 			else	
-				new MyBoxController(user);
-		} else {
-			System.out.println("WHY??????");
-		}
-		//else ?? 
+				new MyBoxController();
+ 
 	}
 	
 	public void btnSetPortAndIPClicked() {
@@ -92,6 +88,11 @@ public class LoginController extends Controller {
 	@Override
 	protected Boundary initBoundary() {
 		return new Login_GUI(this);
+	}
+	
+	@Override
+	public void updateBoundary() {
+		AppFrame.getInstance().setSize(326, 400);
 	}
 	
 }
