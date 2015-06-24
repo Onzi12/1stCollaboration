@@ -4,6 +4,7 @@ import model.User;
 import client.Client;
 
 
+@SuppressWarnings("serial")
 public class MessageWithUser extends Message {
 	private User user;
 	public MessageWithUser(Object obj,MessageType type){

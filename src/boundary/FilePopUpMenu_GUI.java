@@ -8,20 +8,51 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.border.TitledBorder;
 
+/**
+ * Graphical User Interface that opens with a right click is performed on a file
+ * @author Idan
+ *
+ */
+@SuppressWarnings("serial")
 public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 
-	private static final long serialVersionUID = -6005336868368607973L;
+	/**
+	 * Update File button
+	 */
 	private JMenuItem menuItemUpdate;
+	
+	/**
+	 * Delete File Virtually button
+	 */
 	private JMenuItem menuItemDelete;
+	
+	/**
+	 * Read File button
+	 */
 	private JMenuItem menuItemRead;
+	
+	/**
+	 * Edit File button
+	 */
 	private JMenuItem menuItemEdit;
+	
+	/**
+	 * Move Files from directory to directory button
+	 */
 	private JMenuItem menuItemMoveto;
 	
+	/** 
+	 * Constructs the popup window
+	 * @param title
+	 */
 	public FilePopUpMenu_GUI(String title) {
 		super(title);
 		draw();
 	}
 	
+	/**
+	 * Draws the popup window
+	 */
 	public void draw() {
 		setBackground(Color.WHITE);
 	    TitledBorder labelBorder = BorderFactory.createTitledBorder(
@@ -53,23 +84,42 @@ public class FilePopUpMenu_GUI extends JPopupMenu /*implements Displayable*/ {
 	    
 	}
 	
-	
+	/**
+	 * registers Read button Listener
+	 * @param listener
+	 */
 	public void registerMenuItemReadListener(ActionListener listener) {
 		menuItemRead.addActionListener(listener);
 	}
 	
+	/**
+	 * registers Update button Listener
+	 * @param listener
+	 */
 	public void registerMenuItemUpdateListener(ActionListener listener) {
 		menuItemUpdate.addActionListener(listener);
 	}
 	
+	/**
+	 * registers Delete Virtually button Listener
+	 * @param listener
+	 */
 	public void registerMenuItemDeleteListener(ActionListener listener) {
 		menuItemDelete.addActionListener(listener);
 	}
-
+	
+	/**
+	 * registers Edit button Listener
+	 * @param listener
+	 */
 	public void registerMenuItemEditListener(ActionListener listener) {
 		menuItemEdit.addActionListener(listener);
 	}
 	
+	/**
+	 * registers MoveTo button Listener
+	 * @param listener
+	 */
 	public void registerMenuItemMovetoListener(ActionListener listener) {
 		menuItemMoveto.addActionListener(listener);
 	}

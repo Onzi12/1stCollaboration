@@ -8,6 +8,11 @@ import javax.swing.table.AbstractTableModel;
 
 import model.ItemFile;
 
+/**
+ * Represents the data displaying design in a table
+ * @author Idan
+ *
+ */
 class FileTableModel extends AbstractTableModel {
 	
 	protected static final long serialVersionUID = 1L;

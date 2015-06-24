@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,26 +24,65 @@ import model.ItemFile;
 import model.ItemFile.Privilege;
 import common.Controller;
 import common.JDialogBoundary;
-import controller.FileEditController;
 import controller.FileUpdateController;
 
-import javax.swing.JComboBox;
-
-
+/**
+ * Graphical User Interface that allows a user to Update the selected file's content OR upload a new file
+ *
+ */
+@SuppressWarnings("serial")
 public class FileUpdate_GUI extends JDialogBoundary{
-
-	private static final long serialVersionUID = -2841064597688335514L;
+	
+	/**
+	 * Saves Changes in the selected file
+	 */
 	private JButton btnSave;
+	
+	/**
+	 * Close Window button
+	 */
 	private JButton btnCancel;
+	
+	/**
+	 * Displays the file name
+	 */
 	private JTextField tfFilename;
+	
+	/**
+	 * Displays the File selected path 
+	 */
 	private JTextField tfPath;
+	
+	/**
+	 * open the window to Select file path to upload from
+	 */
 	private JButton btnPath;
+	
+	/**
+	 * displays the save location
+	 */
 	private JTextField tfSaveLocation;
+	
+	/**
+	 * open the window to selecte file path to save to
+	 */
 	private JButton btnSaveLocation;
+	
+	/**
+	 * Text Area to write a new description to a new file
+	 */
 	private JTextArea taDescription;
+	
+	/**
+	 * Selection box that displays and selects the privilege levels of a file 
+	 */
 	private JComboBox<Privilege> cbPrivilege;
 	
-	
+	/**
+	 * Constructs the File Update window by selecting of to upload a new file or edit an existing file
+	 * @param controller
+	 * @param file
+	 */
 	public FileUpdate_GUI(Controller controller,ItemFile file) {
 		super(controller,file);
 	}
@@ -65,6 +105,9 @@ public class FileUpdate_GUI extends JDialogBoundary{
 			drawNotSelectedRow();	
 	}
 	
+	/**
+	 * Draws the File Update window
+	 */
 	private void drawSelectedRow(){
 		setBounds(100, 100, 601, 211);
 		getContentPane().setBackground(UIManager.getColor("text"));
@@ -125,6 +168,9 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		buttonPanel.add(btnSave);
 	}
 	
+	/**
+	 * Draws the Upload new file window
+	 */
 	private void drawNotSelectedRow(){
 
 		setBounds(100, 100, 601, 305 );
@@ -266,42 +312,72 @@ public class FileUpdate_GUI extends JDialogBoundary{
 		
 	}
 
+	/**
+	 * set the initial Filename to the text field
+	 * @param string
+	 */
 	public void setFilename(String string) {
 		tfFilename.setText(string);
 		
 	}
-
+	
+	/**
+	 * Set the initial file location to the text field 
+	 * @param string
+	 */
 	public void setLocation(String string) {
 		tfPath.setText(string);
 	}
-
+	
+	/**
+	 * Withdraws the edited File name
+	 * @return
+	 */
 	public String getFilenameText() {
 		return tfFilename.getText();
 	}
 	
+	/**
+	 * Withdraws the edited file Description 
+	 * @return
+	 */
 	public String getDescription() {
 		return taDescription.getText();
 	}
 	
+	/**
+	 * Sets the initial file Description
+	 * @param desc
+	 */
 	public void setDescription(String desc) {
 		taDescription.append(desc);
 	}
 	
+	/**
+	 * Sets the initial file Privilege level 
+	 * @param p
+	 */
 	public void setPrivilege(Privilege p) {
 		cbPrivilege.setSelectedItem(p);
 	}
 	
+	/**
+	 * withdraws the edited file privilege level
+	 * @return
+	 */
 	public Privilege getPrivilege() {
 		return (Privilege) cbPrivilege.getSelectedItem();
 	}
 	
+	/**
+	 * sets the virtual path to save a new uploaded file
+	 * @param location
+	 */
 	public void setSaveLocationText(String location) {
 		tfSaveLocation.setText(location);
 	}
 	
 	@Override
-	public void draw() {			//empty implemented message
-		// TODO Auto-generated method stub
-		
+	public void draw() {			//empty implemented message		
 	}
 }

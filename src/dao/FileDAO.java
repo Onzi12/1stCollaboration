@@ -1,7 +1,6 @@
 package dao;
 
 import java.io.File;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +43,6 @@ public class FileDAO implements DAO<ItemFile> {
 		
 		return set;
 	
-		// TODO Auto-generated method stub
 	}
 /*
 public static void objectToDB(FileDAO file) {
@@ -57,7 +55,11 @@ public static void objectToDB(FileDAO file) {
 			stmt.executeUpdate("INSERT INTO file (fileName) VALUES('"+file.getName()+"')" );
 		} catch (SQLException e) { e.printStackTrace(); }
 }*/
-	
+	/**
+	 * gets all of the files of the specific folder and adds them to a set
+	 * @param ItemFolder fol
+	 * @return Set<Item>
+	 */
 	public Set<Item> getFolderFiles(ItemFolder fol){
 		Connection con = Server.getConnection();
 		HashSet<Item> set = new HashSet<>();
@@ -100,6 +102,12 @@ public static void objectToDB(FileDAO file) {
 			ObjectToDB(file);
 	}
 
+	
+	/**
+	 * takes a group and returns a set that contains file
+	 * @param Group group
+	 * @return Set<ItemFile>
+	 */
 	public Set<ItemFile> getGroupFiles(Group group){
 		HashSet<ItemFile> set = null;
 		Connection con = Server.getConnection();
@@ -138,7 +146,12 @@ public static void objectToDB(FileDAO file) {
 			} catch (SQLException e) { e.printStackTrace(); }
 		
 	}
-	
+	/**
+	 * takes a file and inserts him to the DB and then makes a connection between
+	 * the file and all of the groups in the DB
+	 * @param ItemFile file
+	 * @throws SQLException
+	 */
 	public void addToUserFilesDB(ItemFile file) throws SQLException {
 		 
 		Connection con = Server.getConnection();
@@ -148,11 +161,19 @@ public static void objectToDB(FileDAO file) {
 					+ file.getOwner().getID() + "," 
 					+ file.getParentID() + ","
 					+ file.getID() + ")");	
-			
-		} 
-		
+			ResultSet rs = stmt.executeQuery("SELECT groupID FROM usergroups WHERE userID = "+file.getOwner().getID());
+			while(rs.next()){
+				stmt.executeUpdate("INSERT INTO filegroups (fileID,groupID) VALUES ("
+					+ file.getID() + "," 
+					+ rs.getInt(1) + ")");	
+			} 
+		}
 	}
-	
+	/**
+	 * changes the id of the parent folder in the DB
+	 * @param ResultSet ItemFile file,int oldParentID
+	 * @throws SQLException
+	 */
 	public void updateFileLocationInDB(ItemFile file, int oldParentID) throws SQLException {
 
 		Connection con = Server.getConnection();
@@ -181,6 +202,11 @@ public static void objectToDB(FileDAO file) {
 		return set;
 	}*/
 	
+	/**
+	 * returns a set with all of the users files
+	 * @param int id
+	 * @return Set<ItemFile> 
+	 */
 	public Set<ItemFile> getUserFiles(int id)
 	{
 		FileDAO fileDAO = new FileDAO();
@@ -197,12 +223,17 @@ public static void objectToDB(FileDAO file) {
 		return set;
 	}
 	
+	/**
+	 * deletes the physical file from the server and the row of the file in the DB
+	 * @param ItemFile file
+	 */
 	public void deletePhysicalFile(ItemFile file)
 	{
 		Connection con = Server.getConnection();
 		try(Statement stmt = con.createStatement()){
 			stmt.executeUpdate("UPDATE file set isDeleted = 2 where fileID = " + file.getID());
-			System.out.println("delete physical file method before file");
+
+			stmt.executeUpdate("DELETE FROM filegroups where fileID = " + file.getID());
 			File pfile = new File(System.getProperty("user.home") + "\\desktop\\MyBox\\"+file.getName());
 
 			if (pfile.exists()) 
@@ -214,6 +245,11 @@ public static void objectToDB(FileDAO file) {
 			
 	}
 	
+	/**
+	 * checks in the DB all of the files that user can delete physically
+	 * @param int vid
+	 * @return Set<ItemFile>
+	 */
 	public Set<ItemFile> getDeletePhysicalFiles(int uid)
 	{
 		HashSet<ItemFile> set = null;
@@ -232,12 +268,17 @@ public static void objectToDB(FileDAO file) {
 		return set;
 	}
 	
+	/**
+	 * checks in the DB all of the files that user can add 
+	 * @param int uid,int fid
+	 * @return Set<ItemFile>
+	 */
 	public Set<ItemFile> getAddUserFiles(int uid,int fid)
 	{
 		FileDAO fileDAO = new FileDAO();
 		Connection con = Server.getConnection();
 		HashSet<ItemFile> set = null;
-		System.out.println(fid);
+
 		String str = "SELECT * FROM file f WHERE isDeleted = 0 and fileID not in(SELECT fileID FROM userfiles WHERE userID = " + uid +" and folderID = " + fid + " ) AND privilege = ";
 		try(Statement stmt = con.createStatement() ) {
 			ResultSet rs = stmt.executeQuery(str + "2");
@@ -255,7 +296,11 @@ public static void objectToDB(FileDAO file) {
 			} catch(SQLException e){ e.printStackTrace();}
 		return set;
 	}
-	
+	/**
+	 * checks in the DB all of the files that user can restore 
+	 * @param int uid
+	 * @return Set<ItemFile>
+	 */
 	public Set<ItemFile> getUserRestoreFile(int uid)
 	{
 		Set<ItemFile> set = null;
@@ -274,11 +319,15 @@ public static void objectToDB(FileDAO file) {
 		return set;
 	}
 	
+	/**
+	 * change the status of the file to not deleted
+	 * @param int fid
+	 */
 	public void userRestoreFile(int fid) {
 		
 		Connection con = Server.getConnection();
 		try( Statement stmt = con.createStatement() ) {
-			stmt.executeUpdate("UPDATE file set isDeleted = 0 AND fileID  = " + fid);
+			stmt.executeUpdate("UPDATE file SET isDeleted = 0 WHERE fileID  = " + fid);
 		} catch(SQLException e) { 
 			e.printStackTrace();
 		}
@@ -296,10 +345,12 @@ public static void objectToDB(FileDAO file) {
 		
 	}
 	
+	/**
+	 * delete the row in the DB
+	 * @param ItemFile file,int parentID
+	 */
 	public void deleteFromUserFiles(ItemFile file, int parentID) {
-		System.out.println("fileID: " + file.getID());
-		System.out.println("folderID: " + parentID);
-		System.out.println("userID: " + file.getUserID());
+
 
 		Connection con = Server.getConnection();
 		try( Statement stmt = con.createStatement() ) {
@@ -310,6 +361,11 @@ public static void objectToDB(FileDAO file) {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * insert the new combination between user and file
+	 * @param ItemFile file ,int parentID,int userID
+	 * @throws SQLException
+	 */
 	public void insertToUserFiles(ItemFile file, int parentID, int userID) throws SQLException
 	{
 		Connection con = Server.getConnection();
@@ -321,7 +377,8 @@ public static void objectToDB(FileDAO file) {
 		} 
 			
 	}
-//	public void UpdateIsEdi
+
+
 	public ItemFile DBtoObject(String name) {
 		Connection con = Server.getConnection();
 		ItemFile file = null;

@@ -7,6 +7,11 @@ import common.MyBoxException;
 
 public abstract class RemoveFolderCallback extends Callback<ItemFolder> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param folder
+	 * @param exception
+	 */
 	protected abstract void done(ItemFolder folder, MyBoxException exception);
 	@Override
 	protected void messageReceived(ItemFolder folder, MyBoxException exception) {

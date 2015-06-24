@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import model.Item;
 import model.Request;
+import boundary.ManageGroupRequests_GUI;
 import callback.GetGroupRequestsCallback;
 import callback.GroupRequestAnswerCallback;
 import client.Client;
-import boundary.ManageGroupRequests_GUI;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
 import common.MessageType;
 import common.MyBoxException;
+
 import custom_gui.RequestTableModel;
 
 public class ManageGroupRequestsController extends Controller {
@@ -56,7 +57,7 @@ public class ManageGroupRequestsController extends Controller {
 	public void btnAcceptClicked() {
 		
 		Request r = gui.getSelectedRequest();
-		System.err.println(r.getUser().getUserName() + "   "+r.getGroup().getName());
+
 		try {
 			Message accept = new Message(r, MessageType.REQUEST_ANSWER_ACCEPT);
 			Client.getInstance().sendMessage(accept, new GroupRequestAnswerCallback() {

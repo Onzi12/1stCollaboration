@@ -22,21 +22,51 @@ import javax.swing.border.LineBorder;
 
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileReadController;
 
+
+/**
+ * 
+ * Graphical User Interface that displays a window that allows to Read a file's name,Description and privilege
+ *
+ */
+@SuppressWarnings("serial")
 public class FileRead_GUI extends JDialogBoundary {
 
-	private static final long serialVersionUID = 3050895492014566356L;
-	private JPanel contents, buttonPanel;
-	private JTextField tfFilename, tfLocation;
+	/**
+	 * Text Field to display the file name
+	 */
+	private JTextField tfFilename;
+	
+	/**
+	 * Text Field to display the file Virtual Location
+	 */
+	private JTextField tfLocation;
+	
+	/**
+	 * Close window button
+	 */
 	private JButton btnClose;
-	private JLabel lblDescription;
+	
+	/**
+	 * Text Area to display file's Description
+	 */
 	private JTextArea taDescription;
-	private JLabel lblPrivilege;
+	
+	/**
+	 * Selection box that Shows the file's privilege level
+	 */
 	private JComboBox<String> cbPrivilege;
+	
+	/**
+	 * Download file button
+	 */
 	private JButton btnDownload;
 	
+	/**
+	 * Constructs the File Read window
+	 * @param controller
+	 */
 	public FileRead_GUI(Controller controller) {
 		super(controller);
 	}
@@ -47,7 +77,7 @@ public class FileRead_GUI extends JDialogBoundary {
 		setBounds(100, 100, 647, 263);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-		contents = new JPanel();
+		JPanel contents = new JPanel();
 		contents.setBackground(UIManager.getColor("text"));
 		contents.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contents);
@@ -80,7 +110,7 @@ public class FileRead_GUI extends JDialogBoundary {
 		tfLocation.setEditable(false);
 		center.add(tfLocation);
 		
-		lblDescription = new JLabel("Description:");
+		JLabel lblDescription = new JLabel("Description:");
 		lblDescription.setBounds(7, 92, 79, 14);
 		center.add(lblDescription);
 		
@@ -96,21 +126,21 @@ public class FileRead_GUI extends JDialogBoundary {
 		taDescription.setEditable(false);
 		scrollPane.setViewportView(taDescription);
 		
-		lblPrivilege = new JLabel("Privilege:");
+		JLabel lblPrivilege = new JLabel("Privilege:");
 		lblPrivilege.setBounds(7, 59, 58, 23);
 		center.add(lblPrivilege);
 		
 		cbPrivilege = new JComboBox<String>();
 		cbPrivilege.setBackground(SystemColor.controlHighlight);
 		cbPrivilege.setBounds(83, 57, 85, 24);
-		cbPrivilege.addItem("Public");
-		cbPrivilege.addItem("Group");
 		cbPrivilege.addItem("Private");
+		cbPrivilege.addItem("Group");
+		cbPrivilege.addItem("Public");
 		cbPrivilege.setEnabled(false);
 		cbPrivilege.setEditable(false);
 		center.add(cbPrivilege);
 		
-		buttonPanel = new JPanel();
+		JPanel buttonPanel = new JPanel();
 		buttonPanel.setBackground(UIManager.getColor("text"));
 		buttonPanel.setBounds(10, 186, 616, 33);
 		contents.add(buttonPanel);
@@ -121,7 +151,7 @@ public class FileRead_GUI extends JDialogBoundary {
 		buttonPanel.add(btnClose);
 		
 		btnDownload = new JButton("Download");
-		btnDownload.setBounds(424, 5, 89, 23);
+		btnDownload.setBounds(412, 5, 101, 23);
 		buttonPanel.add(btnDownload);
 		
 		JSeparator separator = new JSeparator();
@@ -135,48 +165,40 @@ public class FileRead_GUI extends JDialogBoundary {
 		contents.add(lblReadFile);
 	}
 	
+	/**
+	 * inserts File name to the text field for display
+	 * @param name
+	 */
 	public void setFilename(String name) {
 		tfFilename.setText(name);
 	}
 	
+	/**
+	 * inserts the File Virtual location into the Text field for display
+	 * @param location
+	 */
 	public void setLocation(String location) {
 		tfLocation.setText(location);
 	}
 	
-	public String getTextAreaText() {
-		return taDescription.getText();
-	}
 	
-	
-
-	public String getFilenameText() {
-		return tfFilename.getText();
-	}
-	
-	public String getLocationText() {
-		return tfLocation.getText();
-	}
-	
+	/**
+	 * inserts the File's Description to the Text Area for display
+	 * @return
+	 */
 	public void setDescription(String des) {
 		this.taDescription.setText(des);
 	}
 
-
-	public int getCbPrivilegeIndex() {
-		return cbPrivilege.getSelectedIndex();
-	}
-
+	/**
+	 * inserts the File's Privilege level in the Selection Box
+	 * @param index
+	 */
 	public void setCbPrivilegeIndex(int index) {
 		this.cbPrivilege.setSelectedIndex(index);
 	}
 	
-	public String getCbPrivilege() {
-		return cbPrivilege.getSelectedItem().toString();
-	}
-	
-	public void setCbPrivilege(String privilege) {
-		this.cbPrivilege.setSelectedItem(privilege);
-	}
+
 	
 	
 

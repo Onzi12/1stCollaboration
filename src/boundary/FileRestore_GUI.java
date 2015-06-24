@@ -16,20 +16,35 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 
 import model.ItemFile;
-
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileRestoreController;
 
+/**
+ * Graphical User Interface that allows a user to Restore files that he has virtually deleted and he is their owner
+  *
+ */
+@SuppressWarnings("serial")
 public class FileRestore_GUI extends JDialogBoundary {
+	
 	/**
-	 * 
+	 * a list that contains all files that the owner owns and has virtually deleted
 	 */
-	private static final long serialVersionUID = 1L;
 	private JList<ItemFile> listFiles;
+	
+	/**
+	 * a model to design the list
+	 */
 	private DefaultListModel<ItemFile> listModel;
+	
+	/**
+	 * Close Window button
+	 */
 	private JButton btnClose;
+	
+	/**
+	 * Restores the selected File
+	 */
 	private JButton btnRestore;
 
 	public FileRestore_GUI(Controller controller) {
@@ -111,10 +126,18 @@ public class FileRestore_GUI extends JDialogBoundary {
 		});
 	}
 	
+	/**
+	 * adds a file to the list
+	 * @param file
+	 */
 	public void addListValue(ItemFile file) {
 		listModel.addElement(file);
 	}
 	
+	/**
+	 * Returns the selected file from the list
+	 * @return
+	 */
 	public ItemFile getSelectedFile() {
 		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}

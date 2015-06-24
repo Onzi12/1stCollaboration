@@ -1,8 +1,5 @@
 package boundary;
 import java.awt.Color;
-
-import custom_gui.RequestTableModel;
-
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
@@ -17,19 +14,37 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
-import model.ItemFile;
 import model.Request;
+
 import common.Controller;
 import common.JDialogBoundary;
-import common.MessageType;
-import controller.ManageGroupRequestsController;
 
+import controller.ManageGroupRequestsController;
+import custom_gui.RequestTableModel;
+
+/**
+ * Graphical User Interface that allows an administrator to answer all user's group requests
+ *
+ */
 @SuppressWarnings("serial")
 public class ManageGroupRequests_GUI extends JDialogBoundary {
 	
-	
+	/**
+	 * Displays the requests of the users
+	 */
 	private JTable table;
-	private JButton btnClose,btnAccept,btnDecline;
+	/**
+	 * Close Window Button
+	 */
+	private JButton btnClose;
+	/**
+	 * Accepts the user's request to join/leave a group
+	 */
+	private JButton btnAccept;
+	/**
+	 * Declines the user's request to join/leave a group
+	 */
+	private JButton btnDecline;
 
 	public ManageGroupRequests_GUI(Controller controller) {
 		super(controller);
@@ -115,14 +130,26 @@ public class ManageGroupRequests_GUI extends JDialogBoundary {
 		});
 	}
 	
+	/** 
+	 * Returns the Requests table
+	 * @return
+	 */
 	public JTable getTable() {
 		return table;
 	}
 	
+	/**
+	 * Sets the table model 
+	 * @param model
+	 */
 	public void setTableModel(RequestTableModel model) {
 		table.setModel(model);
 	}
 	
+	/**
+	 * Withdraws all Requests 
+	 * @return
+	 */
 	public Request getSelectedRequest() {
 		return (Request) table.getModel().getValueAt(table.getSelectedRow(), RequestTableModel.OBJECT_COL);
 	}

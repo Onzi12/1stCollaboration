@@ -2,11 +2,12 @@ package controller;
 
 import java.io.IOException;
 
+import model.ItemFile;
+import boundary.FileEdit_GUI;
 import callback.EditFileCallback;
 import callback.FinishedEditingFileCallback;
 import client.Client;
-import boundary.FileEdit_GUI;
-import model.ItemFile;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -24,12 +25,11 @@ public class FileEditController extends Controller{
 		gui = (FileEdit_GUI)super.gui;
 		if (file.getOwner().getID() != Client.getInstance().getUser().getID())
 			gui.setBtnManageGroupsAccess(false);
-		System.out.println("file owner "+file.getOwner().getID());
-		System.out.println("current user: "+ Client.getInstance().getUser().getID());
+
 		gui.setDescriptionText(file.getDescription());
 		gui.setFilename(file.getName());
 		gui.setPrivilege(file.getPrivilege().getValue());
-		System.out.println("teh privilege is :"+file.getPrivilege().getValue());
+
 	}
 	
 	@Override
@@ -74,14 +74,10 @@ public class FileEditController extends Controller{
 			if(file != null){
 				file.setDescription(gui.getDescriptionText());
 				file.setName(gui.getFilename());
-				System.out.println(file.getName());
-				System.out.println(file.getDescription());
+
 				file.setPrivilege(gui.getPrivilege());
 				file.setUserID(Client.getInstance().getUser().getID());
-				
-				System.out.println("send fileid : " + file.getID());
-
-				
+								
 				Message msg = new Message(file, MessageType.FILE_EDIT);
 				Client.getInstance().sendMessage(msg, new EditFileCallback() {
 					

@@ -6,16 +6,38 @@ import model.ItemFile;
 import model.ItemFolder;
 import boundary.FileTreeModel;
 import boundary.VirtualLocationChooser_GUI;
+
 import common.Boundary;
 import common.Controller;
 
+/**
+ * The {@link VirtualLocationChooserController} class enables user interaction with the {@link VirtualLocationChooser_GUI}.
+ *
+ */
 public class VirtualLocationChooserController extends Controller {
 
+	/**
+	 * The controller of the GUI class that created the {@link VirtualLocationChooserController}.
+	 */
 	private Controller guiController;
+	/**
+	 * A reference the the {@link VirtualLocationChooser_GUI}.
+	 */
 	private VirtualLocationChooser_GUI gui;
+	/**
+	 * A reference to the selected folder.
+	 */
 	private ItemFolder folder;
+	/**
+	 * A reference to the file.
+	 */
 	private ItemFile file;
 	
+	/**
+	 * Construct the {@link VirtualLocationChooserController}.
+	 * @param guiController
+	 * @param file
+	 */
 	public VirtualLocationChooserController(Controller guiController, ItemFile file) {
 		this.guiController = guiController;
 		this.gui = (VirtualLocationChooser_GUI)super.gui;
@@ -31,6 +53,9 @@ public class VirtualLocationChooserController extends Controller {
 		return new VirtualLocationChooser_GUI(this);
 	}
 
+	/**
+	 * A handler method for the OK button.
+	 */
 	public void btnOKClicked() {
 		if (guiController instanceof FileUpdateController) {
 			((FileUpdateController)guiController).setVirtualSaveLocation(folder);
@@ -40,10 +65,16 @@ public class VirtualLocationChooserController extends Controller {
 		gui.close();
 	}
 
+	/**
+	 * A handler method for the close button.
+	 */
 	public void btnCloseClicked() {
 		gui.close();
 	}
 
+	/**
+	 * A handler method called on a tree node is clicked.
+	 */
 	public void clickedOnTreeNode() {
 		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)gui.getTree().getLastSelectedPathComponent(); 
 		if (selectedNode != null) {

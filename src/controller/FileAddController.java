@@ -14,6 +14,7 @@ import boundary.MyBox_GUI;
 import callback.AddFileCallback;
 import callback.GetAddFilesCallback;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;

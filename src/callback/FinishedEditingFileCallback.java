@@ -5,6 +5,10 @@ import common.MyBoxException;
 
 public abstract class FinishedEditingFileCallback extends Callback<Void> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param exception
+	 */
 	public abstract void finishedEditingFile(MyBoxException exception);
 	
 	@Override

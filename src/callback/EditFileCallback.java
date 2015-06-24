@@ -7,6 +7,11 @@ import common.MyBoxException;
 
 public abstract class EditFileCallback extends Callback<ItemFile> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param file
+	 * @param exception
+	 */
 	protected abstract void done(ItemFile file, MyBoxException exception);
 	
 	@Override

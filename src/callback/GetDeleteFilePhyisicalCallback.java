@@ -2,13 +2,18 @@ package callback;
 
 import java.util.HashSet;
 
+import model.ItemFile;
+
 import common.MessageType;
 import common.MyBoxException;
 
-import model.ItemFile;
-
 public abstract class GetDeleteFilePhyisicalCallback extends Callback<HashSet<ItemFile>>{
 
+	/**
+	 * Called when the operation completes.
+	 * @param files
+	 * @param exception
+	 */
 	protected abstract void done(HashSet<ItemFile> files,MyBoxException exception);
 	
 	@Override

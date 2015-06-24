@@ -7,11 +7,22 @@ import javax.swing.JPanel;
 import controller.CreateAccountController;
 import controller.NavigationManager;
 
+/**
+ * extends Jpanel and organizes all windows that will be presented in a single format of coding and provides Auto activation methods
+ * @author Idan
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class JPanelBoundary extends JPanel implements Boundary{
 	
+	/**
+	 * Currently used controller 
+	 */
 	protected Controller controller;
-	
+	 /**
+	  * Constructs the main displaying window
+	  * @param controller
+	  */
 	public JPanelBoundary(Controller controller)
 	{
 		this.controller = controller;
@@ -49,5 +60,8 @@ public abstract class JPanelBoundary extends JPanel implements Boundary{
 	 */
 	public void close(){}
 	
+	/**
+	 * Method that unifies all Listeners listings to a single place
+	 */
 	public abstract void registerListeners();
 }

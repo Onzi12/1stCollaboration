@@ -4,10 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -21,9 +23,9 @@ import javax.swing.JOptionPane;
 
 import model.Group;
 import model.ItemFile;
-import model.Request;
 import model.ItemFile.State;
 import model.ItemFolder;
+import model.Request;
 import model.User;
 import model.User.Status;
 import ocsf.server.ConnectionToClient;
@@ -33,10 +35,11 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import server.Server;
 import boundary.Server_GUI;
+
 import common.ByteArray;
 import common.Message;
 import common.MessageType;
-import common.MessageWithUser;
+
 import dao.FileDAO;
 import dao.FolderDAO;
 import dao.GroupDAO;
@@ -75,19 +78,25 @@ public class ServerController implements Observer {
 		int rs = JOptionPane.showConfirmDialog(gui, confirm,"Init Database",JOptionPane.YES_NO_OPTION);
 		if (rs != JOptionPane.YES_OPTION)
 			return;
-        String script = "src/db.sql";
+        String script = "db.sql";
         String url = gui.getURL().trim();
         String user = gui.getUser().trim();
         String pass = gui.getPassword().trim();
+        InputStream is = URLClassLoader.getSystemResourceAsStream(script);
+        Reader reader = new InputStreamReader(is);
         try {
         	Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection con;
             con = DriverManager.getConnection(url,user, pass);
-            new ScriptRunner(con)
-                    .runScript(new BufferedReader(new FileReader(script)));
+            new ScriptRunner(con).runScript(reader);
         } catch (Exception e2) {
             gui.showMessage(e2.getMessage());
             return;
+        } finally {
+            try {
+				reader.close();
+	            is.close();
+			} catch (IOException e) {}
         }
         
       gui.showMessage("Database Initiated Successfully!");
@@ -189,8 +198,7 @@ public class ServerController implements Observer {
 				Message msg = (Message)originatorMessage.getMessage();
 				MessageType type = (MessageType)msg.getType();
 				
-				System.out.println(type);
-				
+
 				switch (type) {
 				case CREATE_ACCOUNT: 	
 				{
@@ -236,7 +244,7 @@ public class ServerController implements Observer {
 
 				}
 				break;
-				case LOGOUT: //Work
+				case LOGOUT: 
 				{
 					User user = (User)msg.getData();
 					user.setStatus(Status.NOTCONNECTED);
@@ -257,8 +265,8 @@ public class ServerController implements Observer {
 							sendToClient(client,new Message(e.getMessage(), MessageType.ERROR_MESSAGE));
 							return;
 							}
-						gui.showMessage(user.getUserName() + " logged in.");
-						client.setInfo("username", user);
+						gui.showMessage(user.getUserName() + " logged in successfully");
+	
 						Message response = new Message(user, MessageType.LOGIN);
 						sendToClient(client,response);
 				}
@@ -283,14 +291,31 @@ public class ServerController implements Observer {
 				case CREATE_NEW_GROUP:
 				{
 					Group group = (Group)msg.getData();
-					GroupDAO groupDAO = new GroupDAO();
-					try{
-						groupDAO.createNewGroup(group);
-						Message response = new Message(group,MessageType.CREATE_NEW_GROUP);
-						sendToClient(client, response);
-					}catch(SQLException e){
-						gui.showMessage("Failed to add new group to the DB ");	
+					GroupDAO gDao = new GroupDAO();
+
+					gDao.ObjectToDB(group);
+					
+					//SQL error
+					if(group == null)
+						{
+						sendToClient(client,new Message("Group Creation Failed!!! SQL ERROR", MessageType.ERROR_MESSAGE));
+						return;
+						}
+					
+					//Group With the same name already exists
+					if(group.getGroupID() == 0 )
+					{
+					String err = "Group Creation Failed, A group with the name '"+group.getName()+"'"+
+								"\nAlready exists!!";
+					Message responce = new Message(err, MessageType.ERROR_MESSAGE);
+					sendToClient(client,responce);
+					return;
 					}
+					
+					//Success!
+					Message response = new Message(group,MessageType.CREATE_NEW_GROUP);
+					sendToClient(client, response);
+					gui.showMessage("New Group '"+group.getName()+"' created successfully!");
 				}
 				break;
 				case GET_RESTORE_FILES:
@@ -307,16 +332,24 @@ public class ServerController implements Observer {
 				{
 					ItemFile file = (ItemFile)msg.getData();
 					FileDAO fileDAO = new FileDAO();
-					fileDAO.userRestoreFile(file.getID());
+//					fileDAO.userRestoreFile(file.getID());
+					file.setState(State.NORMAL);
+					fileDAO.ObjectToDB(file);
 					Message response = new Message(null, MessageType.RESTORE_FILE);
 					sendToClient(client, response);
+					
+					UserDAO uDao = new UserDAO();
+					Set<User> users = uDao.getActiveFileUsers(file);
+					
+					Message broadcastMessage = new Message(users, MessageType.BROADCAST_FILE_STATE_CHANGE);
+					server.sendToAllClients(broadcastMessage);
 				}
 				break;
 				
 				case GET_ADD_FILES:
 				{
 					ItemFolder folder = (ItemFolder)msg.getData();
-					if (folder == null) System.out.println("folder is null");
+
 					FileDAO fileDAO = new FileDAO();
 					HashSet<ItemFile> res = (HashSet<ItemFile>)fileDAO.getAddUserFiles(folder.getUserID(),folder.getID());
 					Message response = new Message(res, MessageType.GET_ADD_FILES);
@@ -366,8 +399,7 @@ public class ServerController implements Observer {
 					@SuppressWarnings("unchecked")
 					HashMap<String,Integer> groupAccess = (HashMap<String , Integer>)msg.getData();
 					GroupDAO groupDAO = new GroupDAO();
-					 System.out.println( groupAccess.get("access") + " " + groupAccess.get("fileId") + " " + groupAccess.get("groupId"));
-						
+
 					groupDAO.updateGroupAccess(groupAccess);
 					Message response = new Message(null, MessageType.UPDATE_FILE_GROUPS_ACCESS);
 					sendToClient(client, response);
@@ -443,6 +475,12 @@ public class ServerController implements Observer {
 					fileDAO.deletePhysicalFile(file);
 					Message response = new Message(file, MessageType.GET_DELETE_FILE_PHYSICAL);
 					sendToClient(client, response);
+					
+					UserDAO uDao = new UserDAO();
+					Set<User> users = uDao.getActiveFileUsers(file);
+					
+					Message broadcastMessage = new Message(users, MessageType.BROADCAST_FILE_STATE_CHANGE);
+					server.sendToAllClients(broadcastMessage);
 					}
 					break;
 					
@@ -463,14 +501,12 @@ public class ServerController implements Observer {
 					}
 					Message response = new Message(file, MessageType.DELETE_FILE_VIRTUAL);
 					sendToClient(client, response);
-										
-//					UserDAO uDao = new UserDAO();
-//					Set<User> users = uDao.getActiveFileUsers(file);
-//					
-//					Message broadcastMessage = new Message(users, MessageType.BROADCAST_FILE_STATE_CHANGE);
-//					server.sendToAllClients(broadcastMessage);
 
+					UserDAO uDao = new UserDAO();
+					Set<User> users = uDao.getActiveFileUsers(file);
 					
+					Message broadcastMessage = new Message(users, MessageType.BROADCAST_FILE_STATE_CHANGE);
+					server.sendToAllClients(broadcastMessage);
 				}
 					break;
 				case GET_ALL_FILES:
@@ -685,17 +721,17 @@ public class ServerController implements Observer {
 	 */
 	public boolean deleteLocalFile(ItemFile itemFile){
 		try{
-			System.out.println("file is not null"); 
+
 			String myBoxPath = System.getProperty("user.home") + "\\Desktop\\MyBox\\";
 			File file = new File (myBoxPath+itemFile.getName());
-			System.out.println("ss");
+
 			
 			if (!file.delete())
 				throw new Exception();
 			return true;
 		}
 		catch(Exception e){
-			System.out.println("catch");
+
 			return false;
 		}
 	}

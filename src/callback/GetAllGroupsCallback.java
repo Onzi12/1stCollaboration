@@ -2,13 +2,20 @@ package callback;
 
 import java.util.HashSet;
 
+import model.Group;
+
 import common.MessageType;
 import common.MyBoxException;
-import model.Group;
 
 public abstract class GetAllGroupsCallback extends Callback<HashSet<Group>> {
 	
+	/**
+	 * Called when the operation completes.
+	 * @param groups
+	 * @param exception
+	 */
 	protected abstract void done(HashSet<Group> groups, MyBoxException exception);
+	
 	@Override
 	protected void messageReceived(HashSet<Group> groups, MyBoxException exception) {
 		done(groups,exception);

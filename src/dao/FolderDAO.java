@@ -40,6 +40,11 @@ public class FolderDAO implements DAO<ItemFolder> {
 		
 		return folder;
 	}
+	/**checks 
+	 * 
+	 * @param ItemFolder folder
+	 * @throws SQLException
+	 */
 	public void checkInsert(ItemFolder folder) throws SQLException
 	{
 		Connection con = Server.getConnection();
@@ -158,7 +163,11 @@ public class FolderDAO implements DAO<ItemFolder> {
 		}
 		
 	}
-	
+	/**
+	 * returns all of the users folder in a HashSet
+	 * @param int id
+	 * @return HashSet<ItemFolder>
+	 */
 	public HashSet<ItemFolder> getUserFolders(int id) {
 		Connection con = Server.getConnection();
 		HashSet<ItemFolder> set = null;
@@ -200,7 +209,10 @@ public class FolderDAO implements DAO<ItemFolder> {
 	}
 	
 	
-
+	/**
+	 * makes a path with the folders
+	 * @param ItemFolder fol
+	 */
 	public void createFolderContents(ItemFolder fol){
 		Set<Item> files = new FileDAO().getFolderFiles(fol);
 		Set<Item> subFolders = new FolderDAO().getFolderSubFolders(fol);
@@ -221,7 +233,11 @@ public class FolderDAO implements DAO<ItemFolder> {
 		fol.setContents(files);
 	}
 
-	
+	/**
+	 * gets all of the folders of the folder that we got
+	 * @param ItemFolder fol
+	 * @return Set<Item>
+	 */
 	private Set<Item> getFolderSubFolders(ItemFolder fol) {
 		Connection con = Server.getConnection();
 		HashSet<Item> set = new HashSet<>();
@@ -237,7 +253,11 @@ public class FolderDAO implements DAO<ItemFolder> {
 		
 		return set;
 	}
-
+	/**
+	 * makes a kind of tree for the user that is within the Use
+	 * @param User user
+	 * @throws SQLException
+	 */
 	public void DBtoTree(User user) throws SQLException {		
 		ItemFolder root = getRootFolderFromDB( user.getID() );
 		//root.setTreeNode(new DefaultMutableTreeNode(root) );
@@ -246,7 +266,12 @@ public class FolderDAO implements DAO<ItemFolder> {
 		user.setRootFolder(root);
 		
 	}
-	
+	/**
+	 * gets the root folder of the user tree
+	 * @param int userID
+	 * @return ItemFolder
+	 * @throws SQLException
+	 */
 	private ItemFolder getRootFolderFromDB(int userID) throws SQLException {
 		
 		ItemFolder root = null;
@@ -321,4 +346,12 @@ public class FolderDAO implements DAO<ItemFolder> {
 
 
 
+
+
+
+
 }
+
+
+
+

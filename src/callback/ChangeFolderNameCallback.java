@@ -1,12 +1,17 @@
 package callback;
 
+import model.ItemFolder;
+
 import common.MessageType;
 import common.MyBoxException;
 
-import model.ItemFolder;
-
 public abstract class ChangeFolderNameCallback extends Callback<ItemFolder> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param folder
+	 * @param exception
+	 */
 	protected abstract void done(ItemFolder folder, MyBoxException exception);
 	
 	@Override

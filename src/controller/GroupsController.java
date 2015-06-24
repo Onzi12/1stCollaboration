@@ -1,15 +1,14 @@
 package controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import model.Group;
-import model.User;
+import boundary.Groups_GUI;
 import callback.GetGroupsCallback;
 import client.Client;
-import boundary.Groups_GUI;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -98,10 +97,10 @@ public class GroupsController extends Controller {
 				
 				@Override
 				protected void done(Set<Group> groups, MyBoxException exception) {
-					if (exception == null)
-						gui.showMessage("Requests sent to server Successfully!");
-							
-					else {
+					if (exception == null) {
+						gui.showHappyMessage("Requests sent to server Successfully!");
+						gui.close(); }		
+				   else {
 						gui.showMessage(exception.getMessage());
 					}
 				}

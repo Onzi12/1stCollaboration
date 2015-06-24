@@ -9,6 +9,11 @@ import common.MyBoxException;
 
 public abstract class GetGroupRequestsCallback extends Callback<Set<Request>> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param requests
+	 * @param exception
+	 */
 	protected abstract void done(Set<Request> requests, MyBoxException exception);
 	
 	@Override

@@ -25,10 +25,10 @@ public class FileReadController extends Controller {
 	public FileReadController(ItemFile file) {
 		this.file = file;
 		gui = (FileRead_GUI)super.gui;
-//		file.setParentID(((ItemFolder) node.getUserObject()).getID());
 		gui.setLocation(file.getFullPath());
 		gui.setFilename(file.getName());
 		gui.setDescription(file.getDescription());
+		gui.setCbPrivilegeIndex(file.getPrivilege().getValue());
 	}
 	
 	public void btnCancelClicked() {

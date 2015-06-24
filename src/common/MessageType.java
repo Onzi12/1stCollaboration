@@ -1,8 +1,5 @@
 package common;
 
-import model.Group;
-import dao.GroupDAO;
-
 public enum MessageType {
     CREATE_NEW_GROUP,
 	GET_GROUP_FILE_PRIV,

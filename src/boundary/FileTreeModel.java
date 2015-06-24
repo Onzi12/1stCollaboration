@@ -6,7 +6,11 @@ import javax.swing.tree.TreePath;
 
 import model.ItemFolder;
 
-
+/**
+ * Represents the data displaying design in a Tree
+ * @author Idan
+ *
+ */
 public class FileTreeModel extends DefaultTreeModel {
 
 	private static final long serialVersionUID = 1214116617410377448L;

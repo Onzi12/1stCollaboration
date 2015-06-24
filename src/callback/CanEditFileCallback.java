@@ -1,11 +1,17 @@
 package callback;
 
 import model.ItemFile;
+
 import common.MessageType;
 import common.MyBoxException;
 
 public abstract class CanEditFileCallback extends Callback<ItemFile> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param file
+	 * @param exception
+	 */
 	public abstract void canEditFile(ItemFile file, MyBoxException exception);
 	
 	@Override

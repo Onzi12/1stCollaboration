@@ -8,12 +8,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import common.Message;
-import common.MessageWithUser;
+
 import model.Group;
 import model.Request;
 import model.User;
 import server.Server;
+import common.Message;
+import common.MessageWithUser;
+
 
 public class GroupDAO implements DAO<Group> {
 
@@ -42,7 +44,11 @@ public class GroupDAO implements DAO<Group> {
 		return set;
 	}
 	
-	/**  
+	/**this method takes accepts a user 
+	 * request to get into a group adds 
+	 * a new line in the DB to usergroups
+	 * and deletes the request from the 
+	 *  grouprequests table
 	 */	
 	public void updateUserGroups(Request req)
 	 {
@@ -51,22 +57,42 @@ public class GroupDAO implements DAO<Group> {
 		 {
 			 stmt.executeUpdate("delete from grouprequests where userID = " + req.getUser().getID() + " AND groupID = " + req.getGroup().getGroupID());
 			 stmt.executeUpdate("insert into usergroups (userID,groupID)  " + "VALUES ("+req.getUser().getID()+","+req.getGroup().getGroupID() + ")");
-			 
+			 updateGroupToFiles(true,req.getUser().getID(),req.getGroup().getGroupID());
 
 		 }catch (SQLException e) {
 			 try(Statement stmt2 = con.createStatement() ){
 			 stmt2.executeUpdate("delete from usergroups where userID = " + req.getUser().getID() + " AND groupID = " + req.getGroup().getGroupID());
+			 updateGroupToFiles(false,req.getUser().getID(),req.getGroup().getGroupID());
 			 } catch (SQLException e1) {e1.printStackTrace(); }
 		}
 	 }
-	 
-	public void createNewGroup(Group group) throws SQLException
+	/**
+	 * if their was a user joined a group 
+	 * we go throught all of his files and
+	 * give them a new line in the DB 
+	 * else we do delete
+	 * @param Boolean res,int userID,int groupId
+	 */
+	public void updateGroupToFiles(Boolean res,int userID,int groupId)
 	{
 		Connection con = Server.getConnection();
-		Statement stmt = con.createStatement();
-		stmt.executeUpdate("insert into groups (groupName) VALUES (" + group.getName() +")");
 		
+		try(Statement  stmt =  con.createStatement()){
+		 ResultSet rs = stmt.executeQuery("SELECT fileID FROM file WHERE ownerID = "+ userID);
+		 while(rs.next())
+		 {
+			 if(res == true)
+				 stmt.executeUpdate("insert into filegroups (fileID,groupID)  " + "VALUES ("+rs.getInt(1)+","+ groupId + ")"); 
+			 else
+				 stmt.executeUpdate("delete from filegroups where groupID = " + groupId + " AND fileID = " + rs.getInt(1)); 
+		 }
+	
+		}catch(SQLException e) {}
 	}
+	
+	/**  this method deletes the row from
+	 *   grouprequests 
+	 */	
 	public void updateUserGroupsRejection(Request req)
 	 {
 		 Connection con = Server.getConnection(); 
@@ -120,7 +146,8 @@ public class GroupDAO implements DAO<Group> {
 		} catch (SQLException e) { e.printStackTrace(); }
 		return res;
 	}
-
+	
+	
 	public void deleteFromDB(Group group) {
 		Connection con = Server.getConnection();
 		try(Statement stmt = con.createStatement() ) 
@@ -153,25 +180,38 @@ public class GroupDAO implements DAO<Group> {
 		return group;
 	}
 
-
+	/** 
+	 * If a group does not exists:<br>
+	 * 		Insert a group to database.<br><br>
+	 * If the group exists in database : <br>
+	 * do nothing.
+	 * @param group the group object to insert
+	 */	
 	@Override
-	public void ObjectToDB(Group group) {
+	public void ObjectToDB(Group group)  {
 		Connection con = Server.getConnection();
 		try(Statement stmt = con.createStatement() )
 			{
-			int update = stmt.executeUpdate("UPDATE groups SET groupName = '"+group.getName()+
-										   "' WHERE groupID = "+group.getGroupID());
-			if(update == 0) {
+			
+			//Check if a group with groupName already exists
+			ResultSet r = stmt.executeQuery("SELECT * FROM groups WHERE groupName = '"+group.getName()+"'" );
+			if ( r.next())
+				return;
+
 				stmt.executeUpdate("INSERT INTO groups (groupName) "
 						          + "VALUES('"+group.getName()+"')",Statement.RETURN_GENERATED_KEYS );
 				ResultSet rs = stmt.getGeneratedKeys();
-				if( rs.next() ) {
-				group.setGroupID( rs.getInt(1) );
-				}
-			}
-			} catch (SQLException e) { e.printStackTrace(); }
+				if( rs.next() ) 
+					group.setGroupID( rs.getInt(1) );
+//				}
+			} catch (SQLException e) { e.printStackTrace(); 
+									   group = null; }
+											
 	}
 
+	/**	This method takes out all of the group requests from
+	 * the DB and returns it in a Set made of Request variables
+	 */
 	public Set<Request> allRequestsFromDB(){
 		Connection con = Server.getConnection();
 		UserDAO uDao = new UserDAO();
@@ -192,6 +232,9 @@ public class GroupDAO implements DAO<Group> {
 		catch(SQLException e) {e.printStackTrace(); }
 		return set;
 	}
+	/** searches a group with the name that we get
+	 * in the DB and returns a Group variable
+	 */	
 	@Override
 	public Group DBtoObject(String name) {
 		Connection con = Server.getConnection();
@@ -208,6 +251,10 @@ public class GroupDAO implements DAO<Group> {
 		} catch (SQLException e) { e.printStackTrace(); }
 		return group;
 	}
+	/** This method gets an hashMap of access,fileID and 
+	 * groupID and updates the writeAccess of a line
+	 * that jas the file and group id that we got
+	 */	
 	 public void updateGroupAccess(HashMap<String,Integer> res)
 	 {
 		 Connection con = Server.getConnection();
@@ -240,8 +287,14 @@ public class GroupDAO implements DAO<Group> {
 		
 		return set;
 	}
+	
+	/**
+	 * adds a user request to join or leave a group
+	 * to the grouprequest table
+	 */
 	public void addUserGroupRequestsToDB(Message msg) {
 		MessageWithUser m = (MessageWithUser)msg;
+		@SuppressWarnings("unchecked")
 		Set<Group> updatedUserGroups = (HashSet<Group>)m.getData();
 		User user = ((MessageWithUser)msg).getUser();
 		GroupDAO gDao = new GroupDAO();
@@ -258,19 +311,13 @@ public class GroupDAO implements DAO<Group> {
 		gDao.createLeaveGroupRequests(user, newOther);
 		updatedUserGroups.removeAll(oldGroups);
 		gDao.createJoinGroupRequests(user, updatedUserGroups);
-		
-		
-//		Set<Group> all = gDao.getAllfromDB();
-//		Set<Group> oldGroups = gDao.getUserGroups(user.getID());
-//		all.removeAll(updatedUserGroups); 	//newOtherGroups
-//		Set<Group> all2 =  gDao.getAllfromDB();
-//		all2.removeAll(oldGroups);	//oldOtherGroups
-//		
-//		all2.removeAll(all);
-//		gDao.createJoinGroupRequests(user,all2);
-		
-		
+				
 	}
+	
+	/**
+	 * creates a new request to leave a group
+	 * and inserts it to the DB
+	 */
 	private void createLeaveGroupRequests(User user, Set<Group> join) {
 		Connection con = Server.getConnection();
 		try(Statement stmt = con.createStatement() )
@@ -285,6 +332,10 @@ public class GroupDAO implements DAO<Group> {
 				}
 			} catch (SQLException e) { e.printStackTrace(); }
 	}
+	/**
+	 * creates a new request to join the group
+	 * and inserts it to the DB
+	 */
 	private void createJoinGroupRequests(User user, Set<Group> groups) {
 		Connection con = Server.getConnection();
 		try(Statement stmt = con.createStatement() )

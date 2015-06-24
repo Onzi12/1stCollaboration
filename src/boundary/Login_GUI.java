@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,20 +21,47 @@ import common.JPanelBoundary;
 import controller.LoginController;
 import custom_gui.TextPrompt;
 
+/**
+ * Graphical User Interface that Allows a user to log in the system and start using it
+ * @author Idan
+ *
+ */
+@SuppressWarnings("serial")
 public class Login_GUI extends JPanelBoundary {
+	
+	/**
+	 * Username insert field
+	 */
+	private JTextField fieldUsername;
+	
+	/**
+	 * Password insert field
+	 */
+	public JPasswordField fieldPassword;
+	
+	/**
+	 * Sign in button
+	 */
+	private JButton btnSignIn;
+	
+	/**
+	 * Switch window to Create account
+	 */
+	private JButton btnShowCreateAnAccount;
+	
+	/**
+	 * Displays a window to insert IP address to connect to the server
+	 */
+	private JButton btnIpPort;
 
+	/**
+	 * Constructs the window and assignes it a controller
+	 * @param controller
+	 */
 	public Login_GUI(Controller controller) {
 		super(controller);
 		
 	}
-
-	private static final long serialVersionUID = 1868351078697687291L;
-	private JTextField fieldUsername;
-	private JPasswordField fieldPassword;
-	private JButton btnSignIn;
-	private JButton btnShowCreateAnAccount;
-	private JButton btnIpPort;
-
 	
 	@Override
 	public void draw() {
@@ -61,6 +90,8 @@ public class Login_GUI extends JPanelBoundary {
 		fieldUsername.setBounds(61, 144, 193, 20);
 		add(fieldUsername);
 		fieldUsername.setColumns(10);
+		fieldUsername.setFocusable(true);
+
 
 		fieldPassword = new JPasswordField();
 		TextPrompt placeHolderPassword = new TextPrompt("Password", fieldPassword);
@@ -70,6 +101,17 @@ public class Login_GUI extends JPanelBoundary {
 		fieldPassword.setBounds(61, 168, 193, 20);
 		add(fieldPassword);
 		fieldPassword.setColumns(10);
+		
+		fieldPassword.setFocusable(true);
+		fieldPassword.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER )
+					((LoginController)controller).btnSignInClicked();
+			}
+		});
+
+	
 		
 		btnSignIn = new JButton("Sign In");
 		btnSignIn.setBounds(105, 224, 105, 23);
@@ -95,12 +137,22 @@ public class Login_GUI extends JPanelBoundary {
 		btnIpPort.setBackground(SystemColor.textHighlight);
 		btnIpPort.setBounds(0, 0, 50, 23);
 		add(btnIpPort);
+		
+
 	}
 	
+	/**
+	 * Withdraws the entered username to sign it
+	 * @return
+	 */
 	public String getUsernameText() {
 		return fieldUsername.getText();
 	}
 	
+	/**
+	 * Withdraws the enterd password to sign in
+	 * @return
+	 */
 	public String getPasswordText() {
 		return new String(fieldPassword.getPassword());
 	}
@@ -133,6 +185,22 @@ public class Login_GUI extends JPanelBoundary {
 		});
 		
 	}
+
+	/**
+	 * Clears the username and password text fields of any text 
+	 * @param clearName
+	 */
+	public void clearFields(boolean clearName) {
+
+		if(clearName) {
+			fieldUsername.setText("");
+			fieldUsername.grabFocus(); }
+		else
+			fieldPassword.grabFocus();
+		
+		fieldPassword.setText("");
+	}
+
 
 
 

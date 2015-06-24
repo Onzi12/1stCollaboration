@@ -63,7 +63,7 @@ public class Server extends ObservableServer {
 		this.url = url;
 		this.user = user;
 		this.password = password;
-		this.gui = gui;
+//		this.gui = gui;
 		listen();
 	}
 	

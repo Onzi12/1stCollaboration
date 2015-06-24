@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import common.Boundary;
 import common.Controller;
 import common.JPanelBoundary;
+
 import controller.MyBoxController;
 import controller.NavigationManager;
 

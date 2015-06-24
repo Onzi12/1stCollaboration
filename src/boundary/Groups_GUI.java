@@ -10,36 +10,56 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import model.Group;
 import common.Controller;
 import common.JDialogBoundary;
 import controller.GroupsController;
 
+
+
+/**
+ * Graphical User Interface that allows the user to select groups to join/leave and send request to the administrator 
+ *
+ */
+@SuppressWarnings("serial")
 public class Groups_GUI extends JDialogBoundary{
 
-
-	public JList<Group> listMyGroups,listOtherGroups;
-	private JButton btnJoin,btnLeave,btnSendRequests,btnClose;
-	public DefaultListModel<Group> listMyGroupsModel,listOtherGroupsModel;
 	/**
-	 * 
+	 * groups list that is displayed 
 	 */
-	private static final long serialVersionUID = 1L;
+	public JList<Group> listMyGroups,listOtherGroups;
+	
+	private JButton btnJoin,btnLeave,btnSendRequests;
+	
+	/**
+	 * Close Window Button
+	 */
+	private JButton btnClose;
+	
+	/**
+	 * model to design the groups list
+	 */
+	public DefaultListModel<Group> listMyGroupsModel,listOtherGroupsModel;
 
+	/**
+	 * Constructs the groups window and assigns a controller 
+	 * @param controller
+	 */
 	public Groups_GUI(Controller controller) {
 		super(controller);
-		setBounds(new Rectangle(200, 150, 540, 415));
+		
 	}
 
 	@Override
-	public void draw() {
+	public void draw() 
+	{
+		setBounds(new Rectangle(200, 150, 540, 415));
 		getContentPane().setBounds(0, 0, 542, 339);
 		setBackground(Color.WHITE);
 		getContentPane().setBackground(Color.WHITE);
@@ -157,23 +177,47 @@ public class Groups_GUI extends JDialogBoundary{
 		
 	}
 	
+	/**
+	 * add a group to the displayed list of user's groups
+	 * @param group
+	 */
 	public void addMyGroupElement(Group group){
 		listMyGroupsModel.addElement(group);
 	}
 	
+	/**
+	 * add a group to the displayed list of all groups user is not listed in them
+	 * @param group
+	 */
 	public void addOtherGroupElement(Group group){
 		listOtherGroupsModel.addElement(group);
 	}
 	
+	/**
+	 * returns the selected group from the user's groups lsit
+	 * @return
+	 */
 	public Group getSelectedMyGroup(){
 		if(listMyGroups.getSelectedIndex() < 0 )
 			return null;
 		return listMyGroupsModel.getElementAt(listMyGroups.getSelectedIndex());
 	}
 	
+	/**
+	 * returns the selected group from the list of groups that the user is not listed in
+	 * @return
+	 */
 	public Group getSelectedOtherGroup(){
 		if(listOtherGroups.getSelectedIndex() < 0 )
 			return null;
 		return listOtherGroupsModel.getElementAt(listOtherGroups.getSelectedIndex());
+	}
+	
+	/**
+	 * Show Success to send the requests to administrator message
+	 * @param string
+	 */
+	public void showHappyMessage(String string) {
+		JOptionPane.showMessageDialog(this, string, "Great", JOptionPane.PLAIN_MESSAGE);
 	}
 }

@@ -8,6 +8,7 @@ import boundary.AppFrame;
 import boundary.Login_GUI;
 import callback.LoginCallback;
 import client.Client;
+
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -54,6 +55,12 @@ public class LoginController extends Controller {
 							handleUserSignIn(user);
 						} else {
 							getGui().showMessage(exception.getMessage());
+							boolean clearName = true;
+							if(exception.getMessage().contains("Password is incorrect!") ) {
+								clearName = false;
+//								((Login_GUI)getGui()).fieldPassword.requestFocusInWindow();
+								}
+							((Login_GUI)getGui()).clearFields(clearName);
 						}
 						
 					}
@@ -93,6 +100,8 @@ public class LoginController extends Controller {
 	@Override
 	public void updateBoundary() {
 		AppFrame.getInstance().setSize(326, 400);
+		Login_GUI g = (Login_GUI)getGui();
+		g.clearFields(false);
 	}
 	
 }

@@ -20,26 +20,54 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import model.ItemFile.Privilege;
-
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileEditController;
 
+/**
+ * Graphical User Interface that allows a user to edit a file's Name, Description,Privilege,and Content
+ * @author Idan
+ *
+ */
+@SuppressWarnings("serial")
 public class FileEdit_GUI extends JDialogBoundary{
 	
 	/**
-	 * 
+	 * A Text field that displays the selected file's name
 	 */
-	private static final long serialVersionUID = 1L;
-
 	private JTextField tfFilename;
+	
+	/**
+	 * A Text area that displays the selected file's Description
+	 */
 	private JTextArea taDescription;
+	
+	/**
+	 * A selection box that allows to adjust the file's privilege level
+	 */
 	private JComboBox<Privilege> cbPrivilege;
+	
+	/**
+	 * Window Close Button
+	 */
 	private JButton btnCancel;
+	
+	/**
+	 * Saves the changes that were made to the file
+	 */
 	private JButton btnSave;
+	
+	/**
+	 * Opens a window to adjust group's Access to the file
+	 * this Button is available only if this window is opened by the file owner
+	 */
 	private JButton btnManageGroupsAccess;
 	
+	
+	/**
+	 * Constructs 
+	 * @param controller
+	 */
 	public FileEdit_GUI(Controller controller) {
 		super(controller);
 	}
@@ -132,7 +160,11 @@ public class FileEdit_GUI extends JDialogBoundary{
 			}
 		});
 	}
-
+	
+	/**
+	 * Sets the availability of the Manage Groups Access button to restrict access to owner alone
+	 * @param arg
+	 */
 	public void setBtnManageGroupsAccess(boolean arg) {
 		btnManageGroupsAccess.setEnabled(arg);
 	}
@@ -170,26 +202,49 @@ public class FileEdit_GUI extends JDialogBoundary{
 		});
 	}
 	
+	/**
+	 * Withdraws the new filename 
+	 * @return
+	 */
 	public String getFilename(){
 		return tfFilename.getText();
 	}
 	
+	/**
+	 * sets the initial file name
+	 * @param filename
+	 */
 	public void setFilename(String filename) {
 		tfFilename.setText(filename);
 	}
 	
+	/**
+	 * Withdraws the new Description
+	 * @return
+	 */
 	public String getDescriptionText() {
 		return taDescription.getText();
 	}
 
+	/**
+	 * sets the initial file Description
+	 * @param taDescription
+	 */
 	public void setDescriptionText(String taDescription) {
 		this.taDescription.setText(taDescription);
 	}
 
+	/**
+	 * Withdraws the new file privilege
+	 * @return
+	 */
 	public Privilege getPrivilege() {
 		return (Privilege)cbPrivilege.getSelectedItem();
 	}
-
+	 /**
+	  * sets the initial file privilege
+	  * @param i
+	  */
 	public void setPrivilege(int i) {
 		this.cbPrivilege.setSelectedIndex(i);
 	}

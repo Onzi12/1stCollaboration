@@ -4,19 +4,20 @@ import java.util.Observable;
 import java.util.Observer;
 
 import model.Group;
+
 import common.Message;
 import common.MessageType;
 import common.MyBoxException;
 
 /**
- * The Callback class is used to execute a specific routine after receiving a specific message from the server.
+ * The {@link Callback} class is used to execute a specific routine after receiving a specific message from the server.
  * Needs to be added as an observer to the client before sending the message.
  * @param <T> - the type of object to be received from the server.
  */
 public abstract class Callback<T> implements Observer {
 		
 	/**
-	 * Callback method that is called when a message is received from the server.
+	 * Called when a message is received from the server.
 	 * @param obj
 	 * @param exception
 	 */

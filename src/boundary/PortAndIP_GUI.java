@@ -19,14 +19,35 @@ import common.JDialogBoundary;
 
 import controller.PortAndIPController;
 
+/**
+ * Graphical User Interface that allows a user to set the details of the host.
+ */
 public class PortAndIP_GUI extends JDialogBoundary {
 
 
 	private static final long serialVersionUID = 1357093255522087260L;
-	private JPanel contents, buttonPanel;
-	private JTextField tfPort, tfIP;
-	private JButton btnSave, btnCancel;
 	
+	/**
+	 * The port text field.
+	 */
+	private JTextField tfPort;
+	/**
+	 * The IP text field.
+	 */
+	private JTextField tfIP;
+	/**
+	 * Save button.
+	 */
+	private JButton btnSave;
+	/**
+	 * Cancel button.
+	 */
+	private JButton btnCancel;
+
+	/**
+	 * Constructs the {@link PortAndIP_GUI}.
+	 * @param controller
+	 */
 	public PortAndIP_GUI(Controller controller) {
 		super(controller);
 	}
@@ -37,7 +58,7 @@ public class PortAndIP_GUI extends JDialogBoundary {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 		
-		contents = new JPanel();
+		JPanel contents = new JPanel();
 		contents.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contents.setLayout(new BorderLayout());
 		setContentPane(contents);
@@ -60,7 +81,7 @@ public class PortAndIP_GUI extends JDialogBoundary {
 		tfIP.setText("");
 		center.add(tfIP, "wrap, span");
 		
-		buttonPanel = new JPanel();
+		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		contents.add(buttonPanel, BorderLayout.SOUTH);
 		
@@ -71,19 +92,34 @@ public class PortAndIP_GUI extends JDialogBoundary {
 		buttonPanel.add(btnCancel);
 	}
 	
-	
+	/**
+	 * Get the port text.
+	 * @return {@link String}
+	 */
 	public int getPort() {
 		return Integer.parseInt(tfPort.getText());
 	}
 	
+	/**
+	 * Get the IP text.
+	 * @return {@link String}
+	 */
 	public String getHost() {
 		return tfIP.getText();
 	}
 	
+	/**
+	 * Set the port text.
+	 * @param port
+	 */
 	public void setPort(int port) {
 		tfPort.setText(Integer.toString(port));
 	}
 	
+	/**
+	 * Set the IP text.
+	 * @param ip
+	 */
 	public void setIP(String ip) {
 		tfIP.setText(ip);
 	}

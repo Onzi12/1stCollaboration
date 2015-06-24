@@ -7,6 +7,11 @@ import common.MyBoxException;
 
 public abstract class GetGroupAccessCallback extends Callback<HashMap<Integer,Integer>>{
 
+	/**
+	 * Called when the operation completes.
+	 * @param groupsAccess
+	 * @param exception
+	 */
 	protected abstract void done(HashMap<Integer,Integer> groupsAccess , MyBoxException exception);
 	
 	@Override

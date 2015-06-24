@@ -8,6 +8,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import model.Item;
 
+/** 
+ * Adds a file icons in the main MyBox window table
+ */
 public class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 
 	private static final long serialVersionUID = 2535842331897450564L;

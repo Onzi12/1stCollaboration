@@ -2,12 +2,18 @@ package callback;
 
 import java.util.Set;
 
+import model.ItemFile;
+
 import common.MessageType;
 import common.MyBoxException;
-import model.ItemFile;
 
 public abstract class GetRestoreFilesCallback extends Callback<Set<ItemFile>> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param files
+	 * @param exception
+	 */
 	protected abstract void done(Set<ItemFile> files, MyBoxException exception);
 
 	@Override

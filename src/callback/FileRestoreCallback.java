@@ -5,6 +5,10 @@ import common.MyBoxException;
 
 public abstract class FileRestoreCallback extends Callback<Void> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param exception
+	 */
 	protected abstract void done(MyBoxException exception);
 
 	@Override

@@ -6,7 +6,10 @@ import controller.MyBoxController;
 import controller.NavigationManager;
 
 
-
+/**
+ * 
+ *An abstract class that allows all controllers to inherit its functionality and supplying them with automated actions
+ */
 public abstract class Controller{
 
 	protected NavigationManager nav;
@@ -15,8 +18,6 @@ public abstract class Controller{
 	
 	public Controller() {
 		nav = NavigationManager.getInstance();
-//		if ( (this instanceof MyBoxController) == false && (this instanceof LoginController) == false)
-//			myboxControl = (MyBoxController)NavigationManager.getInstance().getCurrentController();
 		gui = initBoundary();
 		registerMoreListeners();
 		gui.display();
@@ -37,6 +38,7 @@ public abstract class Controller{
 	/** Create a Boundary for this Controller */ 
 	protected abstract Boundary initBoundary();
 	
+	/** Create a Boundary for this Controller */
 	protected Boundary initBoundary(ItemFile file) { return null; }
 
 	/** <<hook>>

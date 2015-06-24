@@ -35,7 +35,7 @@ CREATE TABLE `file` (
   KEY `id` (`fileID`),
   KEY `ownerID_idx` (`ownerID`),
   CONSTRAINT `ownerID` FOREIGN KEY (`ownerID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `file` (
 
 LOCK TABLES `file` WRITE;
 /*!40000 ALTER TABLE `file` DISABLE KEYS */;
-INSERT INTO `file` VALUES (1,'pic2.doc',NULL,0,0,1,16),(2,'bank.doc',NULL,1,0,0,17),(3,'secret.doc',NULL,2,0,0,18),(4,'pic.jpeg',NULL,0,2,0,19),(5,'db.sql',NULL,0,1,0,16);
+INSERT INTO `file` VALUES (1,'pic2.doc',NULL,2,0,1,16),(2,'bank.doc',NULL,1,0,0,17),(3,'secret.doc',NULL,2,2,0,18),(4,'pic.jpeg',NULL,2,2,0,19),(5,'db.sql',NULL,2,1,0,16),(57,'fd.jpg','',2,0,0,17),(59,'afds.xlsx','',2,0,0,17);
 /*!40000 ALTER TABLE `file` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,7 +70,7 @@ CREATE TABLE `filegroups` (
 
 LOCK TABLES `filegroups` WRITE;
 /*!40000 ALTER TABLE `filegroups` DISABLE KEYS */;
-INSERT INTO `filegroups` VALUES (2,2,1);
+INSERT INTO `filegroups` VALUES (1,1,0),(1,3,0),(4,1,0),(4,2,0),(4,3,0),(5,1,0),(5,3,0),(57,1,0),(59,1,0);
 /*!40000 ALTER TABLE `filegroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +175,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (16,'admin','0000',0,1,0),(17,'user','1234',0,0,0),(18,'working','c3',1,0,0),(19,'blocked','7d',2,0,3);
+INSERT INTO `user` VALUES (16,'admin','0000',0,1,0),(17,'user','1234',0,0,0),(18,'working','c3',0,0,0),(19,'blocked','7d',0,0,3);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +202,7 @@ CREATE TABLE `userfiles` (
 
 LOCK TABLES `userfiles` WRITE;
 /*!40000 ALTER TABLE `userfiles` DISABLE KEYS */;
-INSERT INTO `userfiles` VALUES (16,1,1),(16,2,5),(17,3,1),(17,3,2),(18,4,3),(19,5,4),(17,6,5),(18,7,4);
+INSERT INTO `userfiles` VALUES (16,1,1),(16,2,5),(17,3,1),(17,3,2),(17,3,57),(17,3,59),(18,4,3),(19,5,4),(17,6,5),(18,7,4);
 /*!40000 ALTER TABLE `userfiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +229,7 @@ CREATE TABLE `usergroups` (
 
 LOCK TABLES `usergroups` WRITE;
 /*!40000 ALTER TABLE `usergroups` DISABLE KEYS */;
-INSERT INTO `usergroups` VALUES (16,1),(16,3),(18,2),(19,1),(19,2),(19,3);
+INSERT INTO `usergroups` VALUES (16,1),(16,3),(17,1),(17,2),(17,3),(18,2),(19,1),(19,2),(19,3);
 /*!40000 ALTER TABLE `usergroups` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -242,4 +242,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-23  7:32:50
+-- Dump completed on 2015-06-24  0:55:09

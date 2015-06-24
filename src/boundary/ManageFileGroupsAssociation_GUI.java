@@ -1,44 +1,65 @@
 package boundary;
 
-import common.Controller;
-import common.JDialogBoundary;
-
 import java.awt.Color;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-
-import controller.AdminFileGroupsSelectController;
-import model.ItemFile;
-import java.awt.Rectangle;
 import javax.swing.ListSelectionModel;
 
+import model.ItemFile;
+
+import common.Controller;
+import common.JDialogBoundary;
+
+import controller.AdminFileGroupsSelectController;
+
+/**
+ * Graphical User Interface that allows an administrator to change all file's groups association level according to their owner's groups association
+  *
+ */
 @SuppressWarnings("serial")
 public class ManageFileGroupsAssociation_GUI extends JDialogBoundary {
 	
+	/**
+	 * Displays all items in the system
+	 */
 	private JList<ItemFile> listFiles;
+	
+	/**
+	 * A model to design the list display
+	 */
 	private DefaultListModel<ItemFile> listModel;
+	
+	/**
+	 * Close Window button
+	 */
 	private JButton btnClose;
+	
+	/**
+	 * opens a new window to edit the file's groups association
+	 */
 	private JButton btnSelect;
 
+	/**
+	 * Constructs the window 
+	 * @param controller
+	 */
 	public ManageFileGroupsAssociation_GUI(Controller controller) {
 		super(controller);
-		setBounds(new Rectangle(200, 150, 553, 357));
-		
 		}
 
 	@Override
 	public void draw() {
+		setBounds(new Rectangle(200, 150, 553, 357));
 		JPanel contentsPanel = new JPanel();
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
@@ -108,10 +129,18 @@ public class ManageFileGroupsAssociation_GUI extends JDialogBoundary {
 
 	}
 	
+	/**
+	 * Withdraws the selected file from the list
+	 * @return
+	 */
 	public ItemFile getSelectedFile(){
 		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}
 	
+	/**
+	 * Adds files to the list
+	 * @param file
+	 */
 	public void addListItem(ItemFile file){
 		listModel.addElement(file);
 	}

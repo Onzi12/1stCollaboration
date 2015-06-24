@@ -18,17 +18,34 @@ import javax.swing.tree.TreeSelectionModel;
 
 import common.Controller;
 import common.JDialogBoundary;
+
 import controller.VirtualLocationChooserController;
 import custom_gui.MyBoxTree;
-
+/**
+ * The {@link VirtualLocationChooser_GUI} is a GUI class that show the tree of the user folders.
+ * <br> The class allows the user to choose a virtual location for a file in the the MyBox application.
+ */
 @SuppressWarnings("serial")
 public class VirtualLocationChooser_GUI extends JDialogBoundary {
 
-	private JPanel contents,buttonPanel;
-	private JButton btnClose,btnOK;
-	private JScrollPane scrollPane;
+	/**
+	 * Close button.
+	 */
+	private JButton btnClose;
+	/**
+	 * OK button.
+	 */
+	private JButton btnOK;
+	
+	/**
+	 * The tree.
+	 */
 	private MyBoxTree tree;
 	
+	/**
+	 * Constructs the {@link VirtualLocationChooser_GUI}.
+	 * @param controller
+	 */
 	public VirtualLocationChooser_GUI(Controller controller) {
 		super(controller);
 	}
@@ -47,7 +64,7 @@ public class VirtualLocationChooser_GUI extends JDialogBoundary {
 		separator.setBounds(10, 50, 181, 11);
 		getContentPane().add(separator);
 		
-		contents = new JPanel();
+		JPanel contents = new JPanel();
 		contents.setBounds(10, 70, 187, 227);
 		getContentPane().add(contents);
 		contents.setBackground(UIManager.getColor("text"));
@@ -62,14 +79,14 @@ public class VirtualLocationChooser_GUI extends JDialogBoundary {
 		tree.setCellRenderer(renderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);        
 		
-		scrollPane = new JScrollPane();
+		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 0, 186, 227);
 		scrollPane.setBackground(UIManager.getColor("text"));
 		contents.add(scrollPane);
 		
 		scrollPane.setViewportView(tree);
 		
-		buttonPanel = new JPanel();
+		JPanel buttonPanel = new JPanel();
 		buttonPanel.setBounds(10, 308, 187, 30);
 		getContentPane().add(buttonPanel);
 		buttonPanel.setLayout(null);
@@ -117,6 +134,10 @@ public class VirtualLocationChooser_GUI extends JDialogBoundary {
 		
 	}
 	
+	/**
+	 * Get the tree.
+	 * @return {@link MyBoxTree}
+	 */
 	public MyBoxTree getTree() {
 		return tree;
 	}

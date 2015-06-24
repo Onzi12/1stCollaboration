@@ -17,24 +17,44 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import model.ItemFile;
-
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileDeleteController;
 
+/**
+ * Graphical User Interface that allows a user to delete a file Physically from the server
+ * @author Idan
+ *
+ */
+@SuppressWarnings("serial")
 public class FileDelete_GUI extends JDialogBoundary{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	
-	private DefaultListModel<ItemFile> listModel;
-	private JButton btnDelete;
-	private JButton btnClose;
+	/**
+	 * a list that displays all files that the user is eligible to delete physically
+	 */
 	private JList<ItemFile> listFiles;
 	
+	/**
+	 * a model to design the data that is inserted in the files list
+	 */
+	private DefaultListModel<ItemFile> listModel;
+	
+	/**
+	 * Delete File button that deletes the selected file physically from the server
+	 */
+	private JButton btnDelete;
+	
+	/**
+	 * Close window Button
+	 */
+	private JButton btnClose;
+	
+	
+	
+	/**
+	 * Constructs the window and lists a controller to operate all Listeners
+	 * @param controller
+	 */
 	public FileDelete_GUI(Controller controller) {
 		super(controller);
 		
@@ -110,14 +130,19 @@ public class FileDelete_GUI extends JDialogBoundary{
 			});
 	}
 
-	public ItemFile getListValue() {
-		return listFiles.getSelectedValue();
+	
+	/**
+	 * adds a file to the file List
+	 * @param file
+	 */
+	public void addListValue(ItemFile file) {
+		listModel.addElement(file);
 	}
-
-	public void addListValue(ItemFile x) {
-		listModel.addElement(x);
-	}
-
+	
+	/**
+	 * Withdraws the selected file from the list 
+	 * @return ItemFile
+	 */
 	public ItemFile getSelectedFile() {
 		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}

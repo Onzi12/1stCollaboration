@@ -25,31 +25,64 @@ import common.Controller;
 import common.JDialogBoundary;
 
 import controller.FileGroupsSelectController;
+import javax.swing.ListSelectionModel;
 
-
-
+/**
+ * Graphical User Interface that allows a user to Edit a file access level to all groups he is associated with
+ *
+ */
 @SuppressWarnings("serial")
 public class FileGroupsSelect_GUI extends JDialogBoundary{
-
+	
+	/**
+	 * a model to design the group list
+	 */
 	private DefaultListModel<Group> listModel;
+	
+	/**
+	 * group list to display all groups that are eligible to obtain a level of access regarding the selected file
+	 */
 	private JList<Group> listGroups;
+	
+	/**
+	 * Close Window Button
+	 */
 	private JButton btnFinish;
+	
+	/**
+	 * A Selection box that allows 
+	 */
 	private JComboBox<Access> cbAccess;
+	
+	/**
+	 * Constant levels of Access
+	 */
 	private enum Access {None,Read,Update};
+	
+	/**
+	 * data structure holding the groups and files access level localy
+	 */
 	private HashMap<Integer,Integer> groupAccess;
+	
+	/**
+	 * The file for which the group's association is being edited
+	 */
 	private ItemFile file;
 	
+	/**
+	 * Constructs the window and registers the controller and selected file
+	 * @param controller
+	 * @param file
+	 */
 	public FileGroupsSelect_GUI(Controller controller,ItemFile file) {
 		super(controller);	
 		groupAccess = new HashMap<Integer,Integer>();
-		System.out.println("FileGroupsSelect GUI constructor");
 		this.file = file;
 	}
 
 	@Override
 	public void draw() {
 		setBounds(new Rectangle(200, 200, 549, 377));
-		System.out.println("FileGroupsSelect GUI draw");
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
 		
@@ -75,6 +108,8 @@ public class FileGroupsSelect_GUI extends JDialogBoundary{
 		
 		listModel = new DefaultListModel<Group>();
 		listGroups = new JList<Group>();
+		listGroups.setValueIsAdjusting(true);
+		listGroups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listGroups.setModel(listModel);
 		scrollPane.setViewportView(listGroups);
 		
@@ -102,7 +137,6 @@ public class FileGroupsSelect_GUI extends JDialogBoundary{
 
 	@Override
 	public void registerListeners() {
-		System.out.println("FileGroupSelect GUI register listeners");
 		final FileGroupsSelectController control = (FileGroupsSelectController)controller;
 		
 		btnFinish.addActionListener(new ActionListener() {
@@ -118,7 +152,7 @@ public class FileGroupsSelect_GUI extends JDialogBoundary{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				groupAccess.put(listGroups.getSelectedValue().getGroupID(),cbAccess.getSelectedIndex());
+				groupAccess.put(listModel.getElementAt(listGroups.getSelectedIndex()).getGroupID(),cbAccess.getSelectedIndex());
 				control.cbAccessChanged(listModel.getElementAt(listGroups.getSelectedIndex()),cbAccess.getSelectedIndex());
 			}
 		});
@@ -135,24 +169,53 @@ public class FileGroupsSelect_GUI extends JDialogBoundary{
 		
 	}
 	
+	/**
+	 * adds a group to the groups list
+	 * @param group
+	 */
 	public void addGroup(Group group){
 		listModel.addElement(group);
 	}
 	
+	/**
+	 * returns the selected group at specified index
+	 * @param index
+	 * @return
+	 */
 	public Group getGroup(int index){
 		return listModel.get(index);
 	}
 	
+	/**
+	 * sets the existing Access level of a group in the selection box
+	 * @param access
+	 */
 	public void setCB(int access){
 		cbAccess.setSelectedIndex(access);
 	}
+	
+	/**
+	 * withdraws the selected Access level that was determined to a selected group
+	 * @return
+	 */
 	public int getCB(){
 		int access = cbAccess.getSelectedIndex();
 		return access;
 	}
+	
+	/**
+	 * inserts groups access of the selected file to a local data structure
+	 * @param groupId
+	 * @param access
+	 */
 	public void addGroupAccess(int groupId,int access){
 		groupAccess.put(groupId, access);
 	}
+	
+	/**
+	 * returns the selected file
+	 * @return ItemFile
+	 */
 	public ItemFile getFile(){
 		return file;
 	}

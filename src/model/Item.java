@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.swing.Icon;
 
+/**
+ * {@link Item} is an abstract class that represents the basic data structure for a system file in the application.
+ *
+ */
 public abstract class Item implements Serializable {
 
 
@@ -30,6 +34,11 @@ public abstract class Item implements Serializable {
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Get the path of the file.
+	 * @return
+	 */
 	 public String getPath() {
 		 return path;
 	 }

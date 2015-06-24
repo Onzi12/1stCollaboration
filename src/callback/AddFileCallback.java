@@ -1,12 +1,18 @@
 package callback;
 
+import model.ItemFile;
+
 import common.MessageType;
 import common.MyBoxException;
 
-import model.ItemFile;
 
 public abstract class AddFileCallback extends Callback<ItemFile>{
 
+	/**
+	 * Called when the operation completes.
+	 * @param file
+	 * @param exception
+	 */
 	protected abstract void done(ItemFile file, MyBoxException exception);
 	
 	@Override

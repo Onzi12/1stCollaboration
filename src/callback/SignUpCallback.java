@@ -1,12 +1,17 @@
 package callback;
 
+import model.User;
+
 import common.MessageType;
 import common.MyBoxException;
 
-import model.User;
-
 public abstract class SignUpCallback extends Callback<User> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param user
+	 * @param exception
+	 */
 	protected abstract void userSignedIn(User user, MyBoxException exception);
 	
 	@Override

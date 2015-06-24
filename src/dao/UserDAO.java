@@ -144,7 +144,12 @@ public class UserDAO implements DAO<User> {
 		user.setCounter(rs.getInt(6));
 		return user;
 	}
-	
+	/**
+	 * we go throught all of the users in the group
+	 * that we got and every user we add to the set 
+	 * @param Group group
+	 * @return Set<User>
+	 */
 	public Set<User> getGroupUsers(Group group) {
 		UserDAO uDao = new UserDAO();
 		Connection con = Server.getConnection();
@@ -160,6 +165,13 @@ public class UserDAO implements DAO<User> {
 		} catch(SQLException e){ e.printStackTrace(); }
 		return set;
 	}
+	
+	/**
+	 * returns all of the users in a set who are now active
+	 * and have the file 
+	 * @param ItemFile file
+	 * @return Set<User> 
+	 */
 	public Set<User> getActiveFileUsers(ItemFile file)
 	{
 		UserDAO uDao = new UserDAO();

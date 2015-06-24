@@ -35,7 +35,6 @@ public class FileGroupsSelectController extends Controller{
 				
 				@Override
 				protected void done(Set<Group> groups, MyBoxException exception) {
-					System.out.println("done method filegroupselectcontroller");
 					if (exception == null){
 						for (Group group : groups)
 							gui.addGroup(group);
@@ -53,13 +52,12 @@ public class FileGroupsSelectController extends Controller{
 				
 				@Override
 				protected void done(HashMap<Integer, Integer> groupsAccess,MyBoxException exception) {
-					System.out.println("groupAccess Callback ");
+
 					if (exception == null){
-						if (groupsAccess == null) System.out.println("groupsAccess is null");
-						if (groupsAccess.size() == 0) System.out.println("groupAccess is empty");
+
 						for (int groupId :groupsAccess.keySet()){
 							gui.addGroupAccess(groupId,groupsAccess.get(groupId).intValue());
-							System.out.println("groupId:"+groupId);
+
 						}
 					
 					} else{

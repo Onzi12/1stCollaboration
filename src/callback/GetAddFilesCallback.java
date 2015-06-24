@@ -9,6 +9,11 @@ import common.MyBoxException;
 
 public abstract class GetAddFilesCallback extends Callback<HashSet<ItemFile>> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param items
+	 * @param exception
+	 */
 	protected abstract void done(HashSet<ItemFile> items,MyBoxException exception);
 	
 	@Override

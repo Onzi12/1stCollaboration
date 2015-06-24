@@ -14,8 +14,15 @@ import common.Message;
 import common.MessageType;
 import common.MyBoxException;
 
+/**
+ * A Controller Class that handles the Admin's file selection to edit groups association operations from Class {@link ManageFileGroupsAssociation_GUI}
+ *
+ */
 public class AdminFileGroupsSelectController extends Controller {
 
+	/**
+	 * Reference to the GUI Class it handles
+	 */
 	protected final ManageFileGroupsAssociation_GUI gui = (ManageFileGroupsAssociation_GUI)super.gui;
 	
 	public AdminFileGroupsSelectController() {
@@ -25,11 +32,9 @@ public class AdminFileGroupsSelectController extends Controller {
 				
 				@Override
 				protected void done(HashSet<ItemFile> files, MyBoxException exception) {
-					System.out.println("done method AdminFileGroupSelectController");
+
 					if(exception == null){
-						System.out.println("exception in AdminFileGroupSelectController is null");
-						if (files == null) System.out.println("files is null");
-						if (files.size() == 0) System.out.println("files is empty");
+
 						for(ItemFile file : files)
 							gui.addListItem(file);
 					}

@@ -4,14 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import callback.CanEditFileCallback;
-import client.Client;
-import common.Message;
-import common.MessageType;
-import common.MyBoxException;
 import model.ItemFile;
 import boundary.FilePopUpMenu_GUI;
 import boundary.MyBox_GUI;
+import callback.CanEditFileCallback;
+import client.Client;
+
+import common.Message;
+import common.MessageType;
+import common.MyBoxException;
 
 public class FilePopUpMenuController {
 	

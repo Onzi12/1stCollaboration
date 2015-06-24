@@ -14,20 +14,40 @@ import javax.swing.SwingConstants;
 
 import common.Controller;
 import common.JPanelBoundary;
-
 import controller.CreateAccountController;
 import custom_gui.TextPrompt;
 
+/**
+ * Graphical User Interface that displays a window that allows to create a new account
+ * @author Idan
+ *
+ */
+@SuppressWarnings("serial")
 public class CreateAccount_GUI extends JPanelBoundary{
-
-
-
-	private static final long serialVersionUID = -8879377620723123663L;
+	/**
+	 * Create new Account button
+	 */
 	private JButton btnCreateAccount;
+	
+	/**
+	 * Return to Sign in window
+	 */
 	private JButton btnShowSignIn;
+	
+	/**
+	 * New Username input field
+	 */
 	private JTextField fieldNewUsername;
+	
+	/**
+	 * new Password input field
+	 */
 	private JPasswordField fieldNewPassword;
 
+	/**
+	 * Constructs the window and lists a controller to operate all Listeners
+	 * @param controller
+	 */
 	public CreateAccount_GUI(Controller controller) {
 		super(controller);
 	}	
@@ -80,18 +100,27 @@ public class CreateAccount_GUI extends JPanelBoundary{
 		btnShowSignIn.setBackground(Color.WHITE);
 		add(btnShowSignIn);
 	}
-	
+	/**
+	 * returns the Username 
+	 * @return String username
+	 */
 	public String getUsernameText() {
 		return fieldNewUsername.getText();
 	}
 	
+	/**
+	 * reutnrs the password
+	 * @return
+	 */
 	public String getPasswordText() {
 		return new String(fieldNewPassword.getPassword());
 	}
-
+	
+	
 	@Override
 	public void registerListeners() {
 		final CreateAccountController control = (CreateAccountController)controller;
+		
 		
 		btnCreateAccount.addActionListener(new ActionListener() {
 			@Override

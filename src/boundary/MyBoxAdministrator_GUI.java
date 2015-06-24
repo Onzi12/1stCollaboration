@@ -1,19 +1,20 @@
 package boundary;
 
-import common.Controller;
-
-import javax.swing.JPanel;
-
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import common.Controller;
 
 import controller.MyBoxAdministratorController;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
-
+/**
+ * The {@link MyBoxAdministrator_GUI} class extends {@link MyBox_GUI} to show more options for administrator.
+ */
 public class MyBoxAdministrator_GUI extends MyBox_GUI {
 
 
@@ -21,17 +22,33 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Manage group requests button.
+	 */
 	private JButton btnManageGroupRequests;
+	/**
+	 * Manage group files button.
+	 */
 	private JButton btnManageFileGroups;
+	
+	/**
+	 * Create group button.
+	 */
 	private JButton btnCreateGroup;
 
 
+	/**
+	 * Constructs the {@link MyBoxAdministrator_GUI}.
+	 * @param controller
+	 */
 	public MyBoxAdministrator_GUI(Controller controller) {
 		super(controller);
 		
 		
 	}
 	
+	@Override
 	public void draw(){
 		super.draw();
 		
@@ -80,6 +97,15 @@ public class MyBoxAdministrator_GUI extends MyBox_GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				control.btnManageGroupRequestsClicked();
+				
+			}
+		});
+		
+		btnCreateGroup.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				control.btnCreateGroupClicked();
 				
 			}
 		});

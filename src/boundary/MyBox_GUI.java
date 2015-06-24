@@ -15,42 +15,75 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import model.Item;
 import model.ItemFile;
 import model.ItemFolder;
-
 import common.Controller;
 import common.JPanelBoundary;
-
 import controller.MyBoxController;
 import custom_gui.ImageRenderer;
 import custom_gui.MyBoxTree;
 
-
+/**
+ * The {@link MyBox_GUI} class is the main GUI in the application. <br> 
+ * Shows the user all the options in the application.
+ */
 public class MyBox_GUI extends JPanelBoundary {
 
 	private static final long serialVersionUID = -3999897324978712720L;
+	
+	/**
+	 * Add file button.
+	 */
 	private JButton btnAddFile;
+	/**
+	 * Update file button.
+	 */
 	private JButton btnUpdateFile;
+	/**
+	 * Delete file button.
+	 */
 	private JButton btnDeleteFile;
+	/**
+	 * Restore file button.
+	 */
 	private JButton btnRestoreFile;
+	/**
+	 * Logout button.
+	 */
 	private JButton btnLogout;
+	/**
+	 * Create new folder button.
+	 */
 	private JButton btnNewFolder;
+	/**
+	 * Show groups button.
+	 */
 	private JButton btnGroups;
-	private MyBoxTree tree;
-	private JTable table;
+	/**
+	 * Delete folder button.
+	 */
 	private JButton btnRemoveFolder;
+	/**
+	 * The folder tree.
+	 */
+	private MyBoxTree tree;
+	/**
+	 * The file tabel.
+	 */
+	private JTable table;
 
 	/**
-	 * Create the frame.
+	 * Construct {@link MyBox_GUI}.
+	 * @param controller
 	 */
 	public MyBox_GUI(Controller controller) {
 		super(controller);
@@ -146,31 +179,51 @@ public class MyBox_GUI extends JPanelBoundary {
 		add(btnRemoveFolder);
 	}
 	
-	
+	/**
+	 * Add {@link MouseListener} to the file table.
+	 * @param listener
+	 */
 	public void registerTableMouseListener(MouseListener listener) {
 		table.addMouseListener(listener);
 	}
 	
+	/**
+	 * Add {@link MouseListener} to the view.
+	 * @param listener
+	 */
 	public void registerMouseListener(MouseListener listener) {
 		addMouseListener(listener);
 	}
 	
-	public void registerTreeModeListener(TreeModelListener listener) {
-		getTree().getModel().addTreeModelListener(listener);
-	}
-
+	/**
+	 * Get the folder tree.
+	 * @return {@link JTree}
+	 */
 	public MyBoxTree getTree() {
 		return tree;
 	}
 	
+	/**
+	 * Get the file table.
+	 * @return {@link JTable}
+	 */
 	public JTable getTable() {
 		return table;
 	}
 	
+	/**
+	 * Get the selected file in the table.
+	 * @param row
+	 * @return {@link Item}
+	 */
 	public Item tableGetFile(int row) {
 		return (Item) table.getValueAt(row, FileTableModel.OBJECT_COL);
 	}
 	
+	/**
+	 * Refresh the table.
+	 * @param items
+	 */
 	public void refreshTable(ArrayList<Item> items) {
 		
 		ArrayList<ItemFile> files = new ArrayList<ItemFile>();
@@ -280,16 +333,28 @@ public class MyBox_GUI extends JPanelBoundary {
 		
 	}
 	
+	/**
+	 * Get the {@link MyBoxController}.
+	 * @return
+	 */
 	public MyBoxController getController() {
 		return (MyBoxController) controller;
 	}
 	
+	/**
+	 * Disable the create new folder and delete folder buttons.
+	 */
 	public void disableBtnNewFolder() {
 		btnNewFolder.setEnabled(false);
+		btnRemoveFolder.setEnabled(false);
 	}
 	
+	/**
+	 * Enable the craete new folder and delete folder buttons.
+	 */
 	public void enableBtnNewFolder() {
 		btnNewFolder.setEnabled(true);
+		btnRemoveFolder.setEnabled(true);
 	}
 }
 

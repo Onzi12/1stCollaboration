@@ -47,6 +47,7 @@ public class CreateAccountController extends Controller {
 					@Override
 					protected void messageReceived(Void obj, MyBoxException exception) {
 						if (exception == null) {
+							//show Login again
 							NavigationManager.getInstance().popController();
 						} else {
 							getGui().showMessage(exception.getMessage());

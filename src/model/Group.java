@@ -4,15 +4,29 @@ package model;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
-
+/**
+ * The {@link Group} class contains the details of a {@link Group} in the application.
+ */
 public class Group implements Serializable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -688004859034712745L;
+	
+	/**
+	 * The group id.
+	 */
 	private int groupID;
+	
+	/**
+	 * The group name.
+	 */
 	private String groupName;
+	
+	/**
+	 * The users in the group.
+	 */
 	private Set<User> users;
 	
 

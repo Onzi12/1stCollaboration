@@ -2,12 +2,18 @@ package callback;
 
 import java.util.HashMap;
 
+import model.Group;
+
 import common.MessageType;
 import common.MyBoxException;
-import model.Group;
 
 public abstract class UpdateFileGroupsCallback extends Callback<HashMap<Group,Integer>> {
 
+	/**
+	 * Called when the operation completes.
+	 * @param groupsAccess
+	 * @param exception
+	 */
 	protected abstract void done(HashMap<Group, Integer> groupsAccess,MyBoxException exception);
 	
 	@Override

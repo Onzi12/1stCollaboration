@@ -3,7 +3,7 @@ package common;
 import java.io.Serializable;
 
 /**
- * This class is used to contain messages transfered between the server and a client
+ * The {@link Message} class is used to contain messages transfered between the server and a client
  */
 
 public class Message implements Serializable {

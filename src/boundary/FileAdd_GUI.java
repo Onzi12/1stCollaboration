@@ -18,35 +18,54 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
 import model.ItemFile;
-
 import common.Controller;
 import common.JDialogBoundary;
-
 import controller.FileAddController;
 
-
+/**
+ * Graphical User Interface that allows a user to Add an existing file to his own virtual space
+ * @author Idan
+ *
+ */
+@SuppressWarnings("serial")
 public class FileAdd_GUI extends JDialogBoundary {
 
+
+	/**
+	 * Add Existing file to Private virtual space button
+	 */
+	private JButton btnAddFile;
 	
+	/**
+	 * Close window button
+	 */
+	private JButton btnClose;
 	
-	private static final long serialVersionUID = 1L;
-	
-	private JPanel contents,buttonPanel;
-	private JButton btnClose,btnAddFile;
-	private JScrollPane scrollPane;
+	/**
+	 * Files list that is displayed in the Available files to add list
+	 */
 	private JList<ItemFile> listFiles;
+	
+	/**
+	 * Model to design the file list
+	 */
 	private DefaultListModel<ItemFile> listModel;
 	
+	/**
+	 * Constructs the window and lists a controller to operate all Listeners
+	 * @param controller
+	 */
 	public FileAdd_GUI(Controller controller) {
 		super(controller);
-		
-		
 	}
 	
 	
 
 	@Override
 	public void draw() {
+		
+		JScrollPane scrollPane;
+		
 		setTitle("Add File");
 		getContentPane().setBackground(UIManager.getColor("text"));
 		setBounds(100, 100, 647, 500);
@@ -59,7 +78,7 @@ public class FileAdd_GUI extends JDialogBoundary {
 		separator.setBounds(10, 50, 522, 11);
 		getContentPane().add(separator);
 		
-		contents = new JPanel();
+		JPanel contents = new JPanel();
 		contents.setBounds(10, 70, 606, 331);
 		getContentPane().add(contents);
 		contents.setBackground(UIManager.getColor("text"));
@@ -80,6 +99,7 @@ public class FileAdd_GUI extends JDialogBoundary {
 		
 		contents.add(scrollPane);
 		
+		JPanel buttonPanel = new JPanel();
 		buttonPanel = new JPanel();
 		buttonPanel.setBounds(10, 412, 606, 30);
 		getContentPane().add(buttonPanel);
@@ -125,10 +145,18 @@ public class FileAdd_GUI extends JDialogBoundary {
 
 	}
 
-	public void addListValue(ItemFile x) {
-		listModel.addElement(x);
+	/**
+	 * Method that adds a file to the available files to add list
+	 * @param file
+	 */
+	public void addListValue(ItemFile file) {
+		listModel.addElement(file);
 	}
 	
+	/**
+	 * returns the selected file to add from the list
+	 * @return ItemFile object
+	 */
 	public ItemFile getSelectedFile() {
 		return listModel.getElementAt(listFiles.getSelectedIndex());
 	}
