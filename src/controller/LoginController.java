@@ -16,8 +16,12 @@ import common.MessageType;
 import common.MyBoxException;
 
 public class LoginController extends Controller {
-
-		
+	
+	private boolean isSuccess;
+	private boolean isLocked;	
+	private boolean isLoggedin;
+	private int wrongPasswordCounter;
+	
 	private void handleUserSignIn(User user) {
 
 			Client.getInstance().setUser(user);
@@ -52,14 +56,23 @@ public class LoginController extends Controller {
 					protected void done(User user, MyBoxException exception) {
 						
 						if (exception == null) {
+							isSuccess = true;
 							handleUserSignIn(user);
 						} else {
 							getGui().showMessage(exception.getMessage());
 							boolean clearName = true;
 							if(exception.getMessage().contains("Password is incorrect!") ) {
+								wrongPasswordCounter++;
 								clearName = false;
 //								((Login_GUI)getGui()).fieldPassword.requestFocusInWindow();
 								}
+							if(exception.getMessage().contains("is blocked\nPlease contact the administrator!") ) {
+								if (wrongPasswordCounter == 2) wrongPasswordCounter++;
+								isLocked = true;
+							}
+							if(exception.getMessage().contains("is already connected!") ) {
+								isLoggedin = true;
+							}
 							((Login_GUI)getGui()).clearFields(clearName);
 						}
 						
@@ -70,6 +83,7 @@ public class LoginController extends Controller {
 				gui.showMessage("Failed to connect!");
 			}
 		}
+		
 	}
 	
 	private boolean initClient() {
@@ -104,4 +118,19 @@ public class LoginController extends Controller {
 		g.clearFields(false);
 	}
 	
+	public boolean getIsSuccess(){
+		return isSuccess;
+	}
+	
+	public boolean getIsLocked(){
+		return isLocked;
+	}
+	
+	public boolean getIsLoggedin(){
+		return isLoggedin;
+	}
+	
+	public int getWrongPasswordCounter(){
+		return wrongPasswordCounter;
+	}
 }

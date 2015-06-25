@@ -202,6 +202,12 @@ public class Login_GUI extends JPanelBoundary {
 	}
 
 
-
+	public void setUsername(String username){
+		fieldUsername.setText(username);
+	}
+	
+	public void setPassword(String password){
+		fieldPassword.setText(password);
+	}
 
 }
