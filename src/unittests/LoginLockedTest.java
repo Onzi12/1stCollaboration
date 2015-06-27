@@ -1,4 +1,4 @@
-package controller;
+package unittests;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import controller.LoginController;
 import boundary.Login_GUI;
 
 public class LoginLockedTest {

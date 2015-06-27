@@ -1,4 +1,4 @@
-package controller;
+package unittests;
 
 import static org.junit.Assert.*;
 
@@ -7,9 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import controller.LoginController;
 import boundary.Login_GUI;
 
-public class LoginWrongPasswordTest {
+public class LoginAlreadyLoggedinTest {
 	LoginController control;
 	Login_GUI gui;
 	private CountDownLatch lock = new CountDownLatch(1);
@@ -19,18 +20,15 @@ public class LoginWrongPasswordTest {
 		control = new LoginController();
 		gui = (Login_GUI) control.getGui();
 		
-		gui.setUsername("On01");
-		gui.setPassword("123");
-		
+		gui.setUsername("Danny01");
+		gui.setPassword("1324");
 		control.btnSignInClicked();
 		try {
 			lock.await(2000,TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
-		assertFalse(control.getIsSuccess());
-
+		assertTrue(control.getIsLoggedin());
+		
 	}
-
 }
