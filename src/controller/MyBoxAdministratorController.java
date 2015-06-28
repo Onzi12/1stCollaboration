@@ -9,7 +9,6 @@ import model.User;
 import boundary.MyBoxAdministrator_GUI;
 import callback.CreateNewGroupCallback;
 import client.Client;
-
 import common.Boundary;
 import common.Message;
 import common.MessageType;
@@ -42,20 +41,25 @@ public class MyBoxAdministratorController extends MyBoxController {
 
 	public void btnCreateGroupClicked() {
 		String groupName = JOptionPane.showInputDialog("Enter New Group Name:");
-		if(groupName == null)
-			return;
+		createGroup(groupName, new CreateNewGroupCallback() {
+			
+			@Override
+			public void done(Group group, MyBoxException exception) {
+					if (exception != null )gui.showMessage(exception.getMessage());
+					else System.out.println("djsfhlaadsjfhdsajklfhsda");
+			}
+		});
+	}
+
+	public void createGroup(String groupName, CreateNewGroupCallback callback) {
+//		if(groupName.length() == 0)
+//			return;
 		Group group = new Group();
 		group.setGroupID(0);
 		group.setName(groupName); 
 		Message msg = new Message(group, MessageType.CREATE_NEW_GROUP);
 		try {
-			Client.getInstance().sendMessage(msg, new CreateNewGroupCallback() {
-				
-				@Override
-				public void done(Group group, MyBoxException exception) {
-						if (exception != null )gui.showMessage(exception.getMessage());
-				}
-			});
+			Client.getInstance().sendMessage(msg, callback);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

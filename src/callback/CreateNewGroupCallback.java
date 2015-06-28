@@ -22,8 +22,7 @@ public abstract class CreateNewGroupCallback extends Callback<Group> {
 
 	@Override
 	protected MessageType getMessageType() {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageType.CREATE_NEW_GROUP;
 	}
 
 }

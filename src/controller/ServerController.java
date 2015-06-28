@@ -292,7 +292,14 @@ public class ServerController implements Observer {
 				{
 					Group group = (Group)msg.getData();
 					GroupDAO gDao = new GroupDAO();
-
+					//Group with empty name
+					if (group.getName().length() == 0){
+						String err = "Group Creation Failed, Empty name is forbidden";
+					gui.showMessage(err);
+					Message response = new Message(err, MessageType.ERROR_MESSAGE);
+					sendToClient(client,response);
+					return;
+					}
 					gDao.ObjectToDB(group);
 					
 					//SQL error
@@ -307,6 +314,7 @@ public class ServerController implements Observer {
 					{
 					String err = "Group Creation Failed, A group with the name '"+group.getName()+"'"+
 								"\nAlready exists!!";
+					gui.showMessage(err);
 					Message responce = new Message(err, MessageType.ERROR_MESSAGE);
 					sendToClient(client,responce);
 					return;
