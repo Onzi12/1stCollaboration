@@ -220,4 +220,8 @@ public class Groups_GUI extends JDialogBoundary{
 	public void showHappyMessage(String string) {
 		JOptionPane.showMessageDialog(this, string, "Great", JOptionPane.PLAIN_MESSAGE);
 	}
+	
+	public void setSelectedOtherGroup(int index) {
+		listOtherGroups.setSelectedIndex(index);
+	}
 }

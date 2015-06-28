@@ -292,6 +292,13 @@ public class ServerController implements Observer {
 				{
 					Group group = (Group)msg.getData();
 					GroupDAO gDao = new GroupDAO();
+					//SQL error
+					if(group == null)
+						{
+						sendToClient(client,new Message("Group Creation Failed!!! SQL ERROR", MessageType.ERROR_MESSAGE));
+						return;
+						}
+					
 					//Group with empty name
 					if (group.getName().length() == 0){
 						String err = "Group Creation Failed, Empty name is forbidden";
@@ -301,19 +308,11 @@ public class ServerController implements Observer {
 					return;
 					}
 					gDao.ObjectToDB(group);
-					
-					//SQL error
-					if(group == null)
-						{
-						sendToClient(client,new Message("Group Creation Failed!!! SQL ERROR", MessageType.ERROR_MESSAGE));
-						return;
-						}
-					
+		
 					//Group With the same name already exists
 					if(group.getGroupID() == 0 )
 					{
-					String err = "Group Creation Failed, A group with the name '"+group.getName()+"'"+
-								"\nAlready exists!!";
+					String err = "Group Creation Failed, A group with the name " + group.getName() + " Already exists!!";
 					gui.showMessage(err);
 					Message responce = new Message(err, MessageType.ERROR_MESSAGE);
 					sendToClient(client,responce);
@@ -323,7 +322,7 @@ public class ServerController implements Observer {
 					//Success!
 					Message response = new Message(group,MessageType.CREATE_NEW_GROUP);
 					sendToClient(client, response);
-					gui.showMessage("New Group '"+group.getName()+"' created successfully!");
+					gui.showMessage("New Group: " + group.getName() + " created successfully!");
 				}
 				break;
 				case GET_RESTORE_FILES:
@@ -385,7 +384,7 @@ public class ServerController implements Observer {
 				case SEND_NEW_GROUP_REQUESTS: {
 
 					new GroupDAO().addUserGroupRequestsToDB(msg);
-					Message response = new Message(null, MessageType.SEND_NEW_GROUP_REQUESTS);
+					Message response = new Message("Requests sent to administrator Successfully!", MessageType.SEND_NEW_GROUP_REQUESTS);
 					sendToClient(client, response);
 				}
 					break;

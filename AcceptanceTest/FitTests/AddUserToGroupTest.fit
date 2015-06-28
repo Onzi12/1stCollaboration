@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta content="MSHTML 11.00.9600.17842" name="GENERATOR" />
+	</head>
+	<body>
+	</body>
+</html>
+<title>Add Recipe FIT Test</title>
+<body>
+	<style type="text/css">
+<!--{cke_protected}{C}%3C!%2D%2D%0A.style1%20%7Bfont-family%3A%20Arial%2C%20Helvetica%2C%20sans-serif%7D%0A%2D%2D%3E-->	</style>
+</body>
+<meta content="MSHTML 11.00.9600.17842" name="GENERATOR" />
+<body>
+	<p class="style1">
+		AddUserToGroup&nbsp;Acceptance Test</p>
+	<p class="style1">
+		Test - an user wants to join a group</p>
+	<p class="style1">
+		&nbsp;</p>
+	<p class="style1">
+		Scenario:</p>
+	<p class="style1">
+		1.</p>
+	<table border="1" cellpadding="5" cellspacing="0" width="765">
+		<tbody>
+			<tr>
+				<td class="style1" colspan="3">
+					fit.ActionFixture</td>
+			</tr>
+			<tr>
+				<td class="style1">
+					start</td>
+				<td class="style1">
+					Fixtures.AddUserToGroupTest</td>
+				<td class="style1">
+					&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="style1">
+					enter</td>
+				<td class="style1">
+					select group</td>
+				<td class="style1">
+					0</td>
+			</tr>
+			<tr>
+				<td class="style1">
+					check</td>
+				<td class="style1">
+					check warning message</td>
+<!-- der preis als float wert -->				<td class="style1">
+					Requests sent to administrator Successfully!</td>
+			</tr>
+		</tbody>
+	</table></body>

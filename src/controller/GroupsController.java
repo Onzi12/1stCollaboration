@@ -7,8 +7,8 @@ import java.util.Set;
 import model.Group;
 import boundary.Groups_GUI;
 import callback.GetGroupsCallback;
+import callback.SendRequestsCallback;
 import client.Client;
-
 import common.Boundary;
 import common.Controller;
 import common.Message;
@@ -91,32 +91,32 @@ public class GroupsController extends Controller {
 
 	public void btnSendRequestsClicked() {
 		
+		sendRequests(new SendRequestsCallback() {
+
+			@Override
+			protected void messageReceived(String message, MyBoxException exception) {
+				if (exception == null) {
+					gui.showHappyMessage(message);
+					gui.close();
+				} else {
+					gui.showMessage(exception.getMessage());
+				}
+			}
+			
+		});
+		
+
+		
+	}
+	
+	public void sendRequests(SendRequestsCallback callback) {
 		Message msg = new MessageWithUser(userGroups, MessageType.SEND_NEW_GROUP_REQUESTS);
 		try {
-			Client.getInstance().sendMessage(msg, new GetGroupsCallback() {
-				
-				@Override
-				protected void done(Set<Group> groups, MyBoxException exception) {
-					if (exception == null) {
-						gui.showHappyMessage("Requests sent to server Successfully!");
-						gui.close(); }		
-				   else {
-						gui.showMessage(exception.getMessage());
-					}
-				}
-				
-				@Override
-				protected MessageType getMessageType() {
-					return MessageType.SEND_NEW_GROUP_REQUESTS;
-				}
-			});
-			
+			Client.getInstance().sendMessage(msg, callback);
 		} catch (IOException e) {
 			gui.showMessage(e.getMessage());
 		}
-		
 	}
-
 
 	public void btnLeaveClicked() {
 		Group marked = gui.getSelectedMyGroup();
@@ -126,22 +126,28 @@ public class GroupsController extends Controller {
 		otherGroups.add(marked);
 		gui.listOtherGroupsModel.addElement(marked);
 		gui.listMyGroupsModel.removeElement(marked);
-		
 	}
 
 	public void btnJoinClicked() {
+		joinGroup();
+	}
+	
+	public void joinGroup() {
 		Group marked = gui.getSelectedOtherGroup();
 		if(marked == null)
 			return;
-		
 		otherGroups.remove(marked);
 		gui.listOtherGroupsModel.removeElement(marked);
 		userGroups.add(marked);
 		gui.listMyGroupsModel.addElement(marked);
 	}
 	
+	public void joinGroupAtIndex(int index) {
+		gui.setSelectedOtherGroup(index);
+		joinGroup();
+	}
+		
 	public void btnCloseClicked() {
 		gui.close();
-		
 	}
 }
